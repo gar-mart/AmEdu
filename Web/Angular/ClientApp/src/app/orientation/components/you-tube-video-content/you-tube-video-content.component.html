@@ -1,0 +1,12 @@
+<div fxLayout="column" fxLayoutGap="20px" [class.edit-mode]="editMode" class="you-tube-video-content">
+  <mat-form-field *ngIf="editMode">
+    <input matInput [formControl]="urlControl" [placeholder]="urlPrefix" />
+  </mat-form-field>
+  <div class="youtube-player-container" *ngIf="content.videoId">
+    <youtube-player
+      [width]="editMode ? 640 : 1280"
+      [height]="editMode ? 360 : 720"
+      [videoId]="content.videoId"
+      (ready)="onReady()"></youtube-player>
+  </div>
+</div>

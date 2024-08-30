@@ -1,0 +1,3 @@
+﻿CREATE TYPE Tvp.StringList AS TABLE (
+	String NVARCHAR(MAX) NOT NULL
+)

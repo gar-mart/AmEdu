@@ -1,0 +1,67 @@
+<nav mat-tab-nav-bar class="bg-color-lightgray AmEduNavBar" [disableRipple]="true">
+  <!-- [color]="primary" -->
+  <ng-container *ngFor="let tab of tabs">
+    <a
+      *ngIf="tab.routerPath"
+      mat-tab-link
+      [routerLink]="tab.routerPath"
+      routerLinkActive
+      #rla="routerLinkActive"
+      [active]="rla.isActive"
+      class="tab-link link-text">
+      {{ tab.label }}
+    </a>
+    <ng-container *ngIf="!tab.routerPath">
+      <a
+        #trigger
+        mat-tab-link
+        [matMenuTriggerFor]="menu"
+        (click)="$event.stopPropagation()"
+        class="tab-link link-text"
+        routerLinkActive
+        #rla="routerLinkActive"
+        [active]="childTabActive(tab)"
+        (menuClosed)="(true)">
+        {{ tab.label }}
+        <ng-container *ngIf="childTabActive(tab)">
+          <span>&nbsp;/ {{ childTabLabel(tab) }}</span>
+        </ng-container>
+        <mat-icon>arrow_drop_down</mat-icon>
+      </a>
+      <mat-menu #menu class="pt-0 pb-0">
+        <ng-container *ngFor="let childTab of tab.tabs">
+          <ng-container *ngIf="childTab.routerPath">
+            <a
+              mat-tab-link
+              [routerLink]="childTab.routerPath"
+              class="tab-link link-text child-tab w-100per"
+              [class.bg-color-lightgray]="rla2.isActive"
+              routerLinkActive
+              #rla2="routerLinkActive"
+              [active]="rla2.isActive">
+              {{ childTab.label }}
+            </a>
+          </ng-container>
+
+          <ng-container *ngIf="!childTab.routerPath">
+            <button mat-menu-item [matMenuTriggerFor]="subMenu">{{ childTab.label }}</button>
+
+            <mat-menu #subMenu>
+              <a
+                *ngFor="let submenuTab of childTab.tabs"
+                mat-tab-link
+                [routerLink]="submenuTab.routerPath"
+                class="tab-link link-text child-tab w-100per"
+                [class.bg-color-lightgray]="rla3.isActive"
+                routerLinkActive
+                #rla3="routerLinkActive"
+                [active]="rla3.isActive">
+                {{ submenuTab.label }}
+              </a>
+            </mat-menu>
+          </ng-container>
+        </ng-container>
+      </mat-menu>
+    </ng-container>
+  </ng-container>
+</nav>

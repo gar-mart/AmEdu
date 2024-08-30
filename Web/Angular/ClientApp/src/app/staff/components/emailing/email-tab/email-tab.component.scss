@@ -1,0 +1,19 @@
+.subject-form-field {
+  width: 100%;
+}
+
+.attachment {
+  padding: 10px;
+  margin: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 5px;
+}
+
+// unsupported angular-editor buttons
+::ng-deep #insertVideo- {
+  display: none;
+}
+
+::ng-deep #toggleEditorMode- {
+  display: none;
+}

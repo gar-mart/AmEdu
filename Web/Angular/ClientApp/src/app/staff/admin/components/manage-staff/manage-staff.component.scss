@@ -1,0 +1,15 @@
+.table-container {
+  overflow: auto;
+  width: 100%;
+}
+
+th {
+  white-space: nowrap;
+}
+
+th,
+td {
+  &:not(:first-child) {
+    padding-left: 10px;
+  }
+}

@@ -1,0 +1,94 @@
+@import "../../../../styles/colors.scss";
+@import "../../../../styles/variables.scss";
+
+app-dialog {
+  position: relative;
+  display: block;
+  margin: -24px;
+
+  &.primary,
+  &.secondary,
+  &.success,
+  &.danger,
+  &.warning,
+  &.info {
+    div.dialog-header {
+      div.title {
+        font: $mediumHeadLine;
+        line-height: 18px;
+      }
+
+      mat-icon {
+        font-size: 18px;
+        line-height: 18px;
+      }
+    }
+  }
+
+  &.primary {
+    div.dialog-header {
+      background-color: #4fc3f7;
+      color: $white;
+    }
+  }
+
+  &.secondary {
+    div.dialog-header {
+      background-color: $mediumGray;
+      color: $white;
+    }
+  }
+
+  &.success {
+    div.dialog-header {
+      background-color: #9ccc65;
+      color: $white;
+    }
+  }
+
+  &.danger {
+    div.dialog-header {
+      background-color: #f44336;
+      color: $white;
+    }
+  }
+
+  &.warning {
+    div.dialog-header {
+      background-color: #ff9800;
+    }
+  }
+
+  &.info {
+    div.dialog-header {
+      background-color: $lightBlue;
+    }
+  }
+
+  div.dialog-header {
+    position: relative;
+    padding: 20px 30px 16px;
+
+    div.title {
+      font: $mediumHeadLine;
+    }
+  }
+
+  div.dialog-content {
+    position: relative;
+    display: block;
+
+    div[dialog-content] {
+      padding: 20px 30px;
+      max-height: 65vh;
+      overflow: auto;
+    }
+  }
+
+  div.dialog-footer {
+    position: relative;
+    border-top: 1px solid $lightestGray;
+    padding: 10px 30px;
+    text-align: right;
+  }
+}

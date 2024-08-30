@@ -1,0 +1,44 @@
+<form #formDirective="ngForm" [formGroup]="form">
+  <app-dialog dialogType="primary">
+    <div dialog-title class="fw-500 ta-center fcolor-white row justify-content-between">
+      <span class="title">{{ title }}</span>
+    </div>
+    <div dialog-content class="fs-14">
+      <mat-form-field class="w-100per">
+        <mat-select placeholder="How was the student tardy?" formControlName="type">
+          <mat-option [value]="Tardy.Late">Late</mat-option>
+          <mat-option [value]="Tardy.InAndOut">In and Out</mat-option>
+          <mat-option [value]="Tardy.LeftEarly">Left Early</mat-option>
+          <mat-option [value]="Tardy.Disengaged">Disengaged</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field color="primary" class="w-100per mt-20">
+        <textarea
+          matTextareaAutosize
+          matInput
+          formControlName="comment"
+          comment
+          autofocus="autofocus"
+          [placeholder]="form.controls.type.value === Tardy.Disengaged ? 'Comments' : 'Comments (optional)'"></textarea>
+        <mat-error *ngIf="form.controls.comment.hasError('maxlength')">
+          {{ form.controls.comment.errors.maxlength.actualLength }} /
+          {{ form.controls.comment.errors.maxlength.requiredLength }} characters
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div dialog-footer>
+      <div class="row justify-content-between">
+        <div>
+          <button *ngIf="tardiness.type" mat-raised-button (click)="delete()" color="warn" class="fcolor-white">
+            Delete
+          </button>
+        </div>
+        <div>
+          <button mat-raised-button (click)="save()" color="primary" class="fcolor-white">Submit</button>
+          <button mat-button (click)="cancel()" color="primary" class="ml-10">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </app-dialog>
+</form>

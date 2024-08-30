@@ -1,0 +1,70 @@
+<div class="admin-mentor-container">
+  <em class="fs-14 mt-0">
+    Note: A student must meet at least two out of three of their grade's minimum requirements for the week to avoid
+    triggering an intervention.
+  </em>
+
+  <mat-card class="p-0 mb-20">
+    <mat-card-content>
+      <table mat-table [dataSource]="dataSource" matSort class="staff-table mt-20">
+        <!-- Options Column -->
+        <ng-container matColumnDef="moreOptions">
+          <th mat-header-cell *matHeaderCellDef class="moreOptions w-100">Actions</th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-icon-button (click)="updateInterventionThreshold(row)" matTooltip="Edit Intervention Threshold">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="grade">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="grade w-100">Grade</th>
+          <td mat-cell *matCellDef="let row">{{ row.grade }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="numberOfRequirements">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="numberOfRequirements">
+            Number of Required Criteria
+          </th>
+          <td mat-cell *matCellDef="let row">{{ row.numberOfRequirements }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="minimumCourseHoursSpent">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="minimumCourseHoursSpent">
+            Minimum Online Course Hours
+          </th>
+          <td mat-cell *matCellDef="let row">{{ row.minimumCourseHoursSpent }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="minimumCommunicationLogs">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="minimumCommunicationLogs">
+            Minimum Communication Logs
+          </th>
+          <td mat-cell *matCellDef="let row">{{ row.minimumCommunicationLogs }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="minimumLiveLessons">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="minimumLiveLessons">Minimum Live Lessons</th>
+          <td mat-cell *matCellDef="let row">{{ row.minimumLiveLessons }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="expectedCommunicationLogs">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="expectedCommunicationLogs">
+            Expected Communication Logs
+          </th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.minimumCommunicationLogs !== null ? row.expectedCommunicationLogs : "" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="expectedLiveLessons">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="expectedLiveLessons">Expected Live Lessons</th>
+          <td mat-cell *matCellDef="let row">{{ row.minimumLiveLessons !== null ? row.expectedLiveLessons : "" }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

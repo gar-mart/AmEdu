@@ -1,0 +1,70 @@
+<div class="admin-mentor-container">
+  <div>
+    <mat-form-field class="mt-5 w-100 ta-center mr-25">
+      <mat-select placeholder="Choose a Grade Level" [formControl]="gradeLevelFilter">
+        <mat-option value="All">All</mat-option>
+        <mat-option [value]="grade" *ngFor="let grade of gradeLevels">
+          {{ grade }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="mt-5 w-150 ta-center mr-25">
+      <mat-select placeholder="Choose School" [formControl]="schoolFilter">
+        <mat-option value="All">All</mat-option>
+        <mat-option value="AmEdustudents.org">AmEdu</mat-option>
+        <mat-option value="innocademystudents.com">Innocademy</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="mt-5 w-100 ta-center mr-25">
+      <mat-select placeholder="Image Format" [formControl]="imageFormat">
+        <mat-option value="image/jpg">JPG</mat-option>
+        <mat-option value="image/png">PNG</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button
+      mat-button
+      class="mt-5 ta-center mr-25 mat-raised-button mat-primary fcolor-white"
+      (click)="downloadPictures()"
+      [disabled]="downloading">
+      <span class="row align-items-center">
+        Download Pictures
+        <mat-spinner *ngIf="downloading" [diameter]="20" class="ml-10"></mat-spinner>
+      </span>
+    </button>
+  </div>
+
+  <div class="pb-20">
+    <mat-card class="p-0 mt-20">
+      <mat-card-content>
+        <div class="table-container">
+          <table mat-table [dataSource]="dataSource" matSort class="staff-table">
+            <ng-container matColumnDef="name" sticky>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Student</th>
+              <td mat-cell *matCellDef="let row" class="row align-items-center">
+                <img
+                  defaultImage="assets/SelfieOutlineLoading.png"
+                  [lazyLoad]="environment.apiUrl + '/Common/ReturnProfilePicture/' + row.id"
+                  class="studentAvatar mr-15 studentAvatarShadow mt-5"
+                  matTooltip="{{ row.name }}"
+                  matTooltipPosition="before" />
+                <div class="va-top dis-ib">{{ row.name }}</div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+
+          <div *ngIf="!dataSource.data.length" class="w-100per text-center mt-20 mb-20 fcolor-gray">
+            {{ noResultsMessage }}
+          </div>
+
+          <mat-paginator fixed [pageSize]="50" [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons></mat-paginator>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

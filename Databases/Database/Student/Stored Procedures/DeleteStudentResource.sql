@@ -1,0 +1,23 @@
+﻿CREATE PROCEDURE Student.DeleteStudentResource (
+	@id INT
+)
+AS
+SET NOCOUNT ON 
+
+BEGIN TRY
+	SET XACT_ABORT ON
+	BEGIN TRANSACTION
+
+		DELETE FROM Student.StudentResourceGradeLevel
+		WHERE StudentResourceId = @id
+
+		DELETE FROM Student.StudentResources
+		WHERE Id = @id
+
+	COMMIT TRANSACTION
+END TRY
+
+BEGIN CATCH
+	IF XACT_STATE() <> 0 ROLLBACK TRANSACTION;
+	THROW;
+END CATCH

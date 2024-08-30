@@ -1,0 +1,32 @@
+# Ignore Visual Studio temporary files, build results, and
+# user-specific files
+.vs/
+[Bb]in/
+[Oo]bj/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# Ignore build output directories
+build/
+out/
+
+# Ignore package files
+packages/
+
+# Ignore environment-specific files
+*.env
+
+# Ignore database files
+*.mdf
+*.ldf
+
+# Ignore log files
+*.log
+
+# Ignore temporary files
+*.tmp
+*.bak
+Thumbs.db

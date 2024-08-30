@@ -1,0 +1,66 @@
+<mat-sidenav-container class="example-container">
+  <mat-sidenav mode="side" opened>
+    <mat-nav-list [class.isStaff]="user?.isStaff">
+      <a
+        mat-list-item
+        *ngFor="let step of studentSteps"
+        [routerLink]="[step.contentFileName, step.id]"
+        [queryParams]="{ studentId: studentId }"
+        routerLinkActive="current"
+        (click)="navigate(step)"
+        [ngClass]="{
+          complete: step.isCompleted,
+          inProgress: step.isCurrent,
+          notStarted: !step.isCompleted && !step.isCurrent
+        }">
+        <mat-icon *ngIf="step.isCompleted">check_box</mat-icon>
+        <mat-icon *ngIf="!step.isCompleted">check_box_outline_blank</mat-icon>
+        <span class="ml-10">{{ step.name }}</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content style="width: auto">
+    <div class="example-section-container">
+      <h2 *ngIf="user && user.isStaff && student">{{ student.name }}'s Orientation</h2>
+
+      <section class="example-section">
+        <a
+          *ngIf="!user || (user && !user.isAdmin && !user.isMentor)"
+          class="mr-10"
+          [routerLink]="['/student/dashboard']"
+          mat-button
+          matTooltip="Go to dashboard">
+          <mat-icon>home</mat-icon>
+        </a>
+        <mat-progress-bar mode="determinate" color="primary" [value]="progress" class="progress-bar"></mat-progress-bar>
+        <span *ngIf="hasStartedOrientation" class="progressStatus">{{ completedSteps }}/{{ totalSteps }}</span>
+      </section>
+    </div>
+
+    <app-orientation-start
+      *ngIf="!hasStartedOrientation"
+      [hasOrientationStarted]="hasStartedOrientation"
+      (hasOrientationStartedChanged)="getUpdatedOrientationStatus($event)"></app-orientation-start>
+    <router-outlet *ngIf="hasStartedOrientation" (activate)="onActivate()"></router-outlet>
+
+    <a
+      *ngIf="chatUrl"
+      [href]="chatUrl"
+      target="contact_primary_mentor"
+      matTooltip="Contact Mentor"
+      mat-fab
+      color="primary"
+      id="floatingButton">
+      <mat-icon>forum</mat-icon>
+    </a>
+    <button
+      *ngIf="student && student.mentorEmail && user && !user.isAdmin && !user.isMentor && !chatUrl"
+      matTooltip="Contact Mentor"
+      mat-fab
+      color="primary"
+      id="floatingButton"
+      (click)="openBottomSheet()">
+      <mat-icon>chat_bubble</mat-icon>
+    </button>
+  </mat-sidenav-content>
+</mat-sidenav-container>

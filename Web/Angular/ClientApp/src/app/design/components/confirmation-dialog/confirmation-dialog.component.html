@@ -1,0 +1,10 @@
+<app-dialog dialogType="primary">
+  <div dialog-title class="title fw-500 ta-center fcolor-white">{{ data.title }}</div>
+  <div dialog-content class="fs-14">
+    {{ data.confirmationMessage }}
+  </div>
+  <div dialog-footer>
+    <button mat-raised-button (click)="confirm()" color="primary" class="fcolor-white">Submit</button>
+    <button mat-button (click)="cancel()" color="primary" class="ml-10">Close</button>
+  </div>
+</app-dialog>

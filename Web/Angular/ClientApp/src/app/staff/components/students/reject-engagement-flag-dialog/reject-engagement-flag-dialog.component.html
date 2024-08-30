@@ -1,0 +1,26 @@
+<form #formDirective="ngForm" [formGroup]="form">
+  <app-dialog dialogType="primary">
+    <div dialog-title class="title fw-500 ta-center fcolor-white">Reject Engagement Flag</div>
+    <div dialog-content class="fs-14">
+      <mat-form-field color="primary" class="w-100per" fxFlex>
+        <textarea matTextareaAutosize #reason matInput placeholder="Reason" formControlName="rejectedReason"></textarea>
+        <mat-error *ngIf="form.controls['rejectedReason'].hasError('required')">Please enter a reason</mat-error>
+        <mat-error *ngIf="form.controls['rejectedReason'].hasError('maxlength')">
+          Your reason must be less than 250 characters
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div dialog-footer>
+      <button
+        type="submit"
+        mat-raised-button
+        (click)="confirm()"
+        color="primary"
+        class="fcolor-white ml-10"
+        [disabled]="saving">
+        Submit
+      </button>
+      <button type="button" mat-button (click)="cancel()" color="primary" class="ml-10">Close</button>
+    </div>
+  </app-dialog>
+</form>

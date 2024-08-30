@@ -1,0 +1,36 @@
+<div fxLayout="column" fxLayoutGap="10px" class="pl-20">
+  <form [formGroup]="filter" fxLayout="row wrap" fxLayoutGap="10px">
+    <mat-form-field>
+      <mat-label>Choose a Mentor</mat-label>
+      <mat-select formControlName="mentor">
+        <mat-option [value]="null"></mat-option>
+        <mat-option *ngFor="let mentor of mentors" [value]="mentor">
+          {{ mentor.name }}
+        </mat-option>
+      </mat-select>
+      <button
+        *ngIf="filter.controls.mentor.value"
+        matSuffix
+        mat-icon-button
+        aria-label="Clear value"
+        matTooltip="Clear value"
+        (click)="filter.controls.mentor.patchValue(null); $event.stopPropagation()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <app-choose-a-grade class="ml-20" [control]="$any(filter.get('grades'))"></app-choose-a-grade>
+
+    <mat-form-field class="ml-20">
+      <span matPrefix>
+        <mat-icon>search</mat-icon>
+        &nbsp;
+      </span>
+      <input
+        matInput
+        placeholder="Search for a student"
+        [formControl]="quickFilterFormControl"
+        name="searchForStudent" />
+    </mat-form-field>
+  </form>
+</div>

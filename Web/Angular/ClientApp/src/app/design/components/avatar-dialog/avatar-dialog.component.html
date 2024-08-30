@@ -1,0 +1,290 @@
+<form #formDirective="ngForm" [formGroup]="form">
+  <app-dialog dialogType="primary">
+    <div dialog-title class="title fw-500 ta-center fcolor-white">
+      {{ student.name }}
+    </div>
+    <div dialog-content class="fs-14">
+      <img
+        [lazyLoad]="imageUrl"
+        defaultImage="assets/SelfieOutlineLoading.png"
+        width="80%"
+        *ngIf="imageUrl"
+        class="dis-b m-auto bradius-50" />
+      <table *ngIf="studentInformation" class="w-100per">
+        <tr>
+          <th width="33%"></th>
+          <th width="33%"></th>
+          <th width="34%"></th>
+        </tr>
+
+        <tr>
+          <td>
+            <mat-form-field color="primary" class="w-100per">
+              <input matInput placeholder="Notes" formControlName="notes" />
+            </mat-form-field>
+            <mat-error class="mb-20" *ngIf="form.controls['notes'].hasError('maxlength')">
+              The max length is 250 characters.
+            </mat-error>
+          </td>
+          <td>
+            <mat-form-field color="primary" class="w-100per">
+              <input
+                matInput
+                placeholder="Notes about me (nicknames, pronouns, interests, etc.)"
+                formControlName="notesAboutMe" />
+            </mat-form-field>
+            <mat-error class="mb-20" *ngIf="form.controls['notesAboutMe'].hasError('maxlength')">
+              The max length is 1000 characters.
+            </mat-error>
+          </td>
+          <td>
+            <span>
+              <mat-form-field color="primary" class="w-50per">
+                <input matInput placeholder="Home Address" formControlName="homeAddress" />
+                <mat-error class="mb-20" *ngIf="form.controls['homeAddress'].hasError('maxlength')">
+                  The max length is 100 characters.
+                </mat-error>
+              </mat-form-field>
+            </span>
+            <span>
+              <mat-form-field color="primary" class="w-50per">
+                <input matInput placeholder="City" formControlName="city" />
+                <mat-error class="mb-20">The max length is 60 characters.</mat-error>
+              </mat-form-field>
+            </span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <mat-form-field class="w-100per">
+              <input
+                matInput
+                placeholder="School Email Address (readonly)"
+                formControlName="schoolEmailAddress"
+                readonly />
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field color="primary" class="w-100per">
+              <input matInput placeholder="Guardian Name" formControlName="guardianName" />
+            </mat-form-field>
+            <mat-error class="mb-20" *ngIf="form.controls['guardianName'].hasError('maxlength')">
+              The max length is 100 characters.
+            </mat-error>
+          </td>
+          <td>
+            <span>
+              <mat-form-field color="primary" class="w-50per">
+                <input matInput placeholder="State" formControlName="state" />
+                <mat-error class="mb-20">The max length is 40 characters.</mat-error>
+              </mat-form-field>
+            </span>
+            <span>
+              <mat-form-field color="primary" class="w-50per">
+                <input matInput placeholder="Zip Code" formControlName="zipCode" />
+                <mat-error class="mb-20" *ngIf="form.controls['zipCode'].hasError('pattern')">
+                  Zip codes must be 5 digits.
+                </mat-error>
+              </mat-form-field>
+            </span>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <mat-form-field color="primary" class="w-100per">
+              <mat-select
+                placeholder="Preferred Way to Contact Guardian"
+                formControlName="preferredWayToContactGuardian">
+                <mat-option *ngFor="let option of preferredContactOptions" [value]="option.value">
+                  {{ option.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+          <td class="va-top">
+            <mat-checkbox color="primary" formControlName="guardianIsSubscribedToWeeklySnapshotEmail">
+              Guardian Subscribed to
+              <br />
+              Weekly Snapshot Email
+            </mat-checkbox>
+          </td>
+          <td class="va-top">
+            <mat-checkbox color="primary" formControlName="secondaryGuardianIsSubscribedToWeeklySnapshotEmail">
+              Secondary Guardian Subscribed to
+              <br />
+              Weekly Snapshot Email
+            </mat-checkbox>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <mat-form-field color="primary" class="w-100per">
+              <mat-select placeholder="Preferred Way to Contact Student" formControlName="preferredWayToContactStudent">
+                <mat-option *ngFor="let option of preferredContactOptions" [value]="option.value">
+                  {{ option.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field color="primary" class="w-100per">
+              <mat-select placeholder="Best Time to Reach Guardian" formControlName="bestTimeToReachGuardian">
+                <mat-option *ngFor="let option of bestTimeToReachOptions" [value]="option.value">
+                  {{ option.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+          <td class="va-bottom">
+            <mat-form-field color="primary" class="w-100per">
+              <input matInput placeholder="Secondary Guardian Name" formControlName="secondaryGuardianName" />
+            </mat-form-field>
+            <mat-error class="mb-20" *ngIf="form.controls['secondaryGuardianName'].hasError('maxlength')">
+              The max length is 100 characters.
+            </mat-error>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <mat-form-field color="primary" class="w-100per">
+              <input matInput placeholder="Student Phone Number: (xxx) xxx-xxxx" formControlName="studentPhoneNumber" />
+            </mat-form-field>
+            <mat-error class="mb-20" *ngIf="form.controls['studentPhoneNumber'].hasError('maxlength')">
+              The max length is 20 characters.
+            </mat-error>
+            <mat-error class="mb-20" *ngIf="form.controls['studentPhoneNumber'].hasError('pattern')">
+              Phone number must be of the format: (xxx) xxx-xxxx
+            </mat-error>
+          </td>
+          <td>
+            <mat-form-field color="primary" class="w-100per">
+              <input
+                matInput
+                placeholder="Guardian Phone Number: (xxx) xxx-xxxx"
+                formControlName="guardianPhoneNumber" />
+            </mat-form-field>
+            <mat-error class="mb-20" *ngIf="form.controls['guardianPhoneNumber'].hasError('maxlength')">
+              The max length is 20 characters.
+            </mat-error>
+            <mat-error class="mb-20" *ngIf="form.controls['guardianPhoneNumber'].hasError('pattern')">
+              Phone number must be of the format: (xxx) xxx-xxxx
+            </mat-error>
+          </td>
+          <td>
+            <mat-form-field color="primary" class="w-100per">
+              <input
+                matInput
+                placeholder="Secondary Guardian Phone Number: (xxx) xxx-xxxx"
+                formControlName="secondaryGuardianPhoneNumber" />
+            </mat-form-field>
+            <mat-error class="mb-20" *ngIf="form.controls['secondaryGuardianPhoneNumber'].hasError('maxlength')">
+              The max length is 20 characters.
+            </mat-error>
+            <mat-error class="mb-20" *ngIf="form.controls['secondaryGuardianPhoneNumber'].hasError('pattern')">
+              Phone number must be of the format: (xxx) xxx-xxxx
+            </mat-error>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <mat-form-field color="primary" class="w-100per">
+              <input matInput placeholder="Student Personal Email Address" formControlName="studentEmailAddress" />
+            </mat-form-field>
+            <mat-error class="mb-20" *ngIf="form.controls['studentEmailAddress'].hasError('maxlength')">
+              The max length is 320 characters.
+            </mat-error>
+            <mat-error class="mb-20" *ngIf="form.controls['studentEmailAddress'].hasError('pattern')">
+              Invalid email address.
+            </mat-error>
+          </td>
+          <td>
+            <mat-form-field color="primary" class="w-100per">
+              <input matInput placeholder="Guardian Email Address" formControlName="guardianEmailAddress" />
+            </mat-form-field>
+            <mat-error class="mb-20" *ngIf="form.controls['guardianEmailAddress'].hasError('maxlength')">
+              The max length is 320 characters.
+            </mat-error>
+            <mat-error class="mb-20" *ngIf="form.controls['guardianEmailAddress'].hasError('pattern')">
+              Invalid email address.
+            </mat-error>
+          </td>
+          <td>
+            <mat-form-field color="primary" class="w-100per">
+              <input
+                matInput
+                placeholder="Secondary Guardian Email Address"
+                formControlName="secondaryGuardianEmailAddress" />
+            </mat-form-field>
+            <mat-error class="mb-20" *ngIf="form.controls['secondaryGuardianEmailAddress'].hasError('maxlength')">
+              The max length is 320 characters.
+            </mat-error>
+            <mat-error class="mb-20" *ngIf="form.controls['secondaryGuardianEmailAddress'].hasError('pattern')">
+              Invalid email address.
+            </mat-error>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <mat-form-field color="primary" class="w-100per">
+              <input
+                matInput
+                [matDatepicker]="studentBirthday"
+                placeholder="Student Birthday"
+                formControlName="studentBirthday"
+                (click)="studentBirthday.open()" />
+              <mat-datepicker-toggle matSuffix [for]="studentBirthday"></mat-datepicker-toggle>
+              <mat-datepicker #studentBirthday startView="multi-year"></mat-datepicker>
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field color="primary" class="w-100per">
+              <input matInput placeholder="Guardian Relationship to Student" formControlName="guardianRelationship" />
+              <mat-error class="mb-20">The max length is 50 characters.</mat-error>
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field color="primary" class="w-100per">
+              <input
+                matInput
+                placeholder="Secondary Guardian Relationship to Student"
+                formControlName="secondaryGuardianRelationship" />
+              <mat-error class="mb-20">The max length is 50 characters.</mat-error>
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+      <div *ngIf="!studentInformation" class="fw-600 mb-30 mt-30 ta-center">Loading Contact Information...</div>
+    </div>
+    <div dialog-footer class="row justify-content-between">
+      <div>
+        <a
+          *ngIf="student.id && showStudentPageLink"
+          mat-button
+          class="mr-auto"
+          [routerLink]="'staff/students'"
+          [queryParams]="{ studentName: student.name, studentId: student.id }"
+          (click)="close()">
+          Go to student's page
+        </a>
+      </div>
+      <div>
+        <button
+          type="submit"
+          mat-raised-button
+          (click)="confirm()"
+          color="primary"
+          class="fcolor-white"
+          [disabled]="appComponent.isBusy || form.pristine">
+          Submit
+        </button>
+        <button type="button" mat-button (click)="close()" color="primary" class="ml-10">Close</button>
+      </div>
+    </div>
+  </app-dialog>
+</form>

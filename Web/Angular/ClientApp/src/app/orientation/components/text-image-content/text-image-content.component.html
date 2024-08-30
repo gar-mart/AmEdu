@@ -1,0 +1,8 @@
+<fd-angular-rich-text-wrapper
+  *ngIf="editMode; else notEditMode"
+  [editorConfig]="angularEditorConfig"
+  (editorUpdated)="inputChange($any($event))"></fd-angular-rich-text-wrapper>
+
+<ng-template #notEditMode>
+  <div *ngIf="content.content" [innerHTML]="content.content | safe : 1"></div>
+</ng-template>

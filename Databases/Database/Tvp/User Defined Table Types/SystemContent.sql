@@ -1,0 +1,5 @@
+﻿CREATE TYPE Tvp.SystemContent AS TABLE(
+	Id INT NOT NULL
+	, ComponentId TINYINT NOT NULL
+	, OrderBy INT NOT NULL
+)

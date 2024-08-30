@@ -1,0 +1,14 @@
+<div fxLayout="row wrap" fxLayout.lt-md="column" fxLayoutGap="2.5%" fxLayoutWrap>
+  <mat-card fxFlex class="mt-20 resourceTile" (click)="openURL(appShortcut.url)">
+    <mat-card-header class="dis-initial">
+      <div class="resourceTileContent mb-10">
+        <img src="{{ appShortcut.image }}" class="resourceTileImage" />
+      </div>
+    </mat-card-header>
+    <mat-card-content class="resourceTileContent row justify-content-center">
+      <div class="w-100per">
+        <mat-card-title class="text-center">{{ appShortcut.title }}</mat-card-title>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

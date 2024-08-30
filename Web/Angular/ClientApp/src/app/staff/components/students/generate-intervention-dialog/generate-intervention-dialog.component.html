@@ -1,0 +1,29 @@
+<app-dialog dialogType="primary">
+  <div dialog-title class="title fw-500 ta-center fcolor-white">Generate Intervention</div>
+  <div dialog-content class="fs-14">
+    <p>
+      You are about to manually generate an intervention for {{ student.firstName }} {{ student.lastName }}. Before you
+      can continue, please provide a reason for generating this intervention.
+    </p>
+
+    <mat-form-field class="w-100per">
+      <mat-label>Reason for Intervention</mat-label>
+      <textarea matInput [formControl]="reason" required cdkTextareaAutosize></textarea>
+      <mat-error>
+        {{ reason.value ? "Your reason should be 500 characters or less." : "Please provide a reason." }}
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <div dialog-footer>
+    <button type="button" mat-button [mat-dialog-close]="false" [disabled]="saving">Cancel</button>
+    <button
+      type="submit"
+      mat-raised-button
+      (click)="confirm()"
+      color="primary"
+      class="fcolor-white ml-10"
+      [disabled]="saving">
+      Submit
+    </button>
+  </div>
+</app-dialog>

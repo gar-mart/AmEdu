@@ -1,0 +1,10 @@
+.button-padding:not(:is(:first-child, :last-child)) {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.grades {
+  @extend .button-padding;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}

@@ -1,0 +1,46 @@
+﻿@model DownloadPdfViewModel
+
+@{
+    Layout = "Pdfs/_PdfLayout";
+}
+
+@section Head {
+    @* We can add additional, PDF-specific styles to the Head section *@
+    <style>
+        h1 {
+            font-weight: 600
+        }
+    </style>
+}
+
+@if (PdfSection.Header == Model.PdfSection)
+{
+    <h1>Example Header</h1>
+}
+else if (PdfSection.Body == Model.PdfSection)
+{
+    for (var i = 0; i < Model.Pages; i++)
+    {
+        <div fd-if="i > 0" class="page-break">
+            @* Demonstrates introducing a page break*@
+        </div>
+
+        <h1>Example Body</h1>
+
+        <label asp-for="Data"></label>
+
+        <div fd-if="!string.IsNullOrEmpty(Model.Data)">
+            @Model.Data
+        </div>
+    }
+}
+else
+{
+    <h1>Example Footer</h1>
+    
+    // see _PdfLayout for usage of page and topage classes.
+    <div fd-if="Model.Pages > 1">
+        page @Model.InputParams.Page
+        of @Model.InputParams.ToPage
+    </div>
+}

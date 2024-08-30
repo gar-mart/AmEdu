@@ -1,0 +1,8 @@
+﻿CREATE PROCEDURE Security.DeleteAspNetGroup (
+	@id UNIQUEIDENTIFIER
+)
+AS
+SET NOCOUNT ON
+
+DELETE FROM Security.AspNetGroups
+WHERE Id = @id

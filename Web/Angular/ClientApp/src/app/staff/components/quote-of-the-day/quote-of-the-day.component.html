@@ -1,0 +1,96 @@
+<div class="admin-mentor-container">
+  <form
+    #formDirective="ngForm"
+    [formGroup]="quoteOfTheDayForm"
+    fxLayout="row"
+    fxLayout.xs="column"
+    fxLayoutGap="15px"
+    fxLayoutWrap
+    fxLayoutAlign="flex-start center">
+    <mat-form-field color="primary" class="w-300 mr-25" fxFlex>
+      <span matPrefix>
+        <mat-icon>format_quote</mat-icon>
+        &nbsp;
+      </span>
+      <input matInput placeholder="Enter quote" formControlName="quote" />
+    </mat-form-field>
+
+    <mat-form-field color="primary" class="w-300 mr-25" fxFlex>
+      <span matPrefix>
+        <mat-icon>person</mat-icon>
+        &nbsp;
+      </span>
+      <input matInput placeholder="Enter author" formControlName="author" />
+    </mat-form-field>
+
+    <button mat-raised-button class="mr-25 w-125" color="primary" (click)="addQuote()" [disabled]="saving || editing">
+      <span class="fs-13 fcolor-white">Add Quote</span>
+    </button>
+
+    <a
+      *ngIf="!editing"
+      mat-raised-button
+      class="mr-25 w-125"
+      color="primary"
+      (click)="editQuotes()"
+      [disabled]="saving">
+      <span class="fs-13 fcolor-white">Edit Quotes</span>
+    </a>
+
+    <a *ngIf="editing" mat-raised-button class="mr-25 w-125" color="accent" (click)="saveEdits()" [disabled]="saving">
+      <span class="fs-13 fcolor-white">Save Edits</span>
+    </a>
+
+    <a *ngIf="editing" mat-raised-button class="mr-25 w-125" color="warn" (click)="cancelEdits()" [disabled]="saving">
+      <span class="fs-13 fcolor-white">Cancel Edits</span>
+    </a>
+  </form>
+
+  <div *ngIf="!isInitializing">
+    <mat-card *ngFor="let quoteOfTheDay of quotesOfTheDay; index as i; first as isFirst" [class.mt-10]="!isFirst">
+      <mat-card-header>
+        <mat-card-title>"{{ quoteOfTheDay.quote }}"</mat-card-title>
+        <mat-card-subtitle>- {{ quoteOfTheDay.author }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        {{ quoteOfTheDay.quoteOfTheDayDate | date }}
+      </mat-card-content>
+      <mat-card-actions *ngIf="editing" class="row justify-content-between">
+        <div>
+          <button
+            mat-raised-button
+            color="primary"
+            matTooltip="Move up"
+            matTooltipPosition="above"
+            (click)="moveUp(quoteOfTheDay)"
+            [disabled]="saving">
+            <mat-icon class="fcolor-white">arrow_upward</mat-icon>
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            matTooltip="Move down"
+            matTooltipPosition="above"
+            (click)="moveDown(quoteOfTheDay)"
+            [disabled]="saving">
+            <mat-icon class="fcolor-white">arrow_downward</mat-icon>
+          </button>
+        </div>
+        <button
+          mat-raised-button
+          color="warn"
+          matTooltip="Delete"
+          matTooltipPosition="above"
+          (click)="deleteQuote(quoteOfTheDay)"
+          [disabled]="saving">
+          <mat-icon class="fcolor-white">delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <div *ngIf="!quotesOfTheDay.length">No quotes were found.</div>
+    <div *ngIf="quotesOfTheDay.length" class="m-20 fs-14">
+      <em>Note: This sequence of Quotes starts back at the top as days progress passed the last Quote.</em>
+    </div>
+  </div>
+</div>

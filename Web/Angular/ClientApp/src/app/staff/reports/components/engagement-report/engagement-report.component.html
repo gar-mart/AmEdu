@@ -1,0 +1,334 @@
+<div class="admin-mentor-container">
+  <div>
+    <mat-form-field color="primary" class="w-200 mr-25">
+      <span matPrefix>
+        <mat-icon>search</mat-icon>
+        &nbsp;
+      </span>
+      <input matInput placeholder="Search for a student" [formControl]="studentNameFilter" />
+    </mat-form-field>
+
+    <mat-form-field class="mt-5 w-100 ta-center mr-25">
+      <mat-select placeholder="Choose a Grade Level" [formControl]="gradeLevelFilter">
+        <mat-option value="All">All</mat-option>
+        <mat-option [value]="grade" *ngFor="let grade of gradeLevels">
+          {{ grade }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="mt-5 w-150 ta-center mr-25">
+      <mat-select placeholder="Choose School" [formControl]="schoolFilter">
+        <mat-option value="All">All</mat-option>
+        <mat-option value="AmEdustudents.org">AmEdu</mat-option>
+        <mat-option value="innocademystudents.com">Innocademy</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="fs-13 w-100 mr-25">
+      <input
+        matInput
+        [matDatepicker]="startDate"
+        placeholder="Start Date"
+        [formControl]="startDateFilter"
+        (click)="startDate.open()" />
+      <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+      <mat-datepicker #startDate startView="month"></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field class="fs-13 w-100 mr-25">
+      <input
+        matInput
+        [matDatepicker]="endDate"
+        placeholder="End Date"
+        [formControl]="endDateFilter"
+        (click)="endDate.open()" />
+      <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+      <mat-datepicker #endDate startView="month"></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field class="mt-5 w-150 ta-center mr-25">
+      <mat-select placeholder="Enrollment Status" [formControl]="enrollmentStatusFilter">
+        <mat-option [value]="-1">Any</mat-option>
+        <mat-option [value]="true">Enrolled</mat-option>
+        <mat-option [value]="false">Not Enrolled</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-checkbox *ngIf="user && user.isMentor" class="ml-25 mt-5" [formControl]="myStudentsFilter">
+      My Students
+    </mat-checkbox>
+  </div>
+
+  <div class="pb-20">
+    <mat-card class="p-0 mt-20">
+      <mat-card-content>
+        <div class="table-container">
+          <table mat-table [dataSource]="dataSource" class="staff-table" matSort>
+            <!-- TODO: remove matSort or implement it -->
+
+            <ng-container matColumnDef="name" sticky>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Student</th>
+              <td mat-cell *matCellDef="let row" class="row align-items-center">
+                <button mat-icon-button (click)="openClassDialog(row)" matTooltip="Open Performance Snapshot">
+                  <mat-icon>insights</mat-icon>
+                </button>
+                <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Export Engagement Report">
+                  <mat-icon *ngIf="!row.isExporting">file_download</mat-icon>
+                  <mat-spinner [diameter]="15" style="font-size: 0.7rem" *ngIf="row.isExporting"></mat-spinner>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button (click)="exportToPdf(row)" mat-menu-item>PDF</button>
+                  <button (click)="exportToExcel(row)" mat-menu-item>Excel</button>
+                </mat-menu>
+
+                <img
+                  defaultImage="assets/SelfieOutlineLoading.png"
+                  [lazyLoad]="environment.apiUrl + '/Common/ReturnProfilePicture/' + row.id"
+                  class="studentAvatar mr-15 studentAvatarShadow mt-5"
+                  matTooltip="{{ row.name }}"
+                  matTooltipPosition="before"
+                  (click)="openStudentAvatarDialog(row)" />
+                <div class="va-top dis-ib">{{ row.name }}</div>
+                <button *ngIf="row.hasAccomodations" mat-button (click)="openAccomodationsDialog(row)" color="primary">
+                  <mat-icon matTooltip="This student has special accommodation requirements.">library_books</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="liveLessonPoints">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="liveLessonPoints">Live Lessons</th>
+              <td mat-cell *matCellDef="let row" class="text-nowrap">
+                <button
+                  mat-button
+                  (click)="openMetricDialog(row, 'liveLessonPoints')"
+                  matTooltip="View raw data"
+                  [disabled]="!row.liveLessonPoints && !row.liveLessonsOffered"
+                  [matTooltipDisabled]="!row.liveLessonPoints && !row.liveLessonsOffered">
+                  {{ row.liveLessonPoints }} out of {{ row.liveLessonsOffered }}
+                </button>
+
+                <span *ngIf="row.anyTardies">
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    matTooltip="View Tardies"
+                    matTooltipPosition="above"
+                    (click)="openTardiesDialog(row)">
+                    <mat-icon>flag</mat-icon>
+                  </button>
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="communicationPoints">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="communicationPoints">Communications</th>
+              <td mat-cell *matCellDef="let row" class="text-right">
+                <button
+                  mat-button
+                  (click)="openMetricDialog(row, 'communicationPoints')"
+                  matTooltip="View raw data"
+                  [disabled]="!row.communicationPoints"
+                  [matTooltipDisabled]="!row.communicationPoints">
+                  {{ row.communicationPoints }}
+                </button>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="onlineHoursSpent">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="onlineHoursSpent">Online Time</th>
+              <td mat-cell *matCellDef="let row" class="text-nowrap text-right">
+                <button
+                  mat-button
+                  (click)="openMetricDialog(row, 'onlineHoursSpent')"
+                  matTooltip="View raw data"
+                  [disabled]="!row.onlineHoursSpent"
+                  [matTooltipDisabled]="!row.onlineHoursSpent">
+                  {{ Utility.toTimeFormat(row.onlineHoursSpent * 3600.0) }}
+                </button>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="failingGrades">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="failingGrades">Classes Failing</th>
+              <td mat-cell *matCellDef="let row" class="text-right">
+                <button
+                  mat-button
+                  (click)="openMetricDialog(row, 'failingGrades')"
+                  matTooltip="View raw data"
+                  [disabled]="!row.failingGrades"
+                  [matTooltipDisabled]="!row.failingGrades">
+                  {{ row.failingGrades }}
+                </button>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="assignmentsAssignedDateRange">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                matTooltip="Total graded assignments with an initial due date within the date range">
+                Tasks Assigned
+              </th>
+              <td mat-cell *matCellDef="let row" class="text-right">
+                <button
+                  mat-button
+                  (click)="openMetricDialog(row, 'assignmentsAssignedDateRange')"
+                  matTooltip="View raw data"
+                  [disabled]="!row.assignmentsAssignedDateRange"
+                  [matTooltipDisabled]="!row.assignmentsAssignedDateRange">
+                  {{ row.assignmentsAssignedDateRange }}
+                </button>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="assignmentsCompletedDateRange">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                matTooltip="if done after assignment date but before final due date">
+                Completed In Grace
+              </th>
+              <td mat-cell *matCellDef="let row" class="text-right">
+                <button
+                  mat-button
+                  (click)="openMetricDialog(row, 'assignmentsCompletedDateRange')"
+                  matTooltip="View raw data"
+                  [disabled]="!row.assignmentsCompletedDateRange"
+                  [matTooltipDisabled]="!row.assignmentsCompletedDateRange">
+                  {{ row.assignmentsCompletedDateRange }}
+                </button>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="assignmentsCompletedUpUntilEndDate">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="border"
+                matTooltip="if done after assignment date but before final due date">
+                Completed In Grace
+              </th>
+              <td mat-cell *matCellDef="let row" class="border text-right">
+                <button
+                  mat-button
+                  (click)="openMetricDialog(row, 'assignmentsCompletedUpUntilEndDate')"
+                  matTooltip="View raw data"
+                  [disabled]="!row.assignmentsCompletedUpUntilEndDate"
+                  [matTooltipDisabled]="!row.assignmentsCompletedUpUntilEndDate">
+                  {{ row.assignmentsCompletedUpUntilEndDate }}
+                </button>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="assignmentsCompletedOnTime">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header matTooltip="if done by the assignment date">
+                Completed On Time
+              </th>
+              <td mat-cell *matCellDef="let row" class="text-right">
+                <button
+                  mat-button
+                  (click)="openMetricDialog(row, 'assignmentsCompletedOnTime')"
+                  matTooltip="View raw data"
+                  [disabled]="!row.assignmentsCompletedOnTime"
+                  [matTooltipDisabled]="!row.assignmentsCompletedOnTime">
+                  {{ row.assignmentsCompletedOnTime }}
+                </button>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="assignmentsInGracePeriod">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="border">Assignments In Grace Period</th>
+              <td mat-cell *matCellDef="let row" class="border text-right">
+                <button
+                  mat-button
+                  (click)="openMetricDialog(row, 'assignmentsInGracePeriod')"
+                  matTooltip="View raw data"
+                  [disabled]="!row.assignmentsInGracePeriod"
+                  [matTooltipDisabled]="!row.assignmentsInGracePeriod">
+                  {{ row.assignmentsInGracePeriod }}
+                </button>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="isActive">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="failingGrades">Enrollment Status</th>
+              <td mat-cell *matCellDef="let row" class="">
+                {{ row.isActive ? "Enrolled" : "Not Enrolled" }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="numAbsences">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="numAbsences">Excused Absences</th>
+              <td mat-cell *matCellDef="let row">
+                <button
+                  disabled="{{ row.numAbsences === 0 }}"
+                  mat-button
+                  color="primary"
+                  (click)="openAbsencesDialog(row)">
+                  {{ row.numAbsences === 0 ? "No" : "Yes" }}
+                </button>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="headerEmptyStart" sticky>
+              <th mat-header-cell *matHeaderCellDef>
+                <div *ngIf="loading" class="row">
+                  <mat-spinner class="mr-10" [diameter]="20"></mat-spinner>
+                  <span>Loading...</span>
+                </div>
+              </th>
+            </ng-container>
+
+            <ng-container matColumnDef="headerDateRange">
+              <th mat-header-cell *matHeaderCellDef [attr.colspan]="8" class="header-cell">Selected Date Range</th>
+            </ng-container>
+
+            <ng-container matColumnDef="headerToEndDate">
+              <th mat-header-cell *matHeaderCellDef [attr.colspan]="1" class="header-cell border">
+                Course Start to
+                <br />
+                Selected End Date
+              </th>
+            </ng-container>
+
+            <ng-container matColumnDef="headerAllTime">
+              <th mat-header-cell *matHeaderCellDef [attr.colspan]="2" class="header-cell border">All Time</th>
+            </ng-container>
+
+            <ng-container matColumnDef="footer">
+              <td mat-footer-cell *matFooterCellDef [attr.colspan]="displayedColumns.length - 4"></td>
+            </ng-container>
+
+            <ng-container matColumnDef="footerEmptyEnd" stickyEnd>
+              <td mat-footer-cell *matFooterCellDef [attr.colspan]="4">
+                <mat-paginator
+                  fixed
+                  [pageSize]="pageSize"
+                  [pageSizeOptions]="[10, 50, 100]"
+                  showFirstLastButtons></mat-paginator>
+              </td>
+            </ng-container>
+
+            <tr
+              mat-header-row
+              *matHeaderRowDef="
+                ['headerEmptyStart', 'headerDateRange', 'headerToEndDate', 'headerAllTime'];
+                sticky
+              "></tr>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            <tr mat-footer-row *matFooterRowDef="['footer', 'footerEmptyEnd']; sticky"></tr>
+          </table>
+
+          <div *ngIf="!dataSource.data.length" class="w-100per text-center mt-20 mb-20 fcolor-gray">
+            {{ noResultsMessage }}
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -1,0 +1,109 @@
+<mat-card class="p-0 mt-20">
+  <mat-card-header>
+    <h2 class="w-100per" fxLayout="row" fxLayout.xs="column" fxLayoutGap="15px" fxLayoutAlign="flex-start center">
+      <span>Point Detail</span>
+      <button
+        mat-button
+        color="primary"
+        [disabled]="!dataSource.data.length"
+        class="ml-auto"
+        (click)="pointsExporter.exportTable('xlsx', { fileName: getFileName() })">
+        Export
+      </button>
+    </h2>
+  </mat-card-header>
+  <mat-card-content class="scroll-container">
+    <table
+      mat-table
+      matTableExporter
+      #pointsExporter="matTableExporter"
+      [dataSource]="dataSource"
+      matSort
+      class="staff-table">
+      <ng-container matColumnDef="studentName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Student</th>
+        <td mat-cell *matCellDef="let row" class="align-items-center">
+          <div class="va-top dis-ib">{{ row.studentName }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="gradeLevel">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sort>Grade Level</th>
+        <td mat-cell *matCellDef="let row" class="align-items-center">
+          <div class="va-top dis-ib">{{ row.gradeLevel }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="respectPoints">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Respect Points</th>
+        <td mat-cell *matCellDef="let row" class="align-items-center">
+          <div class="va-top dis-ib">{{ row.respectPoints }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="integrityPoints">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Integrity Points</th>
+        <td mat-cell *matCellDef="let row" class="align-items-center">
+          <div class="va-top dis-ib">{{ row.integrityPoints }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="stewardshipPoints">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Stewardship Points</th>
+        <td mat-cell *matCellDef="let row" class="align-items-center">
+          <div class="va-top dis-ib">{{ row.stewardshipPoints }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="engagementPoints">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Engagement Points</th>
+        <td mat-cell *matCellDef="let row" class="align-items-center">
+          <div class="va-top dis-ib">{{ row.engagementPoints }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalPoints">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Total R.I.S.E. Points</th>
+        <td mat-cell *matCellDef="let row" class="align-items-center">
+          <div class="va-top dis-ib">{{ row.totalPoints }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="liveLessonPoints">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Live Lessons</th>
+        <td mat-cell *matCellDef="let row" class="align-items-center">
+          <div class="va-top dis-ib">{{ row.liveLessonPoints }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="communicationPoints">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Communication Points</th>
+        <td mat-cell *matCellDef="let row" class="align-items-center">
+          <div class="va-top dis-ib">{{ row.communicationPoints }}</div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="schoolYearRange">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date Range</th>
+        <td mat-cell *matCellDef="let row" class="align-items-center">
+          <div class="va-top dis-ib">
+            {{ row.dateRangeStart | date : "shortDate" }} - {{ row.dateRangeEnd | date : "shortDate" }}
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <div *ngIf="!dataSource.data.length" class="w-100per text-center mt-20 mb-20 fcolor-gray">
+      {{ loading ? "Loading..." : "No results found." }}
+    </div>
+
+    <mat-paginator
+      class="mat-paginator-sticky"
+      fixed
+      [pageSize]="50"
+      [pageSizeOptions]="[10, 50, 100]"
+      showFirstLastButtons></mat-paginator>
+  </mat-card-content>
+</mat-card>

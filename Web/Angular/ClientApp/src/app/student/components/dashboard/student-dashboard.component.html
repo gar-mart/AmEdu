@@ -1,0 +1,442 @@
+<div *ngIf="!loading" class="pr-25 pl-25 mt-50 dashboard-container">
+  <div class="row justify-content-between align-items-center">
+    <span *ngIf="quoteOfTheDay" class="mentor-data ml-0 mr-25">
+      "{{ quoteOfTheDay.quote }}"
+      <br />
+      <em class="ml-20 text-nowrap">- {{ quoteOfTheDay.author }}</em>
+    </span>
+
+    <div class="row align-items-center">
+      <span class="mentor-label mr-20">{{ student.name }}</span>
+      <img
+        id="PROFILE_PICTURE"
+        [src]="student.studentPicture ? student.studentPicture : 'assets/SelfieOutline.png'"
+        [class.op-5]="!student.studentPicture"
+        class="mentorAvatar" />
+    </div>
+  </div>
+
+  <div class="row justify-content-end mt-10">
+    <a
+      *ngIf="!user.isStaff"
+      routerLink="/student/orientation"
+      routerLinkActive="active"
+      mat-raised-button
+      color="primary"
+      class="mt-15 mr-20">
+      <span fxHide fxShow.gt-xs class="fs-13 fcolor-white">
+        <span *ngIf="hasStarted && !isComplete">Continue Orientation</span>
+        <span *ngIf="!hasStarted">Start Orientation</span>
+        <span *ngIf="hasStarted && isComplete">View Orientation</span>
+      </span>
+      <mat-icon class="fcolor-white ml-5">redo</mat-icon>
+    </a>
+
+    <button
+      mat-raised-button
+      color="primary"
+      class="fs-13 fcolor-white mr-20 mt-15"
+      (click)="openClassDialog()"
+      matTooltip="Click to view your class performance."
+      matTooltipPosition="above">
+      <span fxHide fxShow.gt-xs>Performance Snapshot</span>
+      <mat-icon class="ml-5">restore</mat-icon>
+    </button>
+
+    <a
+      *ngIf="chatUrl"
+      mat-raised-button
+      color="primary"
+      class="fs-13 fcolor-white mt-15 mr-20"
+      [href]="chatUrl"
+      target="chat"
+      matTooltip="Click to open Google Chat."
+      matTooltipPosition="above">
+      <span fxHide fxShow.gt-xs>Chat</span>
+      <mat-icon class="ml-5">forum</mat-icon>
+    </a>
+
+    <a
+      mat-raised-button
+      color="primary"
+      class="fs-13 fcolor-white mt-15"
+      [class.mr-20]="engagementFlags.length"
+      [href]="inboxUrl"
+      target="inbox"
+      matTooltip="Click to open your inbox."
+      matTooltipPosition="above"
+      [matBadge]="unreadEmailCount"
+      [matBadgeHidden]="!unreadEmailCount"
+      matBadgeColor="warn">
+      <span fxHide fxShow.gt-xs>Email</span>
+      <mat-icon class="ml-5">email</mat-icon>
+    </a>
+
+    <button
+      *ngIf="engagementFlags.length"
+      mat-raised-button
+      color="primary"
+      class="fs-13 fcolor-white mt-15"
+      (click)="openEngagementFlags()"
+      matTooltip="You have new engagement flags."
+      matTooltipPosition="above"
+      [matBadge]="engagementFlags.length"
+      matBadgeColor="warn">
+      <span fxHide fxShow.gt-xs>Engagement</span>
+      <mat-icon class="ml-5">flag</mat-icon>
+    </button>
+
+    <button mat-raised-button class="rounded-round ml-auto" (click)="openPointBreakdown()">
+      <span class="ml-0 mentor-label text-nowrap">Point Balance:</span>
+      <strong class="mentor-data w-100per text-right">{{ student.pointBalance }}</strong>
+    </button>
+  </div>
+
+  <section *ngIf="completedSteps !== totalSteps" class="example-section">
+    <mat-progress-bar mode="determinate" color="primary" [value]="progress" class="progress-bar"></mat-progress-bar>
+    <span *ngIf="totalSteps && completedSteps" class="progressStatus">{{ completedSteps }}/{{ totalSteps }}</span>
+  </section>
+
+  <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="30px" fxLayoutWrap class="mt-20">
+    <mat-card *ngIf="student" class="flex-grow-100" fxFlex>
+      <mat-card-header>
+        <mat-card-title>Announcements</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="announcement-event-card-content">
+        <mat-nav-list *ngIf="announcements.length">
+          <ng-container *ngFor="let announcement of announcements; let i = index">
+            <mat-list-item
+              class="h-auto pt-10 pb-10"
+              (click)="openAnnouncement(announcement)"
+              matTooltipPosition="above"
+              matTooltip="Click to open this announcement.">
+              <a class="row justify-content-between" mat-line>
+                <span class="white-space-normal mr-35" [class.font-weight-bold]="!announcement.isRead">
+                  {{ announcement.title }}
+                </span>
+                <span class="fcolor-gray">
+                  {{ announcement.startDate | date : "shortDate" }}
+                </span>
+              </a>
+            </mat-list-item>
+          </ng-container>
+        </mat-nav-list>
+        <span *ngIf="!announcements.length" class="ml-15">No current announcements.</span>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="student" class="flex-grow-100" fxFlex>
+      <mat-card-header>
+        <mat-card-title>Upcoming Events</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="announcement-event-card-content">
+        <mat-nav-list *ngIf="calendarEvents.length">
+          <ng-container *ngFor="let event of calendarEvents; let i = index">
+            <mat-list-item class="h-auto pt-10 pb-10">
+              <a
+                class="row justify-content-between"
+                mat-line
+                [href]="event.webLink"
+                target="_blank"
+                matTooltipPosition="above"
+                matTooltip="Click to open this event in your calendar.">
+                <span class="white-space-normal mr-35">
+                  {{ event.subject }}
+                  <span *ngIf="!event.isOrganizer" class="fcolor-gray">
+                    - with {{ event.organizer.emailAddress.name }}
+                  </span>
+                </span>
+                <span class="fcolor-gray">
+                  <span *ngIf="!event.isAllDay">
+                    {{ toLocalDate(event.start.dateTime) | date : "MMM d, h:mm a" }}
+                  </span>
+                  <span *ngIf="event.isAllDay">
+                    <!-- When the event is an all day event, the start dateTime should not be converted to local -->
+                    {{ event.start.dateTime | date : "MMM d, h:mm a" }}
+                  </span>
+                </span>
+              </a>
+            </mat-list-item>
+          </ng-container>
+        </mat-nav-list>
+        <span *ngIf="!calendarEvents.length" class="ml-15">No upcoming events.</span>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div fxLayout="row" fxLayout.lt-lg="column" fxLayoutGap="30px" fxLayoutWrap *ngIf="student" class="mt-20">
+    <mat-card *ngIf="student.mentorName && student.mentorEmail" class="flex-grow-100">
+      <mat-card-header>
+        <mat-card-title>Mentor Information</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div fxLayout="row" fxLayout.lt-md="column" fxLayoutWrap>
+          <div class="dis-ib mr-20 va-top mb-30" *ngIf="student.mentorId">
+            <div
+              mat-card-avatar
+              class="ml-20 mb-35 mr-25 myMentor dis-ib"
+              matTooltip="{{ student.mentorName }}"
+              matTooltipPosition="above">
+              <img *ngIf="mentorPictureUrl" src="{{ mentorPictureUrl }}" class="mentorAvatar" />
+              <img *ngIf="!mentorPictureUrl" src="assets/SelfieOutline.png" class="mentorAvatar" />
+            </div>
+            <div class="dis-ib ml-20 fs-18 fw-600">Primary Mentor</div>
+            <div>
+              <label class="mentor-label">Name:</label>
+              <span class="mentor-data">{{ student.mentorName }}</span>
+            </div>
+            <div>
+              <label class="mentor-label">Email:</label>
+              <span class="mentor-data">{{ student.mentorEmail }}</span>
+            </div>
+            <div class="ml-5 mt-10">
+              <a *ngIf="chatUrl" mat-button color="primary" [href]="chatUrl" target="contact_primary_mentor">
+                <mat-icon>forum</mat-icon>
+                <span class="mt-5 ml-5">Contact Primary Mentor</span>
+              </a>
+              <button *ngIf="!chatUrl" mat-button color="primary" (click)="openEmailDialog(student, false)">
+                <mat-icon>email</mat-icon>
+                <span class="mt-5 ml-5">Contact Primary Mentor</span>
+              </button>
+              <div *ngIf="student.mentorAppointmentLink">
+                <a href="{{ student.mentorAppointmentLink }}" mat-button target="_blank" color="primary">
+                  <mat-icon>schedule</mat-icon>
+                  Schedule Appointment
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="dis-ib va-top" *ngIf="student.secondaryMentorId">
+            <div
+              mat-card-avatar
+              class="ml-20 mb-35 mr-25 myMentor dis-ib"
+              matTooltip="{{ student.secondaryMentorName }}"
+              matTooltipPosition="above">
+              <img *ngIf="secondaryMentorPictureUrl" src="{{ secondaryMentorPictureUrl }}" class="mentorAvatar" />
+              <img *ngIf="!secondaryMentorPictureUrl" src="assets/SelfieOutline.png" class="mentorAvatar" />
+            </div>
+            <div class="dis-ib ml-20 fs-18 fw-600">Secondary Mentor</div>
+            <div>
+              <label class="mentor-label">Name:</label>
+              <span class="mentor-data">{{ student.secondaryMentorName }}</span>
+            </div>
+            <div>
+              <label class="mentor-label">Email:</label>
+              <span class="mentor-data">{{ student.secondaryMentorEmail }}</span>
+            </div>
+            <div class="ml-5 mt-10">
+              <a *ngIf="chatUrl" mat-button color="primary" [href]="chatUrl" target="contact_secondary_mentor">
+                <mat-icon>email</mat-icon>
+                <span class="mt-5 ml-5">Contact Secondary Mentor</span>
+              </a>
+              <button *ngIf="!chatUrl" mat-button color="primary" (click)="openEmailDialog(student, true)">
+                <mat-icon>email</mat-icon>
+                <span class="mt-5 ml-5">Contact Secondary Mentor</span>
+              </button>
+              <div *ngIf="student.secondaryMentorAppointmentLink">
+                <a href="{{ student.secondaryMentorAppointmentLink }}" mat-button target="_blank" color="primary">
+                  <mat-icon>schedule</mat-icon>
+                  Schedule Appointment
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="30px" fxLayoutWrap>
+      <mat-card class="px-0" *ngIf="communicationGaugeOptions">
+        <mat-card-header class="mx-auto">
+          <mat-card-title>Communications</mat-card-title>
+          <mat-card-subtitle class="text-center">This Week</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div #communicationGaugeChart class="gauge" style="margin-bottom: -40px"></div>
+          <span class="row justify-content-center">{{ communicationGaugeOptions.bottomLabel }}</span>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="px-0" *ngIf="liveLessonGaugeOptions">
+        <mat-card-header class="mx-auto">
+          <mat-card-title>Live Lessons</mat-card-title>
+          <mat-card-subtitle class="text-center">This Week</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div #liveLessonGaugeChart class="gauge"></div>
+          <span>{{ liveLessonGaugeOptions.bottomLabel }}</span>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="px-0" *ngIf="assignmentGaugeOptions">
+        <mat-card-header class="mx-auto">
+          <mat-card-title>Assignments Completed</mat-card-title>
+          <mat-card-subtitle class="text-center">This Week</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div #assignmentGaugeChart class="gauge"></div>
+          <span>{{ assignmentGaugeOptions.bottomLabel }}</span>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <mat-card class="mt-10 bShadow-none bg-color-transparent">
+    <mat-card-title class="row justify-content-between m-0">
+      Shortcuts
+      <div *ngIf="!editingAppTiles.length">
+        <button
+          mat-raised-button
+          color="primary"
+          matTooltip="Edit your app tiles"
+          matTooltipPosition="above"
+          (click)="startAppTileEdits()">
+          <mat-icon class="fcolor-white">edit</mat-icon>
+        </button>
+      </div>
+      <div *ngIf="editingAppTiles.length">
+        <button
+          mat-raised-button
+          color="accent"
+          matTooltip="Save changes to your app tiles"
+          matTooltipPosition="above"
+          (click)="saveAppTileEdits()">
+          <mat-icon class="fcolor-white">check</mat-icon>
+        </button>
+        <button
+          mat-raised-button
+          color="warn"
+          matTooltip="Cancel changes to your app tiles"
+          matTooltipPosition="above"
+          (click)="cancelAppTileEdits()"
+          class="ml-10">
+          <mat-icon class="fcolor-white">cancel</mat-icon>
+        </button>
+      </div>
+    </mat-card-title>
+    <mat-card-content>
+      <div
+        *ngFor="let appTileGroup of appTileGroups; let i = index"
+        [class.mt-10]="i > 0"
+        fxLayout="row wrap"
+        fxLayout.lt-md="column"
+        fxLayoutGap="2.5%"
+        fxLayoutWrap>
+        <ng-container *ngFor="let appTile of appTileGroup">
+          <a
+            [attr.href]="editingAppTiles.length ? null : appTile.metadata.url"
+            [target]="appTile.metadata.title"
+            fxFlex
+            class="mt-20 resource-tile-container">
+            <mat-card class="resourceTile" [class.bg-color-mediumgray]="!appTile.show">
+              <mat-card-header class="dis-initial">
+                <div class="resourceTileContent mb-10">
+                  <div>
+                    <div
+                      matTooltip="You cannot hide this app tile"
+                      matTooltipPosition="above"
+                      *ngIf="editingAppTiles.length && appTile.metadata.alwaysShow">
+                      <button disabled mat-raised-button color="accent" class="w-min-auto">
+                        <mat-icon class="fcolor-white">visibility</mat-icon>
+                      </button>
+                    </div>
+                    <button
+                      *ngIf="editingAppTiles.length && appTile.show && !appTile.metadata.alwaysShow"
+                      class="w-min-auto"
+                      mat-raised-button
+                      color="accent"
+                      matTooltip="Click to hide"
+                      matTooltipPosition="above"
+                      (click)="toggleAppTileVisibility($event, appTile)">
+                      <mat-icon class="fcolor-white">visibility</mat-icon>
+                    </button>
+                    <button
+                      *ngIf="editingAppTiles.length && !appTile.show && !appTile.metadata.alwaysShow"
+                      class="w-min-auto"
+                      mat-raised-button
+                      color="warn"
+                      matTooltip="Click to show"
+                      matTooltipPosition="above"
+                      (click)="toggleAppTileVisibility($event, appTile)">
+                      <mat-icon class="fcolor-white">visibility_off</mat-icon>
+                    </button>
+                  </div>
+                  <img src="{{ appTile.metadata.image }}" class="resourceTileImage" [class.op-5]="!appTile.show" />
+                  <div>
+                    <button
+                      *ngIf="editingAppTiles.length"
+                      class="w-min-auto invisible"
+                      mat-raised-button
+                      color="accent"
+                      matTooltip="Show"
+                      matTooltipPosition="above"
+                      (click)="toggleAppTileVisibility($event, appTile)">
+                      <mat-icon class="fcolor-white">visibility</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </mat-card-header>
+              <mat-card-content class="resourceTileContent row justify-content-center">
+                <div class="w-100per">
+                  <button
+                    *ngIf="editingAppTiles.length && appTile.show"
+                    mat-raised-button
+                    color="primary"
+                    matTooltip="Shift left"
+                    matTooltipPosition="above"
+                    (click)="shiftAppTileLeft($event, appTile)">
+                    <mat-icon class="fcolor-white">arrow_back</mat-icon>
+                  </button>
+                  <button
+                    *ngIf="editingAppTiles.length && appTile.show"
+                    mat-raised-button
+                    color="primary"
+                    matTooltip="Shift right"
+                    matTooltipPosition="above"
+                    (click)="shiftAppTileRight($event, appTile)">
+                    <mat-icon class="fcolor-white">arrow_forward</mat-icon>
+                  </button>
+                  <mat-card-title class="text-center">
+                    {{ appTile.metadata.title }}
+                  </mat-card-title>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </a>
+        </ng-container>
+        <ng-container *ngIf="i === appTileGroups.length - 1">
+          <mat-card fxFlex *ngFor="let temp of fillRowTiles" class="mt-20 resourceTile invisible"></mat-card>
+        </ng-container>
+      </div>
+      <div *ngIf="!appTileGroups.length">No apps to show.</div>
+    </mat-card-content>
+  </mat-card>
+
+  <div>
+    <mat-card fxFlex class="mt-20 mb-20">
+      <mat-card-header>
+        <mat-card-title>Resources</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <mat-list fxLayout.lt-md="column" role="list" fxLayout="row wrap" fxLayoutGap="0.5%">
+          <div fxFlex="30%" *ngFor="let entry of resourcesByCategory | keyvalue">
+            <h3 mat-subheader>{{ entry.key }}</h3>
+            <mat-list-item *ngFor="let resource of entry.value">
+              <mat-icon class="mr-10" color="primary">insert_drive_file</mat-icon>
+              <a target="_blank" href="{{ resource.url }}" class="td-none">{{ resource.title }}</a>
+            </mat-list-item>
+          </div>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <app-re-fuel-reservations
+    *ngIf="gradeLevel && ['6', '7', '8', '9', '10', '11', '12'].includes(gradeLevel)"
+    [student]="student"></app-re-fuel-reservations>
+
+  <div class="freedomDevFooter">
+    <a href="https://www.freedomdev.com/" mat-button color="primary" target="_blank">powered by FreedomDev</a>
+  </div>
+</div>

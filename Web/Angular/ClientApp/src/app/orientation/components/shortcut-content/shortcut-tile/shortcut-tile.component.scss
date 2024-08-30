@@ -1,0 +1,19 @@
+.resourceTile {
+  border-style: solid;
+  border-width: 1px;
+  border-color: transparent;
+  max-width: 400px;
+}
+
+.resourceTile:hover {
+  cursor: pointer;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #71c0ff;
+}
+
+.resourceTileImage {
+  max-height: 65px;
+  align-self: center;
+  margin: 0;
+}

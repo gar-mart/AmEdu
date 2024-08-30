@@ -1,0 +1,121 @@
+@import "../../../../styles/colors.scss";
+@import "../../../../styles.scss";
+
+.dashboard-container {
+  overflow: auto;
+
+  .mentor-label {
+    font-size: 16px;
+    color: #9ccc65;
+    margin-left: 25px;
+    font-weight: bold;
+  }
+
+  .mentor-data {
+    font-size: 16px;
+    margin-left: 25px;
+  }
+
+  .example-section {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    margin-top: 15px;
+  }
+
+  .progressStatus {
+    font-size: 14px !important;
+    font-weight: 600;
+    color: #fb8c00 !important;
+    margin-left: 20px;
+  }
+
+  .mentorAvatar {
+    border-radius: 50%;
+    width: 65px;
+    height: 65px;
+  }
+
+  .freedomDevFooter {
+    position: static;
+    left: 0;
+    bottom: 10px;
+    width: 100%;
+    overflow: auto;
+    text-align: center;
+    font-size: 14px;
+    margin-top: 25px;
+  }
+
+  .resourceTile {
+    border-style: solid;
+    border-width: 1px;
+    border-color: transparent;
+  }
+
+  .resourceTile:hover {
+    cursor: pointer;
+    border-style: solid;
+    border-width: 1px;
+    border-color: $lightBlue;
+  }
+
+  .resourceTileContent {
+    justify-content: space-between;
+    display: flex;
+    margin: auto;
+    height: 65px;
+  }
+
+  .resourceTileImage {
+    max-height: 65px;
+    align-self: center;
+    margin: 0;
+  }
+
+  .mentorInformationCard {
+    background-color: transparent;
+    box-shadow: none !important;
+  }
+
+  .announcement-event-card-content {
+    max-height: 135px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .mat-action-item-indent {
+    height: auto !important;
+    cursor: default !important;
+    background: inherit !important;
+  }
+}
+
+.gauge {
+  margin-bottom: -40px;
+  @extend .row;
+  @extend .justify-content-center;
+
+  + span {
+    font-size: 18px;
+    @extend .row;
+    @extend .justify-content-center;
+  }
+}
+
+.resource-tile-container {
+  text-decoration: none;
+}
+
+.resourceTileContent {
+  button {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    & + button {
+      left: unset;
+      right: 0;
+    }
+  }
+}

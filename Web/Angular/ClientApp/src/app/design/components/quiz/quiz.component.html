@@ -1,0 +1,53 @@
+<div class="stepCardContainer mt-50">
+  <div>
+    <form #quizForm="ngForm">
+      <div class="mb-30" *ngFor="let question of questionsList; let i = index">
+        <h4 class="mb-15">{{ i + 1 }}: {{ question.questionText }}</h4>
+        <mat-radio-group
+          id="answerGroup_{{ i }}"
+          name="answerGroup_{{ i }}"
+          required
+          [disabled]="user && (user.isAdmin || user.isMentor)">
+          <mat-radio-button
+            class="mr-25 fs-14 mb-15 dis-b ml-25"
+            *ngFor="let answer of filterAnswers(answersList, question.id)"
+            [value]="answer.id"
+            color="primary"
+            [ngClass]="{
+              'correct-answer':
+                questionsAndAnswers.length === questionsList.length &&
+                (hasSubmittedQuiz || isStepCompleted) &&
+                answer.isCorrectAnswer &&
+                !isCleanSlate,
+              'selected-answer':
+                (hasSubmittedQuiz || isStepCompleted) && !answer.isCorrectAnswer && answer.isUserAnswer && !isCleanSlate
+            }"
+            (change)="logAnswer(question.id, answer.id, answer.answerText)"
+            [checked]="answer.isUserAnswer">
+            {{ answer.answerText }}
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </form>
+  </div>
+  <div>
+    <button
+      mat-raised-button
+      color="primary"
+      class="submitButton w-150"
+      [disabled]="
+        !quizForm.form.valid ||
+        !questionsList ||
+        !answersList ||
+        !user ||
+        hasSubmittedQuiz ||
+        questionsAndAnswers.length !== questionsList.length
+      "
+      (click)="submitQuiz(quizForm)"
+      type="submit"
+      *ngIf="user && !user.isAdmin && !user.isMentor && !hasSubmittedQuiz && isCleanSlate"
+      [hidden]="hasSubmittedQuiz && !isCleanSlate">
+      Submit Answers
+    </button>
+  </div>
+</div>

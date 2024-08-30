@@ -1,0 +1,68 @@
+﻿@model Api.Models.EngagementReportPdfModel
+@using Shared.Buzz.Schemas;
+@using  Api.Helpers;
+
+<style>
+    table {
+        width: 100%;
+    }
+
+    table, th, tr, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    td, th {
+        padding: 4px;
+    }
+</style>
+
+<h1>Engagement Report Export (@Model.StartDate.ToShortDateString()-@Model.EndDate.ToShortDateString()) <br />@Model.EngagementReportItem.Name</h1>
+
+<table>
+    <tr>
+        <th>Live Lessons</th>
+        <th>Communications</th>
+        <th>Online Time</th>
+        <th>Classes Failing</th>
+        <th>Enrollment Status</th>
+    </tr>
+
+    <tr>
+        <td style="text-align: center">@Model.EngagementReportItem.LiveLessonPoints out of @Model.EngagementReportItem.LiveLessonsOffered</td>
+        <td style="text-align: center">@Model.EngagementReportItem.CommunicationPoints</td>
+        <td style="text-align: center">@FormatHelper.ToTimeFormat(Model.EngagementReportItem.OnlineHoursSpent * 60 * 60)</td> @* convert to seconds *@
+        <td style="text-align: center">@Model.EngagementReportItem.FailingGrades</td>
+        <td style="text-align: center">@(Model.EngagementReportItem.IsActive ? "Active" : "Inactive")</td>
+    </tr>
+</table>
+
+<h1>Performance Snapshot</h1>
+<table>
+    <tr>
+        <th>Class</th>
+        <th>Live Lessons (Selected Date Range)</th>
+        <th>Time Spent (Selected Date Range)</th>
+        <th>Time Spent (All Time)</th>
+        <th>Score</th>
+        <th>Enrollment Status (current)</th>
+    </tr>
+
+
+    @foreach (var c in Model.ClassUserModels)
+    {
+        <tr>
+            <td>@c.ClassName</td>
+            <td style="text-align: center ">@c.LiveLessonPoints out of @c.LiveLessonsOffered</td>
+            <td style="text-align: center">@FormatHelper.ToTimeFormat(c.OnlineHoursSpentThisWeek * 60 * 60)</td> @* convert to seconds *@
+            <td style="text-align: center">@FormatHelper.ToTimeFormat(c.TotalSecondsSpentOnline)</td>
+            <td style="text-align: center">@c.Score</td>
+            <td style="text-align: center">
+                @(c.Status == EnrollmentStatus.CompletedNoCredit ? "Completed - No Credit" :
+                  c.Status == EnrollmentStatus.WithdrawnFailed ? "Widthdrawn Failed" :
+                  c.Status.ToString())
+            </td>
+
+        </tr>
+    }
+</table>

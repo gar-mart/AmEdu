@@ -1,0 +1,25 @@
+<app-dialog dialogType="primary">
+  <div dialog-title class="title fw-500">{{ staffMember.name }}: Mentee List</div>
+  <div dialog-content>
+    <ng-container *ngFor="let student of students">
+      <div class="align-items-center row fs-14 justify-content-between">
+        <div class="row align-items-center">
+          <img
+            defaultImage="assets/SelfieOutlineLoading.png"
+            [lazyLoad]="environment.apiUrl + '/Common/ReturnProfilePicture/' + student.id"
+            class="studentAvatar mr-15 studentAvatarShadow mt-5"
+            (click)="openStudentAvatarDialog(student)" />
+
+          {{ student.name }}
+        </div>
+        <div>Grade {{ student.gradeLevel }}</div>
+      </div>
+      <hr />
+    </ng-container>
+
+    <ng-container *ngIf="loading">loading...</ng-container>
+  </div>
+  <div dialog-footer>
+    <button mat-button (click)="close()" color="primary">Close</button>
+  </div>
+</app-dialog>

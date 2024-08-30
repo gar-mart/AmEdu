@@ -1,0 +1,93 @@
+<form #formDirective="ngForm" [formGroup]="communicationForm">
+  <app-dialog dialogType="primary">
+    <div dialog-title class="title fw-500 ta-center fcolor-white">
+      {{ communicationForm.controls["id"].value === 0 ? "New" : "Edit" }} Communication Entry
+    </div>
+    <div dialog-content class="fs-14">
+      <mat-form-field class="fs-13 w-200 mr-20" *ngIf="communicationForm.controls['id'].value === 0">
+        <input
+          matInput
+          [ngxMatDatetimePicker]="date"
+          [max]="maxDate"
+          [min]="minDate"
+          placeholder="Date of Communication"
+          formControlName="date"
+          (click)="date.open()"
+          required />
+        <mat-datepicker-toggle matSuffix [for]="$any(date)"></mat-datepicker-toggle>
+        <ngx-mat-datetime-picker #date startView="month" [enableMeridian]="true"></ngx-mat-datetime-picker>
+        <mat-error *ngIf="communicationForm.controls['date'].hasError('required')">Please select a date</mat-error>
+      </mat-form-field>
+      <mat-form-field class="fs-13 w-200 mr-20" *ngIf="communicationForm.controls['id'].value !== 0">
+        <input matInput readonly placeholder="Date of Communication" formControlName="date" required />
+      </mat-form-field>
+
+      <mat-form-field class="w-200 ta-center">
+        <mat-select placeholder="Type of Communication" formControlName="type">
+          <mat-option [value]="type" *ngFor="let type of communicationTypeKeys">
+            {{ type | communicationTypeName }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="communicationForm.controls['type'].hasError('required')">Please select a type</mat-error>
+      </mat-form-field>
+
+      <div class="w-100per">
+        <mat-radio-group aria-label="Select an option" formControlName="wasSuccessful">
+          <mat-radio-button
+            [attr.checked]="communicationForm.controls['wasSuccessful'].value"
+            color="primary"
+            value="true">
+            Successful
+          </mat-radio-button>
+          <mat-radio-button
+            [attr.checked]="!communicationForm.controls['wasSuccessful'].value"
+            color="primary"
+            value="false"
+            class="ml-20">
+            Attempted
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <div class="w-100per mt-20" *ngIf="showAwardPointOptions()">
+        <mat-radio-group aria-label="Select an option" formControlName="awardPoint">
+          <mat-radio-button
+            [attr.checked]="communicationForm.controls['awardPoint'].value"
+            color="primary"
+            value="true">
+            Award Point
+          </mat-radio-button>
+          <mat-radio-button
+            [attr.checked]="!communicationForm.controls['awardPoint'].value"
+            color="primary"
+            value="false"
+            class="ml-20">
+            No Point
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <mat-form-field color="primary" class="w-100per mt-20">
+        <input
+          matInput
+          formControlName="notes"
+          #notes
+          autofocus="autofocus"
+          placeholder="Notes (include who was there and the outcome)" />
+        <mat-error *ngIf="communicationForm.controls['notes'].hasError('required')">Please enter some notes</mat-error>
+      </mat-form-field>
+    </div>
+    <div dialog-footer>
+      <button
+        type="submit"
+        mat-raised-button
+        (click)="confirm()"
+        color="primary"
+        class="fcolor-white"
+        [disabled]="saving">
+        Submit
+      </button>
+      <button type="button" mat-button (click)="cancel()" color="primary" class="ml-10">Close</button>
+    </div>
+  </app-dialog>
+</form>

@@ -1,0 +1,26 @@
+﻿CREATE PROCEDURE Student.DeleteAppTileMetadata (
+	@id INT
+)
+AS
+SET NOCOUNT ON 
+
+BEGIN TRY
+	SET XACT_ABORT ON
+	BEGIN TRANSACTION
+
+		DELETE FROM Student.AppTileGradeLevel
+		WHERE AppTileMetadataId = @id
+
+		DELETE FROM Student.AppTileMetadata 
+		WHERE Id = @id
+
+		DELETE FROM Student.AppTiles
+		WHERE MetadataId = @id
+
+	COMMIT TRANSACTION
+END TRY
+
+BEGIN CATCH
+	IF XACT_STATE() <> 0 ROLLBACK TRANSACTION;
+	THROW;
+END CATCH

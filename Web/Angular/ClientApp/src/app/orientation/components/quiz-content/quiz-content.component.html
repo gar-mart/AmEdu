@@ -1,0 +1,54 @@
+<ng-container *ngIf="loading; else loaded">
+  <div fxLayout="row" fxLayoutAlign="center center">
+    <mat-spinner [diameter]="50"></mat-spinner>
+  </div>
+</ng-container>
+
+<ng-template #loaded>
+  <ng-container *ngIf="editMode">
+    <ol *ngIf="contentType.questions.length">
+      <li *ngFor="let question of contentType.questions">{{ question.questionText }}</li>
+    </ol>
+    <div *ngIf="!contentType.questions.length">No questions have been added to this quiz.</div>
+
+    <div class="edit-actions">
+      <button mat-button color="primary" (click)="editQuiz()">Edit Quiz</button>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!editMode">
+    <div fxLayout="column" fxLayoutGap="30px">
+      <div *ngFor="let question of contentType.questions; let index = index">
+        <b>
+          <span class="mr-10">{{ index + 1 }}.</span>
+          {{ question.questionText }}
+        </b>
+
+        <mat-radio-group>
+          <div fxLayout="column" fxLayoutGap="15px" class="mt-15 ml-50" [class.show-answers]="showAnswers">
+            <mat-radio-button
+              *ngFor="let answer of question.answers"
+              [value]="answer.id"
+              [color]="showAnswers ? (answer.isCorrectAnswer ? 'accent' : 'warn') : 'primary'"
+              [checked]="answer.isUserAnswer"
+              [class.mat-radio-checked]="answer.isUserAnswer || (showAnswers && answer.isCorrectAnswer)"
+              (change)="answerSelected(question, answer)">
+              {{ answer.answerText }}
+            </mat-radio-button>
+          </div>
+        </mat-radio-group>
+      </div>
+
+      <div>
+        <button
+          mat-raised-button
+          color="accent"
+          class="fcolor-white"
+          [disabled]="disableCheckAnswers"
+          (click)="clickedShowAnswers = true">
+          Check Answers
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

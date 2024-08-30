@@ -1,0 +1,25 @@
+<app-dialog dialogType="primary">
+  <div dialog-title class="title fw-500 ta-center fcolor-white">Intervention Details</div>
+  <div dialog-content class="fs-14">
+    <p>This is the first occurrence of an engagement flag for this student.</p>
+
+    <p>Do you want to generate:</p>
+
+    <mat-radio-group [formControl]="interventionLevelControl">
+      <mat-radio-button [value]="warningInterventionLevel">Warning</mat-radio-button>
+      <mat-radio-button [value]="level1InterventionLevel">Level 1 Intervention</mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <div dialog-footer>
+    <button type="button" mat-button [mat-dialog-close]="null">Cancel</button>
+    <button
+      type="submit"
+      mat-raised-button
+      (click)="confirm()"
+      color="primary"
+      class="fcolor-white ml-10"
+      [disabled]="saving">
+      Submit
+    </button>
+  </div>
+</app-dialog>

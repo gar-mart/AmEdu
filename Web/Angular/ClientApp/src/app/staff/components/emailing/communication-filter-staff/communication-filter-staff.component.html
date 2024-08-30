@@ -1,0 +1,11 @@
+<div fxLayout="column" fxLayoutGap="10px" class="pl-20">
+  <form fxLayout="row wrap" fxLayoutGap="10px">
+    <mat-form-field>
+      <span matPrefix>
+        <mat-icon>search</mat-icon>
+        &nbsp;
+      </span>
+      <input matInput placeholder="Search for staff" [formControl]="quickFilterFormControl" name="searchForStaff" />
+    </mat-form-field>
+  </form>
+</div>

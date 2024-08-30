@@ -1,0 +1,53 @@
+<div *ngIf="editMode">
+  Sends a verification code to the student email, which the student must submit to "verify" access.
+</div>
+
+<ng-container *ngIf="!editMode">
+  <button
+    mat-raised-button
+    color="accent"
+    class="fcolor-white mb-20 ml-15"
+    [disabled]="isGenerated"
+    (click)="generateVerificationCode()">
+    Send Verification Code
+  </button>
+
+  <div *ngIf="previewMode" class="mb-20" [class.invisible]="!verificationCode">
+    <i>For preview purposes only, the verification code is</i>
+    &nbsp;
+    <b>{{ verificationCode }}</b>
+  </div>
+
+  <div class="office365Part3__form ml-15">
+    <form [formGroup]="form">
+      <mat-form-field class="fs-13">
+        <mat-label>Verification Code</mat-label>
+        <input matInput type="text" formControlName="verificationCode" required />
+        <mat-error *ngIf="form.controls['verificationCode'].hasError('required')">
+          Please provide the 6 digit verification code you received in the email
+        </mat-error>
+        <mat-error *ngIf="form.controls['verificationCode'].hasError('minlength')">
+          Verification code must be at least 6 characters
+        </mat-error>
+        <mat-error *ngIf="form.controls['verificationCode'].hasError('maxlength')">
+          Verification code cannot be more than 6 characters
+        </mat-error>
+      </mat-form-field>
+      <div class="dis-ib va-super">
+        <button
+          mat-raised-button
+          color="accent"
+          class="submitButton w-125 ml-50"
+          (click)="submitVerificationCode()"
+          [disabled]="
+            form.controls['verificationCode'].invalid || form.controls['verificationCode'].disabled || isCodeVerified
+          ">
+          Verify Code
+        </button>
+      </div>
+    </form>
+    <div *ngIf="isCodeVerified === true">
+      <span style="color: #9ccc65">Code successfully verified</span>
+    </div>
+  </div>
+</ng-container>

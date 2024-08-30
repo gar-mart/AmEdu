@@ -1,0 +1,30 @@
+@use "@angular/material" as mat;
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic&subset=latin-ext");
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic&amp;subset=latin-ext");
+
+@import "@angular/material/theming";
+
+$general-typography: mat.define-typography-config(
+  $font-family: '"Open Sans", "Helvetica Neue", sans-serif',
+  $body-2: mat.define-typography-level(14px, 24px, 600),
+);
+
+$secondary-typography: mat.define-typography-config(
+  $font-family: "Roboto, sans-serif",
+);
+
+@include mat.core($general-typography);
+
+$primary-palette: mat.define-palette(mat.$light-blue-palette, 400, 100, 600);
+$accent-palette: mat.define-palette(mat.$light-green-palette, 400, 300, 600);
+$warn-palette: mat.define-palette(mat.$red-palette, 500, 700, 300);
+$default-theme: mat.define-light-theme($primary-palette, $accent-palette, $warn-palette);
+
+.default-theme {
+  @include mat.all-component-themes($default-theme);
+}
+
+$primary-color: mat-color($primary-palette);
+$accent-color: mat-color($accent-palette);
+$warn-color: mat-color($warn-palette);
+$AmEdu-orange: #fb8c00;

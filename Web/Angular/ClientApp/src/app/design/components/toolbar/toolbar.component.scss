@@ -1,0 +1,64 @@
+.main {
+  /*min-width: 700px;*/
+  overflow: hidden;
+  padding: 0px;
+  height: 45px;
+  top: 0;
+  position: fixed;
+  z-index: 1000;
+  width: 100%;
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  white-space: nowrap;
+
+  .greenSection {
+    background-color: #9ccc65;
+    width: calc(((10% - 0px) * 2) + 0px);
+    left: 0px;
+    height: 45px;
+  }
+
+  .blueSection1 {
+    background-color: #4fc3f7;
+    width: calc(((10% - 0px) * 3) + 0px);
+    left: calc(((10% - 0px) + 0px) * 2);
+    height: 45px;
+  }
+
+  .blueSection2 {
+    background-color: #4fc3f7;
+    width: calc(((10% - 0px) * 1) + 0px);
+    left: calc(((10% - 0px) + 0px) * 7);
+    height: 45px;
+  }
+
+  .orangeSection {
+    background-color: #fb8c00;
+    width: calc(((10% - 0px) * 2) + 0px);
+    left: calc(((10% - 0px) + 0px) * 5);
+    height: 45px;
+  }
+
+  p span {
+    display: block;
+  }
+
+  .AmEduImage {
+    display: block;
+    margin: 0 auto;
+    height: 45px;
+  }
+
+  .loginButton {
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: white !important;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

@@ -1,0 +1,16 @@
+﻿@using FD.Base.Shared.Helpers
+@using FD.Base.Shared.Repository.Infrastructure.Models
+@using FD.Base.Shared.Extensions
+@using FD.Base.Shared.Web.Extensions
+@using FD.Base.Shared.Web.Models
+@using Web.ViewModels
+@using Web.Areas.Account.Models
+@using Web.Areas.Security.Models
+@using Microsoft.Extensions.Options
+
+@inject IOptions<Repository.Infrastructure.AppConfigurations> AppConfigurations
+@inject Microsoft.AspNetCore.Mvc.ViewEngines.ICompositeViewEngine Engine
+@inject IRazorHelper RazorHelper
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, FD.Base.Shared.Web

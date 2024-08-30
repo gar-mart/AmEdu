@@ -1,0 +1,11 @@
+.admin-mentor-container {
+  height: calc(100vh - 190px);
+}
+
+.row {
+  display: flex;
+}
+
+.row.justify-content-between {
+  justify-content: space-between;
+}

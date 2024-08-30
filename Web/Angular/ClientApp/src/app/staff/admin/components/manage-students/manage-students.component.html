@@ -1,0 +1,194 @@
+<div class="admin-mentor-container extra-wide">
+  <div>
+    <mat-form-field color="primary" class="w-300 mr-25">
+      <span matPrefix>
+        <mat-icon>search</mat-icon>
+        &nbsp;
+      </span>
+      <input matInput placeholder="Search for a student" [formControl]="studentNameFilter" />
+    </mat-form-field>
+
+    <mat-form-field class="mt-5 w-200 ta-center mr-25">
+      <mat-select placeholder="Choose a Grade Level" [formControl]="gradeLevelFilter">
+        <mat-option value="All">All</mat-option>
+        <mat-option [value]="grade" *ngFor="let grade of gradeLevels">
+          {{ grade }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="mt-5 w-200 ta-center">
+      <mat-select placeholder="Choose an email domain" [formControl]="emailFilter">
+        <mat-option value="All">All</mat-option>
+        <mat-option value="AmEdustudents.org">AmEdu</mat-option>
+        <mat-option value="innocademystudents.com">Innocademy</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <mat-card class="p-0 mb-20">
+    <mat-card-content>
+      <table mat-table [dataSource]="dataSource" matSort class="students-table">
+        <!-- Options Column -->
+        <ng-container matColumnDef="options">
+          <th mat-header-cell *matHeaderCellDef class="actions pr-25">Actions</th>
+          <td mat-cell *matCellDef="let row" [class.invisible]="paging">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <a
+                href="/student/orientation?studentId={{ row.id }}"
+                target="_blank"
+                mat-menu-item
+                *ngIf="row.orientationStartTime">
+                <mat-icon>visibility</mat-icon>
+                <span class="fs-13">View student orientation</span>
+              </a>
+              <button mat-menu-item *ngIf="!row.orientationStartTime">
+                <mat-icon>visibility_off</mat-icon>
+                <span class="fs-13" title="Student has not started the orientation process">
+                  Student has not started orientation
+                </span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="studentName pr-25">Student</th>
+          <td mat-cell *matCellDef="let row" class="studentName pr-25" [class.invisible]="paging">
+            <img
+              defaultImage="assets/SelfieOutlineLoading.png"
+              [lazyLoad]="environment.apiUrl + '/Common/ReturnProfilePicture/' + row.id"
+              class="studentAvatar mr-15 studentAvatarShadow mt-5"
+              matTooltip="{{ row.name }}"
+              matTooltipPosition="before"
+              (click)="openStudentAvatarDialog(row)" />
+            <div class="va-top mt-20 dis-ib">{{ row.name }}</div>
+          </td>
+        </ng-container>
+
+        <!-- Grade Column -->
+        <ng-container matColumnDef="gradeLevel">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="pr-25">Grade</th>
+          <td mat-cell *matCellDef="let row" class="pr-25" [class.invisible]="paging">
+            <mat-form-field class="mt-5 w-60 ta-center">
+              <mat-select
+                [(ngModel)]="row.gradeLevel"
+                (selectionChange)="setStudentGradeLevel(row, row.gradeLevel)"
+                required>
+                <mat-option *ngFor="let grade of gradeLevels" [value]="grade">
+                  {{ grade }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- Mentor Column -->
+        <ng-container matColumnDef="mentor">
+          <th mat-header-cell *matHeaderCellDef class="pr-25">Mentor</th>
+          <td mat-cell *matCellDef="let row" class="pr-25" [class.invisible]="paging">
+            <mat-form-field class="mt-5 w-200">
+              <mat-select
+                [(ngModel)]="row.mentorId"
+                required
+                (selectionChange)="assignMentorToStudent(row.id, row.mentorId)">
+                <mat-option *ngFor="let mentor of mentors" [value]="mentor.id">
+                  {{ mentor.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- Secondary Mentor Column -->
+        <ng-container matColumnDef="secondaryMentor">
+          <th mat-header-cell *matHeaderCellDef class="pr-25">Secondary Mentor</th>
+          <td mat-cell *matCellDef="let row" class="pr-25" [class.invisible]="paging">
+            <mat-form-field class="mt-5 w-200">
+              <mat-select
+                [(ngModel)]="row.secondaryMentorId"
+                (selectionChange)="assignSecondaryMentorToStudent(row.id, row.secondaryMentorId)">
+                <mat-option [value]="null">-- None --</mat-option>
+                <mat-option *ngFor="let mentor of mentors" [value]="mentor.id">
+                  {{ mentor.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- Progress Column -->
+        <ng-container matColumnDef="progressPercent">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="progress pr-25">Progress</th>
+          <td
+            mat-cell
+            *matCellDef="let row"
+            class="progress pr-25"
+            [class.invisible]="paging"
+            [ngClass]="{
+              expired:
+                row.minutesRemaining <= 0 &&
+                row.hoursRemaining <= 0 &&
+                row.completedSteps !== row.totalSteps &&
+                row.orientationStartTime !== null,
+              complete: row.progressPercent === 100,
+              other:
+                row.progressPercent !== 100 &&
+                row.minutesRemaining > 0 &&
+                row.hoursRemaining > 0 &&
+                row.orientationStartTime !== null
+            }">
+            <section class="example-section">
+              <mat-progress-bar color="primary" mode="determinate" [value]="row.progressPercent"></mat-progress-bar>
+            </section>
+            <span>{{ row.progressPercent }}% ({{ row.completedSteps }}/{{ row.totalSteps }})</span>
+          </td>
+        </ng-container>
+
+        <!-- Time Remaining Column -->
+        <ng-container matColumnDef="timeRemaining">
+          <th mat-header-cell *matHeaderCellDef>Time Remaining</th>
+          <td
+            mat-cell
+            *matCellDef="let row"
+            [class.invisible]="paging"
+            [ngClass]="{
+              expired: row.minutesRemaining <= 0 && row.hoursRemaining <= 0 && row.orientationStartTime !== null,
+              complete: row.progressPercent === 100,
+              other: row.orientationStartTime === null
+            }">
+            <span
+              *ngIf="
+                row.completedSteps !== row.totalSteps &&
+                row.hoursRemaining > 0 &&
+                row.minutesRemaining > 0 &&
+                row.orientationStartTime !== null
+              ">
+              {{ row.hoursRemaining }}h {{ row.minutesRemaining }}m
+            </span>
+            <span *ngIf="row.progressPercent === 100">COMPLETED {{ getCompletionTimeStringFormat(row) }}</span>
+            <span
+              *ngIf="
+                row.minutesRemaining <= 0 &&
+                row.hoursRemaining <= 0 &&
+                row.progressPercent !== 100 &&
+                row.orientationStartTime !== null
+              ">
+              EXPIRED
+            </span>
+            <span *ngIf="row.orientationStartTime === null">NOT STARTED</span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+
+      <mat-paginator fixed [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

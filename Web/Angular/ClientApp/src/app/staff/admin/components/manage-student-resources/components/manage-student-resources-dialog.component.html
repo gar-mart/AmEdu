@@ -1,0 +1,57 @@
+<form #formDirective="ngForm" [formGroup]="form">
+  <app-dialog dialogType="primary">
+    <div dialog-title class="title fw-500">
+      {{ isNew ? "New Resource" : "Edit Resource" }}
+    </div>
+    <div dialog-content class="fs-14">
+      <!--Title-->
+      <mat-form-field color="primary" class="w-100per">
+        <mat-label>Title</mat-label>
+        <input matInput placeholder="Title" formControlName="title" />
+        <mat-error *ngIf="form.controls['title'].hasError('required')">Please enter a Title</mat-error>
+      </mat-form-field>
+
+      <!--Category-->
+      <mat-form-field color="primary" class="w-100per">
+        <mat-label>Category</mat-label>
+        <input type="text" matInput placeholder="Category" formControlName="category" />
+        <mat-error *ngIf="form.controls['category'].hasError('required')">Please enter a Category</mat-error>
+      </mat-form-field>
+
+      <!--URL-->
+      <mat-form-field color="primary" class="w-100per">
+        <mat-label>URL</mat-label>
+        <input type="text" matInput placeholder="URL" formControlName="url" />
+        <mat-error *ngIf="form.controls['url'].hasError('required')">Please enter a URL</mat-error>
+        <mat-error *ngIf="form.controls['url'].hasError('pattern')">
+          Please enter a valid URL (e.g. https://www.AmEduglobal.org)
+        </mat-error>
+      </mat-form-field>
+
+      <!--Cannot be hidden-->
+      <div class="row mb-15">
+        <div class="m-2">
+          <mat-checkbox matInput formControlName="showOnStudentDashboard">Show on Student Dashboard</mat-checkbox>
+        </div>
+      </div>
+
+      <!--Grade Levels-->
+      <app-grade-level-selector
+        [selectedGrades]="selectedGradeLevels"
+        (gradesSelected)="selectedGradesChanged($event)"></app-grade-level-selector>
+    </div>
+    <div dialog-footer>
+      <button type="button" *ngIf="!isNew" mat-button (click)="delete()" color="warn" class="ml-10">Delete</button>
+      <button type="button" mat-button (click)="cancel()" color="primary" class="ml-10">Close</button>
+      <button
+        type="submit"
+        mat-raised-button
+        (click)="confirm()"
+        color="primary"
+        class="fcolor-white"
+        [disabled]="saving">
+        Save
+      </button>
+    </div>
+  </app-dialog>
+</form>

@@ -1,0 +1,61 @@
+<form #formDirective="ngForm" [formGroup]="form">
+  <app-dialog dialogType="primary">
+    <div dialog-title class="title fw-500">
+      {{ isNew ? "New Elective" : "Edit Elective" }}
+    </div>
+    <div dialog-content class="fs-14">
+      <mat-form-field color="primary" class="w-100per">
+        <mat-label>Name</mat-label>
+        <input matInput placeholder="Name" formControlName="name" />
+        <mat-error *ngIf="form.controls['name'].hasError('required')">Please enter a Name</mat-error>
+      </mat-form-field>
+      <div class="w-100per mtb-10">
+        <div class="m-2">
+          <mat-checkbox matInput formControlName="hasPrerequisite">Has Prerequisite</mat-checkbox>
+        </div>
+      </div>
+      <mat-form-field appearance="fill" class="w-100per">
+        <mat-label>Community Passport</mat-label>
+        <mat-select formControlName="communityPassport" [(value)]="communityPassportValue">
+          <mat-option *ngFor="let option of communityPassports" [value]="option.value">
+            {{ option.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="w-100per mb-15">
+        <div class="w-50per">
+          <div class="m-2">
+            <mat-checkbox matInput formControlName="semesterOne">Semester 1</mat-checkbox>
+          </div>
+        </div>
+        <div class="w-50per">
+          <div class="m-2">
+            <mat-checkbox matInput formControlName="semesterTwo">Semester 2</mat-checkbox>
+          </div>
+        </div>
+      </div>
+
+      <!--Grade Levels-->
+      <app-grade-level-selector
+        [selectedGrades]="selectedGradeLevels"
+        (gradesSelected)="selectedGradesChanged($event)"></app-grade-level-selector>
+
+      <div class="fcolor-gray mt-20">
+        Note: In order to assign a semester or a grade level, you must select both a semester and a grade level.
+      </div>
+    </div>
+    <div dialog-footer>
+      <button type="button" *ngIf="!isNew" mat-button (click)="delete()" color="warn" class="ml-10">Delete</button>
+      <button type="button" mat-button (click)="cancel()" color="primary" class="ml-10">Close</button>
+      <button
+        type="submit"
+        mat-raised-button
+        (click)="confirm()"
+        color="primary"
+        class="fcolor-white"
+        [disabled]="saving">
+        Save
+      </button>
+    </div>
+  </app-dialog>
+</form>

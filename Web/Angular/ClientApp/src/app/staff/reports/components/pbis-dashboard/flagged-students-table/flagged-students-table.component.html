@@ -1,0 +1,58 @@
+<mat-card class="p-0 mt-20">
+  <mat-card-header>
+    <h2>({{ dataSource.data.length }}) Flagged Engagement Flags</h2>
+  </mat-card-header>
+  <mat-card-content class="scroll-container">
+    <table mat-table [dataSource]="dataSource" matSort class="staff-table">
+      <ng-container matColumnDef="studentName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Student</th>
+        <td mat-cell *matCellDef="let row">
+          <a routerLink="/staff/interventions/student" [queryParams]="{ studentId: row.studentId }">
+            {{ row.studentName }}
+          </a>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="gradeLevel">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sort>Grade Level</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.gradeLevel === 0 ? "K" : row.gradeLevel }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="weekOfDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Week Date</th>
+        <td mat-cell *matCellDef="let row" class="align-items-center">
+          <div class="va-top dis-ib">
+            {{ row.weekOfDate | addWeeks : -1 | date : "shortDate" }} -
+            {{ row.weekOfDate | date : "shortDate" }}
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="mentorName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Mentor</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.mentorName }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="level">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Level</th>
+        <td mat-cell *matCellDef="let row">
+          <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+            <mat-icon class="{{ 'status_circle_' + row.level }}">circle</mat-icon>
+            <span>Level {{ row.level }} - {{ row.status | interventionStatus }}</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <div *ngIf="!dataSource.data.length" class="w-100per text-center mt-20 pb-20 fcolor-gray">
+      {{ loading ? "Loading..." : "No results found." }}
+    </div>
+  </mat-card-content>
+</mat-card>

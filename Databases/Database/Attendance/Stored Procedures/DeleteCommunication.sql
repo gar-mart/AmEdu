@@ -1,0 +1,23 @@
+﻿CREATE PROCEDURE Attendance.DeleteCommunication (
+	@id INT
+)
+AS
+SET NOCOUNT ON
+
+BEGIN TRY
+	SET XACT_ABORT ON
+	BEGIN TRANSACTION
+
+		DELETE Attendance.Points
+		WHERE CommunicationId = @id
+
+		DELETE Attendance.Communications		
+		WHERE Id = @id
+
+	COMMIT TRANSACTION
+END TRY
+
+BEGIN CATCH
+	IF XACT_STATE() <> 0 ROLLBACK TRANSACTION;
+	THROW;
+END CATCH

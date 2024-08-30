@@ -1,0 +1,42 @@
+<app-dialog dialogType="primary">
+  <div dialog-title class="fw-500 ta-center fcolor-white row justify-content-between">
+    <span class="title">Spend Points</span>
+    <span>Current Balance: {{ studentInformation.pointBalance }}</span>
+  </div>
+  <div dialog-content class="fs-14" [formGroup]="form">
+    <mat-form-field color="primary" class="w-100per" fxFlex>
+      <input
+        type="number"
+        step="1"
+        matInput
+        placeholder="Enter the # of points you'd like to spend"
+        formControlName="value"
+        [disabled]="showConfirm || saving" />
+      <mat-error *ngIf="form.controls['value'].hasError('min') || form.controls['value'].hasError('required')">
+        Please enter at least 1 point
+      </mat-error>
+    </mat-form-field>
+
+    <mat-card *ngIf="showConfirm">
+      <mat-card-content class="fcolor-red">
+        Spending {{ form.controls["value"].value }} point(s) will bring your student's point balance below zero. Please
+        select "Confirm negative point balance" below to continue or "Cancel" to provide a different value.
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div dialog-footer>
+    <button
+      type="submit"
+      mat-raised-button
+      (click)="confirm()"
+      color="primary"
+      class="fcolor-white ml-10"
+      [disabled]="saving || showConfirm">
+      Submit
+    </button>
+    <button type="button" mat-button (click)="cancel()" color="primary" class="ml-10">
+      <ng-container *ngIf="!showConfirm">Close</ng-container>
+      <ng-container *ngIf="showConfirm">Cancel</ng-container>
+    </button>
+  </div>
+</app-dialog>

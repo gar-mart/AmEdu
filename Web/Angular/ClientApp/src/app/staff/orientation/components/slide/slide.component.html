@@ -1,0 +1,121 @@
+<div class="p-10" fxLayout="row">
+  <form *ngIf="formGroup" [formGroup]="formGroup" class="w-100per">
+    <mat-form-field fxFlex appearance="outline">
+      <input matInput formControlName="name" class="fs-18" />
+      <mat-error *ngIf="formGroup.controls.name.errors" class="mt-15">
+        Please provide a name up to 150 characters
+      </mat-error>
+    </mat-form-field>
+  </form>
+</div>
+
+<!-- the tab animation doesn't look great due to differences in height -->
+<mat-tab-group
+  [animationDuration]="0"
+  [selectedIndex]="selectedTabIndex"
+  (selectedIndexChange)="selectedTabIndexChange($event)">
+  <mat-tab label="Details">
+    <app-slide-details [step]="step" (edit)="onContentEdit()"></app-slide-details>
+  </mat-tab>
+  <mat-tab label="Slide Content">
+    <app-manage-slide-content [step]="getEditedStep()" (edit)="onContentEdit()"></app-manage-slide-content>
+  </mat-tab>
+  <mat-tab label="Preview">
+    <app-slide-preview *ngIf="selectedTabIndex === 2" [step]="getEditedStep()"></app-slide-preview>
+  </mat-tab>
+</mat-tab-group>
+
+<div class="bottom mat-elevation-z2"></div>
+
+<div class="bottom-left-buttons">
+  <div fxLayout="row" fxLayoutGap="20px">
+    <div>
+      <button mat-raised-button (click)="delete()" [disabled]="disableControls || isEditing">
+        <mat-icon>delete</mat-icon>
+        Delete
+      </button>
+    </div>
+    <div>
+      <button mat-raised-button (click)="duplicate()" [disabled]="disableControls || isEditing">
+        <mat-icon>content_copy</mat-icon>
+        Duplicate
+      </button>
+    </div>
+    <div>
+      <button mat-raised-button [matMenuTriggerFor]="contentMenu" [disabled]="disableControls">
+        <mat-icon>add</mat-icon>
+        Add Content
+      </button>
+      <mat-menu #contentMenu>
+        <button mat-menu-item [matMenuTriggerFor]="systemMenu">System</button>
+        <button mat-menu-item (click)="slideContent.addContact()">
+          <mat-icon>contact_page</mat-icon>
+          Contact
+        </button>
+        <button mat-menu-item (click)="slideContent.addQuiz()">
+          <mat-icon>format_list_numbered</mat-icon>
+          Quiz
+        </button>
+        <button mat-menu-item (click)="slideContent.addResources()">
+          <mat-icon>file_open</mat-icon>
+          Resources
+        </button>
+        <button mat-menu-item (click)="slideContent.addShortcuts()">
+          <mat-icon>app_shortcut</mat-icon>
+          Shortcuts
+        </button>
+        <button mat-menu-item (click)="slideContent.addSignature()">
+          <mat-icon>drive_file_rename_outline</mat-icon>
+          Signature
+        </button>
+        <button mat-menu-item (click)="slideContent.addTextImage()">
+          <mat-icon>text_format</mat-icon>
+          Text/Image
+        </button>
+        <button mat-menu-item (click)="slideContent.addYouTube()">
+          <mat-icon>movie</mat-icon>
+          YouTube Video
+        </button>
+      </mat-menu>
+
+      <mat-menu #systemMenu>
+        <button mat-menu-item (click)="slideContent.addSystem(SystemContentComponentIds.ConnectionSurvey)">
+          {{ SystemContentModel.titleFor(SystemContentComponentIds.ConnectionSurvey) }}
+        </button>
+        <button mat-menu-item [matMenuTriggerFor]="electivesMenu">Electives</button>
+        <button mat-menu-item (click)="slideContent.addSystem(SystemContentComponentIds.OutlookEmailVerification)">
+          {{ SystemContentModel.titleFor(SystemContentComponentIds.OutlookEmailVerification) }}
+        </button>
+        <button mat-menu-item (click)="slideContent.addSystem(SystemContentComponentIds.IntroVideos)">
+          {{ SystemContentModel.titleFor(SystemContentComponentIds.IntroVideos) }}
+        </button>
+        <button mat-menu-item (click)="slideContent.addSystem(SystemContentComponentIds.SendUsASelfie)">
+          {{ SystemContentModel.titleFor(SystemContentComponentIds.SendUsASelfie) }}
+        </button>
+      </mat-menu>
+
+      <mat-menu #electivesMenu>
+        <button mat-menu-item (click)="slideContent.addSystem(SystemContentComponentIds.Semester1Electives)">
+          {{ SystemContentModel.titleFor(SystemContentComponentIds.Semester1Electives) }}
+        </button>
+        <button mat-menu-item (click)="slideContent.addSystem(SystemContentComponentIds.Semester2Electives)">
+          {{ SystemContentModel.titleFor(SystemContentComponentIds.Semester2Electives) }}
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isEditing" class="bottom-right-buttons">
+  <div fxLayout="row" fxLayoutGap="20px">
+    <button mat-raised-button (click)="discardChanges()">
+      <mat-icon>cancel</mat-icon>
+      Discard
+    </button>
+
+    <button mat-raised-button color="primary" class="fcolor-white" (click)="save()" [disabled]="disableControls">
+      <mat-icon>save</mat-icon>
+      Save
+    </button>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+<form #formDirective="ngForm" [formGroup]="form">
+  <app-dialog dialogType="primary">
+    <div dialog-title class="fw-500 ta-center fcolor-white row justify-content-between">
+      <span class="title">{{ title }}</span>
+    </div>
+    <div dialog-content class="fs-14">
+      <mat-form-field appearance="fill">
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input [min]="minDate" [formGroup]="form" [rangePicker]="picker">
+          <input matStartDate formControlName="startDate" placeholder="Start date" />
+          <input matEndDate formControlName="endDate" placeholder="End date" />
+        </mat-date-range-input>
+        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+
+        <mat-error *ngIf="form.controls.startDate.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+        <mat-error *ngIf="form.controls.endDate.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+        <mat-error *ngIf="form.controls.startDate.hasError('required') || form.controls.endDate.hasError('required')">
+          Date Required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field color="primary" class="w-100per mt-20">
+        <input matInput formControlName="reason" autofocus="autofocus" placeholder="Reason" />
+        <mat-error *ngIf="form.controls.reason.hasError('maxlength')">
+          {{ form.controls.reason.errors.maxlength.actualLength }} /
+          {{ form.controls.reason.errors.maxlength.requiredLength }} characters
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div dialog-footer>
+      <div class="row justify-content-between">
+        <div>
+          <button *ngIf="absence.reason" mat-raised-button (click)="delete()" color="warn" class="fcolor-white">
+            Delete
+          </button>
+        </div>
+        <div>
+          <button mat-raised-button (click)="save()" color="primary" class="fcolor-white">Submit</button>
+          <button mat-button (click)="cancel()" color="primary" class="ml-10">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </app-dialog>
+</form>

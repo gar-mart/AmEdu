@@ -1,0 +1,54 @@
+<app-dialog dialogType="primary">
+  <div dialog-title class="title fw-500 ta-center fcolor-white">Engagement Flags</div>
+  <div dialog-content class="fs-14">
+    <table mat-table [dataSource]="engagementFlags">
+      <ng-container matColumnDef="weekOfDate">
+        <th mat-header-cell *matHeaderCellDef class="staffName">Week</th>
+        <td mat-cell *matCellDef="let row" class="text-nowrap pr-35">
+          {{ getBeginningOfWeek(row.weekOfDate) | date : "shortDate" }}
+          -
+          {{ row.weekOfDate | addDays : -1 | date : "shortDate" }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actualCommunications">
+        <th mat-header-cell *matHeaderCellDef class="actualCommunications">Communications</th>
+        <td mat-cell *matCellDef="let row" class="text-nowrap pr-35">
+            {{ row.actualCommunications }}
+
+            <ng-container *ngIf="row.targetCommunications">
+              out of {{ row.targetCommunications }}
+            </ng-container>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actualLiveLessons">
+        <th mat-header-cell *matHeaderCellDef class="actualLiveLessons">Live Lessons</th>
+        <td mat-cell *matCellDef="let row" class="text-nowrap pr-35">
+            {{ row.actualLiveLessons }}
+
+            <ng-container *ngIf="row.targetLiveLessons">
+              out of {{ row.targetLiveLessons }}
+            </ng-container>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actualCourseHours">
+        <th mat-header-cell *matHeaderCellDef class="actualCourseHours">Course Hours</th>
+        <td mat-cell *matCellDef="let row" class="text-nowrap">
+            {{ row.actualCourseHours }}
+
+            <ng-container *ngIf="row.targetCourseHours">
+              out of {{ row.targetCourseHours }}
+            </ng-container>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
+    </table>
+  </div>
+  <div dialog-footer>
+    <button type="button" mat-button mat-dialog-close color="primary">Close</button>
+  </div>
+</app-dialog>

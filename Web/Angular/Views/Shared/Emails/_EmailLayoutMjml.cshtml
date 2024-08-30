@@ -1,0 +1,81 @@
+﻿@model BaseEmailViewModel
+<mjml>
+    <mj-head>
+        <mj-style inline="inline">
+            .text-light { color: rgb(245, 245, 245); }
+        </mj-style>
+    </mj-head>
+    <mj-body background-color="#ffffff" font-size="13px">
+
+        <mj-section background-color="rgb(170, 138, 116)" padding-bottom="0px" padding-top="5px" padding-left="25px" padding-right="25px">
+            <mj-column vertical-align="top" width="100%">
+                <mj-image src='@string.Format("{0}://{1}/assets/images/logo-white.png", Context.Request.Scheme, Context.Request.Host)' alt="Logo" align="center" border="none" width="300px" padding="0px"></mj-image>
+            </mj-column>
+        </mj-section>
+
+        <!-- Header -->
+        @if (IsSectionDefined("HeaderMessage"))
+        {
+            <mj-section background-color="rgb(170, 138, 116)" vertical-align="top" padding-bottom="0px" padding-top="0">
+                <mj-column vertical-align="top" width="100%">
+                    <mj-text align="left" color="rgb(245, 245, 245)" font-size="45px" font-weight="normal" font-family="'Bauer Bodoni W01',georgia,serif;" padding-left="25px" padding-right="25px" padding-bottom="30px" padding-top="40px">
+                        @RenderSection("HeaderMessage")
+                    </mj-text>
+                </mj-column>
+            </mj-section>
+        }
+        End Header -->
+        <!-- Content -->
+        <mj-section background-color="rgb(255, 255, 255)" padding-bottom="20px" padding-top="20px">
+            <mj-column vertical-align="middle" width="100%">
+                <mj-text color="rgb(41, 58, 80)" align="left" font-size="22px" font-family="'Univers Next W01',Arial,sans-serif" padding-left="25px" padding-right="25px">
+                    <span fd-if="!string.IsNullOrEmpty(Model.ToName)">Dear @Model.ToName,</span>
+
+                    <!-- Splash Message -->
+                    @if (IsSectionDefined("SplashMessage"))
+                    {
+                        <br /><br />
+                        @RenderSection("SplashMessage")
+                    }
+                    <!-- End Splash Message -->
+                </mj-text>
+                <!-- General Message-->
+                @if (IsSectionDefined("GeneralMessage"))
+                {
+                    <mj-text color="rgb(41, 58, 80)" align="left" font-size="15px" font-family="open Sans Helvetica, Arial, sans-serif" padding-left="25px" padding-right="25px">
+                        @RenderSection("GeneralMessage")
+                    </mj-text>
+                }
+                <!-- End General Message -->
+                @(RenderBody())
+                <!-- Button Link -->
+                @if (Model.HasButton)
+                {
+                    var absoluteUrl = Model.ButtonLink.StartsWith("http", StringComparison.InvariantCultureIgnoreCase)
+                        ? Model.ButtonLink
+                        : Url.Absolute(Model.ButtonLink);
+                    <mj-button href='@absoluteUrl'
+                               align="left" font-size="14px" padding-top="25px" padding-bottom="25px" font-weight="normal" background-color="rgb(0, 0, 0)" border-radius="0px" color="rgb(255, 255, 255)" font-family="'Univers Next W01',Arial,sans-serif">
+                        @Model.ButtonText.ToUpper()
+                    </mj-button>
+                }
+                <!-- End Button Link -->
+            </mj-column>
+        </mj-section>
+
+
+        <mj-section background-color="rgb(0, 0, 0)" padding-bottom="0px" padding-top="0px">
+            <mj-column vertical-align="middle" width="100%">
+                <mj-text color="rgb(245, 245, 245)" align="left" font-size="15px" font-family="'Univers Next W01',Arial,sans-serif" padding-left="25px" padding-right="25px">
+                    <a class="text-light" href="about:blank">Company Website</a>
+                    <br />
+                    <span class="text-light">address@@domain.tld</span>
+                    <br />
+                    <span class="text-light">(555) 555-5555</span>
+                    <br />
+                    <span class="text-light">Street, City, State Zip</span>
+                </mj-text>
+            </mj-column>
+        </mj-section>
+    </mj-body>
+</mjml>

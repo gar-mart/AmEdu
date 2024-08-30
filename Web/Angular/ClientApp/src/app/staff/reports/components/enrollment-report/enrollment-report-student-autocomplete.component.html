@@ -1,0 +1,24 @@
+<mat-form-field *ngIf="allStudents" class="students-control" appearance="fill">
+  <mat-label>Students</mat-label>
+  <mat-chip-list #chipList aria-label="Student selection">
+    <mat-chip *ngFor="let student of control.value" (removed)="remove(student)">
+      {{ student.name }}
+      <button matChipRemove>
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip>
+    <input
+      placeholder="New student..."
+      #studentInput
+      [formControl]="studentCtrl"
+      [matAutocomplete]="auto"
+      [matChipInputFor]="chipList"
+      [matChipInputSeparatorKeyCodes]="separatorKeysCodes" />
+  </mat-chip-list>
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+    <mat-option *ngFor="let student of filteredStudents | async" [value]="student">
+      {{ student.name }}
+      <span class="fcolor-gray">({{ student.studentEmail }})</span>
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

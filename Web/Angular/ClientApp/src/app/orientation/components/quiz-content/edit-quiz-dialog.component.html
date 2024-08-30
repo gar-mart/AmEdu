@@ -1,0 +1,66 @@
+<app-dialog dialogType="primary">
+  <div dialog-title class="title fw-500 ta-center fcolor-white">Edit Quiz</div>
+  <div dialog-content class="fs-14">
+    <div fxLayout="column" fxLayoutGap="25px" cdkDropList (cdkDropListDropped)="dropQuestion($event)">
+      <div *ngFor="let question of questions; let questionIndex = index" cdkDrag>
+        <div class="question-row" fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon cdkDragHandle class="mr-20">drag_indicator</mat-icon>
+          <b>{{ questionIndex + 1 }}</b>
+          <mat-form-field fxFlex class="ml-10 mr-10">
+            <input class="question" matInput type="text" [(ngModel)]="question.questionText" required />
+            <mat-error>Question text is required</mat-error>
+          </mat-form-field>
+          <button mat-icon-button (click)="removeQuestion(questionIndex)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+
+        <div #answerContainer>
+          <mat-radio-group>
+            <div cdkDropList (cdkDropListDropped)="dropAnswer(question, $event)">
+              <div
+                *ngFor="let answer of question.answers; let answerIndex = index"
+                cdkDrag
+                class="ml-50"
+                fxLayout="row"
+                fxLayoutAlign="end center">
+                <mat-icon cdkDragHandle class="mr-20">drag_indicator</mat-icon>
+                <mat-radio-button
+                  [value]="answer.id"
+                  [checked]="answer.isCorrectAnswer"
+                  (change)="isCorrectAnswerChange(question, answer)">
+                  Correct Answer
+                </mat-radio-button>
+                <mat-form-field fxFlex class="ml-10 mr-10" fxFlex>
+                  <input class="answer" matInput type="text" [(ngModel)]="answer.answerText" required />
+                  <mat-error>Answer text is required</mat-error>
+                </mat-form-field>
+                <button mat-icon-button (click)="removeAnswer(question, answerIndex)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          </mat-radio-group>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="end">
+          <button mat-flat-button (click)="addAnswer(question, answerContainer)">
+            <mat-icon>add</mat-icon>
+            New Answer
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <p *ngIf="questions.length === 0">No questions have been added to this quiz.</p>
+
+    <button mat-raised-button (click)="addQuestion()">
+      <mat-icon>add</mat-icon>
+      New Question
+    </button>
+  </div>
+  <div dialog-footer>
+    <button type="button" cdkFocusInitial mat-button (click)="close()" color="primary" class="mr-10">Cancel</button>
+    <button type="submit" mat-raised-button (click)="confirm()" color="primary" class="fcolor-white">Confirm</button>
+  </div>
+</app-dialog>

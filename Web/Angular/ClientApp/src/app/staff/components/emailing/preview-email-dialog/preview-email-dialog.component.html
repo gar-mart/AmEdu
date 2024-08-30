@@ -1,0 +1,87 @@
+<app-dialog dialogType="primary">
+  <div dialog-title class="title fw-500 ta-center fcolor-white">Preview and Send Email</div>
+
+  <div dialog-content class="fs-14">
+    <p>
+      After sending your email, you will be able to refer back to it by opening Outlook and going to your
+      <a href="https://outlook.office365.com/mail/sentitems" target="_blank">Sent Items</a>
+      folder.
+    </p>
+
+    <fieldset>
+      <legend><b>Alternate Send As Email Address</b></legend>
+      <ng-container *ngIf="fromEmailAddressIsValid; else fromEmailAddressInvalid">
+        <ng-container *ngIf="previewEmailModel.fromEmailAddress; else noFromEmailAddress">
+          <a href="mailto:{{ previewEmailModel.fromEmailAddress }}">{{ previewEmailModel.fromEmailAddress }}</a>
+        </ng-container>
+        <ng-template #noFromEmailAddress>
+          <i>No alternate send as email address provided. Your email address will be used.</i>
+        </ng-template>
+      </ng-container>
+      <ng-template #fromEmailAddressInvalid>
+        <i class="mat-error fs-14">
+          <b>{{ previewEmailModel.fromEmailAddress }}</b>
+          is not a valid email address. Please go back and update the alternate send as email address.
+        </i>
+      </ng-template>
+    </fieldset>
+
+    <fieldset class="mt-20">
+      <legend><b>Bcc</b></legend>
+      <mat-checkbox [disabled]="true" matInput [checked]="previewEmailModel.bccAllRecipients">
+        Bcc All Recipients
+      </mat-checkbox>
+    </fieldset>
+
+    <fieldset class="mt-20">
+      <legend><b>Subject</b></legend>
+      <ng-container *ngIf="previewEmailModel.subject; else noSubject">
+        {{ previewEmailModel.subject }}
+      </ng-container>
+      <ng-template #noSubject>
+        <i class="mat-error fs-14">No subject provided. Please go back and provide a subject.</i>
+      </ng-template>
+    </fieldset>
+
+    <fieldset class="mt-20">
+      <legend><b>Body</b></legend>
+      <ng-container *ngIf="previewEmailModel.body; else noBody">
+        <div [innerHTML]="previewEmailModel.body | safe : 1"></div>
+      </ng-container>
+      <ng-template #noBody>
+        <i class="mat-error fs-14">No body provided. Please go back and provide a body.</i>
+      </ng-template>
+
+      <i *ngIf="!personalizationIsValid" class="mat-error fs-14">
+        Personalization is present, but is not allowed based on the selected configurations.
+      </i>
+    </fieldset>
+
+    <fieldset class="mt-20">
+      <legend><b>Attachments</b></legend>
+      <ng-container *ngIf="previewEmailModel.attachments.length; else noAttachments">
+        <ul>
+          <li *ngFor="let attachment of previewEmailModel.attachments">
+            {{ attachment.name }}
+          </li>
+        </ul>
+      </ng-container>
+      <ng-template #noAttachments>
+        <i>No attachments provided.</i>
+      </ng-template>
+    </fieldset>
+  </div>
+
+  <div dialog-footer>
+    <div class="button-container">
+      <button mat-raised-button (click)="send()" color="primary" class="fcolor-white" [disabled]="disableSend">
+        <span>Send Email</span>
+      </button>
+      <div class="spinner-container" *ngIf="sendingEmail">
+        <mat-spinner diameter="24"></mat-spinner>
+      </div>
+    </div>
+
+    <button mat-button (click)="close()" color="primary">Close</button>
+  </div>
+</app-dialog>

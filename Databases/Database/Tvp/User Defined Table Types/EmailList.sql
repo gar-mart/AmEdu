@@ -1,0 +1,3 @@
+﻿CREATE TYPE Tvp.EmailList AS TABLE(
+	Email NVARCHAR(320) NOT NULL
+)

@@ -1,0 +1,17 @@
+.engagment-flag-container {
+  width: fit-content;
+
+  .staff-table {
+    min-width: 600px;
+
+    :is(td, th):not(:first-child) {
+      padding-left: 10px;
+    }
+  }
+}
+
+:host ::ng-deep {
+  .button-padding-left {
+    padding-left: 16px;
+  }
+}

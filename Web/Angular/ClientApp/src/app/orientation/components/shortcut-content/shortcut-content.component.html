@@ -1,0 +1,47 @@
+<div fxLayout="column" fxLayoutGap="20px">
+  <mat-form-field color="primary" class="w-400 mr-25" *ngIf="editMode && selectedAppShortcuts.length !== 1">
+    <span matPrefix>
+      <mat-icon>search</mat-icon>
+      &nbsp;
+    </span>
+    <input type="text" placeholder="Add Shortcut" matInput [formControl]="shortcutFilter" [matAutocomplete]="auto" />
+    <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption [displayWith]="displayShortcut">
+      <mat-option *ngFor="let e of filterAppShortcut" [value]="e">
+        {{ e.title }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+  <table
+    mat-table
+    *ngIf="appShortcut && editMode && selectedAppShortcuts.length === 1"
+    matSort
+    [dataSource]="selectedAppShortcuts"
+    class="staff-table mt-10">
+    <ng-container matColumnDef="moreOptions">
+      <th mat-header-cell *matHeaderCellDef class="moreOptions"></th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-icon-button (click)="deleteAppTileMetadata(row)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="title">Title</th>
+      <td mat-cell *matCellDef="let row">{{ row.title }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="url">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="Url">URL</th>
+      <td mat-cell *matCellDef="let row" class="url">
+        <a href="{{ row.url }}" target="_blank">{{ row.url }}</a>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+  <div class="text-center" *ngIf="appShortcut && !editMode">
+    <app-shortcut-tile [appShortcut]="appShortcut"></app-shortcut-tile>
+  </div>
+</div>

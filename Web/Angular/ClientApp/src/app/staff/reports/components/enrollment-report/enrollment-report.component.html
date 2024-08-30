@@ -1,0 +1,99 @@
+<div class="admin-mentor-container">
+  <form [formGroup]="form" class="w-fit-content">
+    <mat-card class="mr-50 date-range-card">
+      <mat-card-title class="fs-16 mb-20">Select the date range you'd like to run the report for</mat-card-title>
+      <mat-card-content>
+        <p class="fcolor-gray fs-12 mb-20">
+          Please note, that the report will only include students that were active at least part of the range that you
+          select.
+        </p>
+
+        <mat-form-field class="fs-13 mr-25">
+          <input
+            matInput
+            [matDatepicker]="startDate"
+            [max]="maxDate"
+            placeholder="Start Date"
+            formControlName="startDate"
+            (click)="startDate.open()" />
+          <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+          <mat-datepicker #startDate startView="month"></mat-datepicker>
+          <mat-error *ngIf="form.get('startDate').hasError('required')">This field is required.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="fs-13">
+          <input
+            matInput
+            [matDatepicker]="endDate"
+            [max]="maxDate"
+            placeholder="End Date"
+            formControlName="endDate"
+            (click)="endDate.open()" />
+          <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+          <mat-datepicker #endDate startView="month"></mat-datepicker>
+          <mat-error *ngIf="form.get('endDate').hasError('required')">This field is required.</mat-error>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-title class="fs-16 mb-20">Select the students you'd like to include</mat-card-title>
+      <mat-card-content>
+        <div class="fcolor-gray fs-12 mb-20">
+          You can either select students:
+
+          <ul>
+            <li>in bulk with the ability to narrow down your selection by grade and by school</li>
+            <li>or you can select specific students</li>
+          </ul>
+        </div>
+
+        <mat-accordion>
+          <mat-expansion-panel [expanded]="filterByGrade" (afterExpand)="filterByGrade = true">
+            <mat-expansion-panel-header>Grade Level / School</mat-expansion-panel-header>
+            <mat-form-field class="mt-5 ta-center mr-25" fxFlex>
+              <mat-select placeholder="Choose a Grade Level" formControlName="gradeLevel">
+                <mat-option [value]="grade" *ngFor="let grade of gradeLevels">
+                  {{ grade }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field class="mt-5 ta-center mr-25" fxFlex>
+              <mat-select placeholder="Choose School" formControlName="school">
+                <mat-option *ngFor="let school of Object.keys(schools)" [value]="school">
+                  {{ schools[school] }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-error *ngIf="form.errors && form.errors.range" class="text-right">
+              End Date cannot come before Start Date.
+            </mat-error>
+          </mat-expansion-panel>
+
+          <mat-expansion-panel (afterExpand)="filterByGrade = false">
+            <mat-expansion-panel-header>Specific Students</mat-expansion-panel-header>
+
+            <mat-progress-bar *ngIf="!allStudents" mode="indeterminate"></mat-progress-bar>
+
+            <div class="fcolor-gray fs-12 mb-20">When empty, all students are selected.</div>
+
+            <app-enrollment-report-student-autocomplete
+              [control]="form.controls.students"
+              [allStudents]="allStudents"></app-enrollment-report-student-autocomplete>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button
+          (click)="downloadReport()"
+          [disabled]="form.invalid || isDownloading"
+          mat-raised-button
+          color="primary"
+          class="fcolor-white">
+          Download Report
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>

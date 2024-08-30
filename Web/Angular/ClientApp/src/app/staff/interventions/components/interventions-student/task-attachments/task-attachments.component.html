@@ -1,0 +1,22 @@
+<input #uploadInput hidden="true" type="file" onclick="this.value=null" (change)="uploadAttachment($event)" />
+
+<button mat-button color="primary" [disabled]="!canEdit" (click)="uploadInput.click()">Upload File</button>
+
+<div *ngFor="let attachment of task.attachments; let index = index">
+  <button *ngIf="canEdit && attachment.allowDelete" mat-icon-button (click)="removeAttachment(attachment)">
+    <mat-icon>delete</mat-icon>
+  </button>
+  <a
+    *ngIf="!canEdit || !attachment.allowDelete"
+    [href]="attachment.url"
+    mat-icon-button
+    target="_blank"
+    matTooltip="This attachment was sent with the email."
+    [matTooltipDisabled]="attachment.allowDelete">
+    <mat-icon>description</mat-icon>
+  </a>
+
+  <a [href]="attachment.url" target="_blank">{{ attachment.fileName }}</a>
+</div>
+
+<span>Owner: {{ owner }}</span>

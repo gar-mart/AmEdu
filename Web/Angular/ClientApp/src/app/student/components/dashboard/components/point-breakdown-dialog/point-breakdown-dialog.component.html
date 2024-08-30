@@ -1,0 +1,83 @@
+<app-dialog dialogType="primary">
+  <div dialog-title class="title fw-500 ta-center fcolor-white">Point Balance Breakdown</div>
+  <div dialog-content class="fs-14">
+    <p class="fcolor-gray mt-0">
+      You can click on any of these point categories to see more information about when you earned those points, who
+      gave them to you, and a comment if one was left.
+    </p>
+    <div class="row justify-content-between">
+      <div class="point-value">
+        <!-- NOTE: using <span *ngIf="student.pointsSpent < 0" class="invisible">-</span> to align numbers as a simple solution-->
+        <!-- Blue Points -->
+        <a class="primary" href="javascript:void(0)" (click)="openPointDetail(PointsType.Lesson)">
+          <span *ngIf="student.pointsSpent < 0" class="invisible">-</span>
+          {{ student.totalLiveLessonPoints || 0 }}
+        </a>
+        <a class="primary" href="javascript:void(0)" (click)="openPointDetail(PointsType.Communication)">
+          <span *ngIf="student.pointsSpent < 0" class="invisible">-</span>
+          {{ student.totalCommunicationPoints || 0 }}
+        </a>
+
+        <!-- Green Points -->
+        <a class="accent" href="javascript:void(0)" (click)="openPointDetail(PointsType.Respect)">
+          <span *ngIf="student.pointsSpent < 0" class="invisible">-</span>
+          {{ student.respectPoints || 0 }}
+        </a>
+        <a class="accent" href="javascript:void(0)" (click)="openPointDetail(PointsType.Integrity)">
+          <span *ngIf="student.pointsSpent < 0" class="invisible">-</span>
+          {{ student.integrityPoints || 0 }}
+        </a>
+        <a class="accent" href="javascript:void(0)" (click)="openPointDetail(PointsType.Stewardship)">
+          <span *ngIf="student.pointsSpent < 0" class="invisible">-</span>
+          {{ student.stewardshipPoints || 0 }}
+        </a>
+        <a class="accent" href="javascript:void(0)" (click)="openPointDetail(PointsType.Engagement)">
+          <span *ngIf="student.pointsSpent < 0" class="invisible">-</span>
+          {{ student.engagementPoints || 0 }}
+        </a>
+
+        <!-- Orange Points -->
+        <a class="warn" href="javascript:void(0)" (click)="openPointDetail(PointsType.Spend)">
+          {{ student.pointsSpent || 0 }}
+        </a>
+      </div>
+      <div class="point-description">
+        <!-- Blue Points -->
+        <a class="primary" href="javascript:void(0)" (click)="openPointDetail(PointsType.Lesson)">Live Lesson Points</a>
+        <a class="primary" href="javascript:void(0)" (click)="openPointDetail(PointsType.Communication)">
+          Communication Points
+        </a>
+
+        <!-- Green Points -->
+        <a class="accent" href="javascript:void(0)" (click)="openPointDetail(PointsType.Respect)">Respect Points</a>
+        <a class="accent" href="javascript:void(0)" (click)="openPointDetail(PointsType.Integrity)">Integrity Points</a>
+        <a class="accent" href="javascript:void(0)" (click)="openPointDetail(PointsType.Stewardship)">
+          Stewardship Points
+        </a>
+        <a class="accent" href="javascript:void(0)" (click)="openPointDetail(PointsType.Engagement)">
+          Engagement Points
+        </a>
+
+        <!-- Orange Points -->
+        <a class="warn" href="javascript:void(0)" (click)="openPointDetail(PointsType.Spend)">Points Spent</a>
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="row justify-content-between">
+      <div class="point-value">
+        <label>
+          <span *ngIf="student.pointsSpent < 0" class="invisible">-</span>
+          {{ student.pointBalance || 0 }}
+        </label>
+      </div>
+      <div class="point-description">
+        <label>Points Remaining!</label>
+      </div>
+    </div>
+  </div>
+  <div dialog-footer>
+    <button type="button" mat-button (click)="cancel()" color="primary">Close</button>
+  </div>
+</app-dialog>

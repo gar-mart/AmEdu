@@ -1,0 +1,35 @@
+<div class="admin-mentor-container">
+  <ng-container *ngIf="isInitializing; else initialized">Loading...</ng-container>
+  <ng-template #initialized>
+    <mat-tab-group>
+      <mat-tab label="Select Recipients" #filterTab>
+        <div class="tab-container">
+          <app-communication-filter-tab
+            (includeEntries)="includeEntries($event)"
+            (listDeleted)="listDeleted($event)"
+            [includedEntries]="includedEntries"
+            [mentors]="mentors"
+            [lists]="lists"
+            required></app-communication-filter-tab>
+        </div>
+      </mat-tab>
+      <mat-tab #editRecipientsTab label="Recipient Options" [disabled]="includedEntries.length === 0">
+        <div class="tab-container">
+          <app-communication-edit-tab
+            (removeEntries)="removeEntries($event)"
+            (includeEntries)="includeEntries($event)"
+            (listAdded)="listAdded()"
+            [includedEntries]="includedEntries"></app-communication-edit-tab>
+        </div>
+      </mat-tab>
+      <mat-tab #composeTab label="Compose Email ({{ recipientCount }} recipients)" [disabled]="!anyRecipientsIncluded">
+        <div class="tab-container">
+          <app-communication-email-tab
+            [includedEntries]="includedEntries"
+            [emailTemplates]="emailTemplates"
+            [recipients]="recipients"></app-communication-email-tab>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </ng-template>
+</div>

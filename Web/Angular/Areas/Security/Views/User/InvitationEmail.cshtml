@@ -1,0 +1,19 @@
+﻿@model InvitationEmailViewModel
+@{
+    Layout = "Emails/_EmailLayout";
+}
+
+@section HeaderMessage {
+    FD Base Invitation
+}
+
+@section SplashMessage {
+    You have been invited to register with FD Base!
+}
+
+@section GeneralMessage {
+    <strong>Username:</strong> @Model.User.UserName
+    <br />
+    Please click the following button to complete your registration process:
+    <br>
+}

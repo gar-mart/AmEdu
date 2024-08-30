@@ -1,0 +1,51 @@
+<div *ngIf="editMode">Allows students to upload a selfie of themselves.</div>
+
+<ng-container *ngIf="!editMode">
+  <div class="selfie-container" [style.height]="IMAGE_SIZE + 'px'">
+    <video #video autoplay *ngIf="showVideo"></video>
+    <img
+      src="assets/user-dashed-icon.png"
+      class="selfie-outline"
+      width="350"
+      *ngIf="showVideo && cameraAccessAllowed" />
+    <canvas #canvas class="dis-none"></canvas>
+
+    <div *ngIf="!showVideo && capturedPicture">
+      <img src="{{ capturedPicture }}" [height]="IMAGE_SIZE" [width]="IMAGE_SIZE" />
+    </div>
+
+    <div *ngIf="!showVideo && studentImageUrl && !capturedPicture">
+      <img src="{{ studentImageUrl }}" [height]="IMAGE_SIZE" [width]="IMAGE_SIZE" />
+    </div>
+  </div>
+
+  <div class="mt-10">
+    <button
+      *ngIf="capturedPicture && (studentImageUrl || lastCapturedPicture)"
+      mat-raised-button
+      color="warn"
+      class="fcolor-white mr-10"
+      (click)="cancel()">
+      Discard Changes
+    </button>
+    <button
+      mat-raised-button
+      color="accent"
+      class="fcolor-white"
+      (click)="capture()"
+      [disabled]="!isEnabled"
+      [style.visibility]="showTakePicture ? 'visible' : 'hidden'"
+      *ngIf="!showRetakePicture">
+      Take Picture
+    </button>
+    <button
+      mat-raised-button
+      color="accent"
+      class="fcolor-white"
+      (click)="retakePicture()"
+      [disabled]="!isEnabled"
+      [style.visibility]="showRetakePicture ? 'visible' : 'hidden'">
+      Retake Picture
+    </button>
+  </div>
+</ng-container>

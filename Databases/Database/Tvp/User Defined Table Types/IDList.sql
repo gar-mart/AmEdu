@@ -1,0 +1,3 @@
+﻿CREATE TYPE Tvp.IdList AS TABLE(
+	Id INT NOT NULL
+)

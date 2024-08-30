@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "name": "asp.net",
+  "private": true,
+  "devDependencies": {},
+  "scripts": {
+    "start": "cd ClientApp && npm i && npm start"
+  }
+}

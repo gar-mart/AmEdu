@@ -1,0 +1,13 @@
+﻿CREATE TABLE Staff.Announcements 
+(
+	Id INT IdENTITY NOT NULL 
+	, Title NVARCHAR(100) NOT NULL
+	, Body NVARCHAR(MAX) NOT NULL
+	, StartDate DATETIME2(0) NOT NULL
+	, EndDate DATETIME2(0) NULL
+	, ClassId INT NOT NULL
+	, Path NVARCHAR(250) NOT NULL
+	, CONSTRAINT PK_Announcements PRIMARY KEY CLUSTERED(Id)
+	, CONSTRAINT FK_Announcements_ClassId FOREIGN KEY (ClassId) REFERENCES Attendance.Classes(Id)
+	, CONSTRAINT U_Announcements_Path UNIQUE (Path)
+)

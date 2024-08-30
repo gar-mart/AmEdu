@@ -1,0 +1,10 @@
+﻿CREATE TYPE Tvp.Steps AS TABLE
+(
+	Id INT NOT NULL
+	, Name NVARCHAR(150) NOT NULL
+	, ContentFileName NVARCHAR(260) NOT NULL
+	, OrderBy SMALLINT NOT NULL
+	, ActivateDate DATETIME2(0) NULL 
+	, ExpirationDate DATETIME2(0) NULL
+	, IsActive BIT NOT NULL
+)

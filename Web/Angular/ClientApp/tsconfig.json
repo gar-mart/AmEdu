@@ -1,0 +1,37 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "src",
+    "downlevelIteration": true,
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "module": "es2020",
+    "moduleResolution": "node",
+    "skipLibCheck": true, // to run ngx-ui-scroll
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2020",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2019",
+      "dom"
+    ],
+    "paths": {
+      "@design/*": ["app/design/components/*"],
+      "@services/*": ["app/services/*"],
+      "@models/*": ["app/models/*"],
+      "@admin/*": ["app/admin/*"],
+      "@styles/*": ["styles/*"],
+      "@mentor/*": ["app/mentor/*"],
+      "@student/*": ["app/student/*"],
+      "@guards/*": ["app/guards/*"],
+      "@assets/*": ["assets/*"]
+    }
+  },
+  "angularCompilerOptions": {
+    "strictTemplates": true
+  }
+}

@@ -1,0 +1,21 @@
+<mat-card class="stepCardContainer">
+  <mat-card-header>
+    <mat-card-title>{{ stepName }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div style="max-width: 1280px" class="ml-15 mt-15">
+      <ng-content></ng-content>
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      class="submitButton"
+      (click)="save()"
+      *ngIf="saveShown"
+      [disabled]="saveDisabled">
+      Submit
+    </button>
+  </mat-card-actions>
+</mat-card>

@@ -1,0 +1,79 @@
+<form [formGroup]="form">
+  <app-dialog dialogType="primary">
+    <div dialog-title class="title fw-500 fcolor-white">Edit Staff Member: {{ staffMember.name }}</div>
+    <div dialog-content>
+      <div fxLayout="column">
+        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start baseline">
+          <mat-icon
+            matTooltip="Providing an appointment link for this staff member enables their mentees to quickly make appointments with this staff member from their dashboard.">
+            help_outline
+          </mat-icon>
+          <mat-form-field fxFlex>
+            <mat-label>Appointment Link</mat-label>
+            <input matInput formControlName="appointmentLink" />
+            <button
+              *ngIf="form.controls.appointmentLink.value"
+              mat-icon-button
+              matSuffix
+              class="fs-18"
+              (click)="openLink(form.controls.appointmentLink.value)">
+              <mat-icon>open_in_new</mat-icon>
+            </button>
+            <mat-error *ngIf="form.controls['appointmentLink'].hasError('pattern')">
+              Please enter a valid URL (e.g. https://www.AmEduglobal.org)
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start baseline">
+          <mat-icon
+            matTooltip="Assigning a YouTube video to this staff member will allow their mentees to watch their Intro Video in Orientation.">
+            help_outline
+          </mat-icon>
+          <mat-form-field fxFlex>
+            <mat-label>Orientation Intro Video</mat-label>
+            <input matInput formControlName="introVideo" [placeholder]="urlPrefix" />
+            <button
+              mat-icon-button
+              *ngIf="form.controls.introVideo.value"
+              matSuffix
+              class="fs-18"
+              (click)="openLink(form.controls.introVideo.value)">
+              <mat-icon>open_in_new</mat-icon>
+            </button>
+            <mat-error *ngIf="form.controls.introVideo.hasError('invalid')">
+              Please enter a YouTube video of the format {{ urlPrefix }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div fxLayout="row" fxLayoutGap="10px" class="pt-15">
+          <mat-icon
+            class="mt-10"
+            matTooltip="Students that are not assigned a mentor before beginning orientation will be assigned a default mentor based on their grade level.
+                                          You can assign this staff member as a default member by setting this value to one or more grades.">
+            help_outline
+          </mat-icon>
+          <app-grade-level-selector
+            [selectedGrades]="form.controls.mentorGrades.value"
+            (gradesSelected)="form.controls.mentorGrades.patchValue($event)"
+            fxFlex
+            label="Mentor Grade Level Assignment(s)"></app-grade-level-selector>
+        </div>
+
+        <div fxLayout="row" fxLayoutGap="10px" class="pt-15">
+          <mat-icon class="mt-10 invisible">help_outline</mat-icon>
+          <app-grade-level-selector
+            [selectedGrades]="form.controls.counselorGrades.value"
+            (gradesSelected)="form.controls.counselorGrades.patchValue($event)"
+            fxFlex
+            label="Counselor Grade Level Assignment(s)"></app-grade-level-selector>
+        </div>
+      </div>
+    </div>
+    <div dialog-footer>
+      <button mat-button mat-dialog-close cdkFocusInitial>Close</button>
+      <button mat-raised-button color="primary" class="fcolor-white ml-10" (click)="updateStaff()">Submit</button>
+    </div>
+  </app-dialog>
+</form>

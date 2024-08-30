@@ -1,0 +1,145 @@
+<div class="page-container admin-mentor-container">
+  <mat-toolbar fxLayout="row" fxLayoutGap="15px" [class.mat-elevation-z1]="scrolled">
+    <button
+      type="button"
+      aria-label="Toggle sidenav"
+      mat-icon-button
+      (click)="drawer.toggle()"
+      *ngIf="isHandset$ | async">
+      <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      class="fcolor-white"
+      *ngIf="!sortingSlides"
+      [disabled]="addingStep || isEditingStep"
+      (click)="addSlide()">
+      <mat-icon>add</mat-icon>
+      New Slide
+    </button>
+    <button mat-raised-button *ngIf="sortingSlides" (click)="resetSort()">
+      <div>Cancel</div>
+    </button>
+    <button
+      mat-raised-button
+      [color]="sortingSlides ? 'primary' : ''"
+      [class.fcolor-white]="sortingSlides"
+      (click)="onSortSlidesClick()"
+      [disabled]="addingStep || isEditingStep">
+      <div fxLayout="row" fxLayoutAlign="center center" *ngIf="!sortingSlides">
+        <mat-icon>unfold_more</mat-icon>
+        Sort Slides
+      </div>
+      <div *ngIf="sortingSlides">Save Sort</div>
+    </button>
+    <app-choose-a-grade
+      *ngIf="!sortingSlides"
+      class="no-padding"
+      appearance="outline"
+      [control]="gradesFormControl"></app-choose-a-grade>
+    <mat-form-field class="no-padding" *ngIf="!sortingSlides" appearance="outline">
+      <mat-label>Slide Status</mat-label>
+      <mat-select [multiple]="true" [formControl]="statusFormControl">
+        <mat-option *ngFor="let stepStatus of stepStatuses" [value]="StepStatus[stepStatus]">
+          {{ stepStatus }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button
+      *ngIf="!sortingSlides"
+      mat-raised-button
+      [disabled]="addingStep || isEditingStep"
+      (click)="previewOrientation(previewOrientationDialog)">
+      <mat-icon>visibility</mat-icon>
+      Preview Orientation
+    </button>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav
+      #drawer
+      class="sidenav"
+      fixedInViewport
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isHandset$ | async) === false">
+      <mat-nav-list cdkDropList (cdkDropListDropped)="drop($event)">
+        <ng-container *ngFor="let step of filteredSteps; trackBy: stepTrackby">
+          <a
+            class="slide-link"
+            [cdkDragDisabled]="!sortingSlides"
+            cdkDragLockAxis="y"
+            cdkDrag
+            mat-list-item
+            [routerLink]="!sortingSlides ? [Constants.manageOrientationPath, step.id, selectedTabIndex] : null"
+            [class.active]="step === selectedStep"
+            [disableRipple]="true"
+            [appScrollIntoView]="step === selectedStep && !this.disableScrollToStep"
+            [matTooltip]="step.name"
+            [disabled]="isEditingStep"
+            matTooltipPosition="after"
+            matTooltipDisabled="sortingSlides">
+            <span fxLayout="row" fxLayoutAlign="start center">
+              <mat-icon *ngIf="sortingSlides">drag_indicator</mat-icon>
+              <span>
+                <b class="slide-title" mat-line>{{ step.name }}</b>
+                <span mat-line fxLayout="row" fxLayoutAlign="start center">
+                  <mat-icon class="{{ StepStatus[step.status] }}">circle</mat-icon>
+                  {{ step | slideStatus }}
+                </span>
+                <span mat-line fxLayout="row" fxLayoutAlign="start center">
+                  <mat-icon class="invisible">circle</mat-icon>
+                  {{ step.gradeLevels | grade }}
+                </span>
+              </span>
+            </span>
+          </a>
+        </ng-container>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content class="" [style.height]="(isHandset$ | async) && drawer.opened ? '100vh' : null">
+      <app-slide
+        [class.d-none]="sortingSlides"
+        *ngIf="selectedStep"
+        [step]="selectedStep"
+        [selectedTabIndex]="selectedTabIndex"
+        (selectedTabChange)="selectedTabIndex = $event"
+        (stepUpdated)="stepUpdated($event)"
+        (isEditingChange)="isEditingStep = $event"
+        (duplicateStep)="addSlide($event)"></app-slide>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
+
+<ng-template #previewOrientationDialog>
+  <app-dialog dialogType="primary" style="border-radius: 50%">
+    <div dialog-title class="title fw-500 ta-center fcolor-white">Preview Orientation</div>
+    <div dialog-content>
+      <div class="fs-14">
+        <p>Please select the date you would like to preview orientation for.</p>
+        <p>
+          The date you select will take into consideration the Active and Expiration dates that have been assigned to
+          each slide.
+        </p>
+      </div>
+
+      <mat-form-field appearance="standard">
+        <mat-label>Orientation Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="previewDatePicker"
+          [min]="today"
+          [formControl]="previewOrientationDateControl" />
+        <mat-datepicker-toggle matSuffix [for]="previewDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #previewDatePicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div dialog-footer fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end">
+      <button mat-button [mat-dialog-close]="false">Cancel</button>
+      <button cdkFocusInitial mat-raised-button color="primary" [mat-dialog-close]="true" class="fcolor-white">
+        Start Orientation
+      </button>
+    </div>
+  </app-dialog>
+</ng-template>

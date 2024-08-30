@@ -1,0 +1,40 @@
+import { Tardy, Trend } from "app/enums";
+import { EnrollmentStatus } from "../enums/enrollment-status.enum";
+
+export interface ClassUser {
+  userId?: number;
+  name?: string;
+  firstName?: string;
+  lastName?: string;
+  profilePicture?: string;
+  hasLiveLessonPoint?: boolean;
+  integrityPoints?: number;
+  stewardshipPoints?: number;
+  respectPoints?: number;
+  engagementPoints?: number;
+  liveLessonPoints?: number;
+  className?: string;
+  score?: string;
+  scoreAchieved?: number;
+  scorePossible?: number;
+  totalSecondsSpentOnline?: number;
+  onlineHoursSpentThisWeek?: number;
+  trend?: Trend;
+  trendDifference?: number;
+  tardiness?: Tardy | null;
+  tardinessComment?: string;
+  status?: EnrollmentStatus;
+  asOfDate?: Date | string;
+  assignmentsCompleted?: number;
+  assignmentsCompletedDateRange?: number;
+  assignmentsInGracePeriod?: number;
+  totalAssignments?: number;
+  totalAssignmentsDateRange?: number;
+  assignmentsCompletedUpUntilEndDate?: number;
+  totalAssignmentsUpUntilEndDate?: number;
+  absenceReason?: string;
+  absenceStartDate?: Date;
+  absenceEndDate?: Date;
+  absenceId?: number;
+  liveLessonsOffered?: number;
+}

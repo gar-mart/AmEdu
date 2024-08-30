@@ -1,0 +1,58 @@
+.school-year {
+  width: 125px;
+}
+
+table {
+  border: solid thin;
+  border-color: lightgrey;
+}
+
+mat-stepper {
+  background-color: initial !important;
+}
+
+:host ::ng-deep {
+  .mat-step {
+    .mat-step-header {
+      background-color: white;
+
+      .mat-step-label {
+        width: 100%;
+      }
+    }
+  }
+
+  .mat-stepper-vertical-line::before {
+    z-index: 2;
+  }
+
+  [aria-labelledby*="0"] {
+    .mat-step-icon {
+      background-color: lightgrey !important;
+    }
+  }
+
+  [aria-labelledby*="1"] {
+    .mat-step-icon {
+      background-color: lightgreen !important;
+    }
+  }
+
+  [aria-labelledby*="2"] {
+    .mat-step-icon {
+      background-color: yellow !important;
+    }
+  }
+
+  [aria-labelledby*="3"] {
+    .mat-step-icon {
+      background-color: orange !important;
+    }
+  }
+
+  [aria-labelledby*="4"] {
+    .mat-step-icon {
+      background-color: red !important;
+    }
+  }
+}

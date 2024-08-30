@@ -1,0 +1,11 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "eslint-plugin-jsdoc": "^32.3.0",
+    "glob": "^7.1.6",
+    "gulp": "4.0.2",
+    "gulp-msbuild": "^0.10.0"
+  }
+}

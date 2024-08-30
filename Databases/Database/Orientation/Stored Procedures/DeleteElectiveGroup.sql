@@ -1,0 +1,22 @@
+﻿CREATE PROCEDURE Orientation.DeleteElectiveGroup
+	@id INT
+AS
+SET NOCOUNT ON 
+	
+BEGIN TRY
+	SET XACT_ABORT ON
+	BEGIN TRANSACTION
+
+		DELETE FROM Orientation.ElectiveGroupChoices 
+		WHERE ElectiveGroupId = @id
+
+		DELETE FROM Orientation.ElectiveGroups 
+		WHERE Id = @id
+
+	COMMIT TRANSACTION
+END TRY
+
+BEGIN CATCH
+	IF XACT_STATE() <> 0 ROLLBACK TRANSACTION;
+	THROW;
+END CATCH

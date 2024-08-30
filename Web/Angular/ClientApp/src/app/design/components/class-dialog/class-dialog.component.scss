@@ -1,0 +1,17 @@
+.header-cell {
+  text-align: center !important;
+}
+
+:host ::ng-deep {
+  .mat-sort-header-content {
+    text-align: left;
+  }
+}
+
+.border {
+  border-left: 1px solid lightgray;
+}
+
+:is(td, th):not(:first-child) {
+  padding-left: 5px;
+}

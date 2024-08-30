@@ -1,0 +1,9 @@
+﻿CREATE TABLE Student.StudentResources
+(
+	Id INT IDENTITY NOT NULL
+	, Title NVARCHAR(50) NOT NULL
+	, Category NVARCHAR(50) NOT NULL
+	, Url NVARCHAR(MAX) NOT NULL
+	, ShowOnStudentDashboard BIT NOT NULL DEFAULT(0)
+	, CONSTRAINT PK_StudentResources PRIMARY KEY CLUSTERED(Id)
+)

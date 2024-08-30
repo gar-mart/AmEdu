@@ -1,0 +1,106 @@
+<app-dialog dialogType="primary" [class.w-400]="!checkInOut">
+  <div dialog-title class="fw-500 ta-center fcolor-white row justify-content-between">
+    <span class="title">
+      <ng-container *ngIf="canEdit">{{ checkInOut ? "Check In / Out Student" : "Reject Reservation" }}</ng-container>
+      <ng-container *ngIf="!canEdit">View Reservation</ng-container>
+    </span>
+  </div>
+  <div dialog-content>
+    <div class="pb-20">
+      <h4 class="m-0">Student</h4>
+      {{ reservation.student.name }}
+
+      <h4 class="mb-0">Date</h4>
+      {{ reservation.date | date : "fullDate" }}
+
+      <h4 class="mb-0">General Inquiry Response</h4>
+      {{ reservation.generalInquiryResponse }}
+
+      <h4 class="mb-0">Breakfast Inquiry Response</h4>
+      {{ reservation.breakfastInquiryResponse }}
+
+      <h4 class="mb-0">Lunch Inquiry Response</h4>
+      {{ reservation.lunchInquiryResponse }}
+    </div>
+
+    <!-- Check In/Out-->
+    <ng-container *ngIf="checkInOut">
+      <p *ngIf="canEdit">
+        Note: the cell with the green background was just automatically filled in for your convenience
+      </p>
+
+      <table mat-table [dataSource]="dataSource" matSort class="staff-table w-100per">
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef class="pl-10 pr-10"></th>
+          <td mat-cell *matCellDef="let row" class="pl-10 pr-10">
+            <button *ngIf="canEdit" mat-button class="h-content w-auto pl-10 pr-10" color="warn" (click)="delete(row)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="checkedIn">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="pl-10 pr-10">In</th>
+          <td mat-cell *matCellDef="let row" class="pl-10 pr-10" [class.bg-success]="row.automaticallySet && checkIn">
+            <mat-form-field class="fs-13 w-200 mr-20">
+              <input matInput type="time" [readonly]="!canEdit" [value]="getTime(row.checkedIn)" />
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="checkedOut">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="pl-10 pr-10">Out</th>
+          <td mat-cell *matCellDef="let row" class="pl-10 pr-10" [class.bg-success]="row.automaticallySet && !checkIn">
+            <mat-form-field class="fs-13 w-200 mr-20">
+              <input matInput type="time" [readonly]="!canEdit" [value]="getTime(row.checkedOut)" />
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+      <p *ngIf="!appComponent.isBusy && !dataSource.data.length">No logs were found for this reservation</p>
+    </ng-container>
+
+    <!-- Reject -->
+    <ng-container *ngIf="!checkInOut">
+      <form [formGroup]="form">
+        <mat-form-field class="w-100per ta-center">
+          <mat-select placeholder="Reject Reason" formControlName="rejectReasonType">
+            <mat-option [value]="rejectReason.value" *ngFor="let rejectReason of rejectReasons">
+              {{ rejectReason.text }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-error *ngIf="form.controls['rejectReasonComment'].hasError('required')">
+          This reason requires you to enter a comment
+        </mat-error>
+
+        <mat-form-field color="primary" class="w-100per mt-20">
+          <input
+            matInput
+            formControlName="rejectReasonComment"
+            #rejectReasonComment
+            autofocus="autofocus"
+            placeholder="Comment" />
+          <mat-error *ngIf="form.controls['rejectReasonComment'].hasError('maxlength')">
+            Please provide a comment less than 500 characters or less.
+          </mat-error>
+        </mat-form-field>
+      </form>
+    </ng-container>
+  </div>
+  <div dialog-footer>
+    <button mat-button (click)="close()" color="primary">Close</button>
+    <button
+      *ngIf="canEdit"
+      mat-raised-button
+      (click)="save()"
+      color="primary"
+      class="fcolor-white"
+      [disabled]="appComponent.isBusy || (!checkInOut && form.invalid)">
+      Submit
+    </button>
+  </div>
+</app-dialog>

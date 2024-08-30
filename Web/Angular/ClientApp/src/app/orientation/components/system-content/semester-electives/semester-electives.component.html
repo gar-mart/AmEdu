@@ -1,0 +1,97 @@
+<div *ngIf="editMode; else viewElectives">
+  <p>
+    Collects student elective choices for
+    <b>Semester {{ semester }}, {{ startSchoolYear }} - {{ endSchoolYear }}</b>
+  </p>
+
+  <p>
+    School year will automatically switch once the semester has ended.
+    <br />
+    Electives settings can be managed from the Electives Admin page.
+  </p>
+</div>
+
+<ng-template #viewElectives>
+  <div *ngIf="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+  <ng-container *ngIf="!loading">
+    <ng-container *ngIf="previewMode && masterStep.gradeLevels.length === 0; else renderElectives">
+      No Grade Levels are assigned to this slide.
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #renderElectives>
+  <ng-container *ngIf="previewMode">
+    <span class="fcolor-gray mr-20">In order to preview this step, you must select a grade level.</span>
+    <mat-form-field>
+      <mat-label>Grade Level</mat-label>
+      <mat-select [formControl]="gradeLevelControl">
+        <mat-option *ngFor="let gradeLevel of gradeLevels; trackBy: gradeLevelTrackBy" [value]="gradeLevel">
+          {{ gradeLevel }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
+
+  <div *ngIf="isLockedIn" class="alert alert-warning text-center">
+    Your elective choices are locked in. Please reach out to your counselor if you would like to make any changes to
+    your electives.
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+    <h3>
+      Semester {{ semester }} Electives for
+      <span [innerHTML]="gradeLevel | gradeName"></span>
+    </h3>
+    <span>(select {{ requiredElectivesLeftToChoose }})</span>
+  </div>
+
+  <div fxLayout="column" fxLayoutGap="20px">
+    <div *ngFor="let semesterGroup of semesterGroups; trackBy: semesterGroupTrackBy" fxLayout="column">
+      <h4 *ngIf="requiredElectivesLeftToChooseInGroup(semesterGroup) >= 0">
+        (select {{ requiredElectivesLeftToChooseInGroup(semesterGroup) }})
+      </h4>
+      <div
+        *ngFor="let semesterElective of semesterGroup.semesterElectives; trackBy: semesterElectiveTrackBy"
+        fxLayout="row">
+        <mat-checkbox
+          [checked]="semesterElective.isSelected"
+          (change)="semesterElective.isSelected = !semesterElective.isSelected"
+          [disabled]="
+            this.isLockedIn ||
+            !this.canEdit ||
+            (!semesterElective.isSelected &&
+              (requiredElectivesLeftToChooseInGroup(semesterGroup) === 0 || requiredElectivesLeftToChoose === 0))
+          ">
+          {{ semesterElective.name }}
+        </mat-checkbox>
+        <sup matTooltip="Has Prerequisite" *ngIf="semesterElective.hasPrerequisite">&nbsp;*</sup>
+        <sup matTooltip="Community Passport Elective" *ngIf="semesterElective.isCommunityPassportElective">&nbsp;†</sup>
+        <sup matTooltip="Community Passport Alternate" *ngIf="semesterElective.isCommunityPassportElectiveAlternate">
+          &nbsp;‡
+        </sup>
+      </div>
+    </div>
+    <ng-container
+      *ngIf="
+        semesterGroups.length === 0 || (semesterGroups.length === 1 && semesterGroups[0].semesterElectives.length === 0)
+      ">
+      No electives has been setup for this semester. Please contact your mentor.
+    </ng-container>
+
+    <div *ngIf="requireCommunityPassportForm" class="alert alert-info">
+      <b>You have chosen a community passport elective!</b>
+      <p>In order to continue, make sure you click on and complete the following Community Passport Application:</p>
+      <a
+        (click)="communityPassportFormLinkClicked = true"
+        mat-button
+        color="primary"
+        target="_blank"
+        [href]="communityPassportForm.url">
+        {{ communityPassportForm.url }}
+      </a>
+    </div>
+  </div>
+</ng-template>

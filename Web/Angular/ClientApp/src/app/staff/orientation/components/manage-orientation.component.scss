@@ -1,0 +1,93 @@
+@use "/src/theme.scss";
+
+.sidenav-container {
+  height: 100%;
+}
+
+.sidenav {
+  width: 300px;
+  top: 150px !important;
+}
+
+mat-sidenav-content {
+  padding-top: 60px;
+}
+
+.page-container {
+  padding-top: 90px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.mat-toolbar {
+  height: 64px;
+  position: fixed;
+  z-index: 2;
+  background-color: #fafafa;
+}
+
+:host ::ng-deep {
+  .no-padding {
+    .mat-form-field-wrapper {
+      padding-bottom: 0;
+    }
+  }
+}
+
+.slide-link {
+  font-size: 14px;
+  overflow: hidden;
+
+  .slide-title {
+    font-weight: bold;
+    white-space: nowrap;
+    font-size: 16px;
+  }
+
+  mat-icon {
+    font-size: 18px;
+    height: auto;
+
+    &.Upcoming {
+      color: theme.$AmEdu-orange;
+    }
+
+    &.Inactive {
+      color: theme.$warn-color;
+    }
+
+    &.Active {
+      color: theme.$accent-color;
+    }
+  }
+}
+
+mat-nav-list {
+  padding: 0;
+
+  a {
+    overflow-x: hidden;
+    white-space: nowrap;
+  }
+
+  [mat-list-item] {
+    padding: 10px 0 !important;
+
+    &:not(.active):not(:hover) {
+      background-color: #ddd;
+
+      *:not(.slide-title) {
+        opacity: 0.8;
+      }
+    }
+  }
+}
+
+.cdk-drag-preview {
+  background-color: white;
+  box-shadow: 5px 5px 10px;
+}
+
+.cdk-drag:hover:not(.cdk-drag-disabled) {
+  cursor: move !important;
+}

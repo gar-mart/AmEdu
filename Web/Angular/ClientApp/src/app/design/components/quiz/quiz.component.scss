@@ -1,0 +1,12 @@
+.correct-answer {
+  color: #33691e;
+  font-weight: bold;
+}
+
+.selected-answer {
+  color: #f44336;
+}
+
+div.questionText:nth-child(n + 2) {
+  margin-top: 20px !important;
+}

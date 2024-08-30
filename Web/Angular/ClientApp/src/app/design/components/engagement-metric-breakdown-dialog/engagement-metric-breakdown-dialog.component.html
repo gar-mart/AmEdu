@@ -1,0 +1,48 @@
+<app-dialog dialogType="primary">
+  <div dialog-title class="fw-500 ta-center fcolor-white row justify-content-between">
+    <span class="title">{{ title }}</span>
+    <span>{{ data.studentName }}</span>
+    <span *ngIf="showDateRange">
+      <span *ngIf="data.startDate" matTooltip="selected start date">
+        {{ data.startDate | date : "mediumDate" }} -&nbsp;
+      </span>
+      <span matTooltip="selected end date">{{ data.endDate | date : "mediumDate" }}</span>
+    </span>
+  </div>
+  <div dialog-content class="fs-14 p-0">
+    <table
+      mat-table
+      [dataSource]="dataSource"
+      matSort
+      class="staff-table w-100per"
+      matTableExporter
+      #exporter="matTableExporter">
+      <ng-container *ngFor="let column of columns" [matColumnDef]="column.property">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column.title }}</th>
+        <td mat-cell *matCellDef="let row">{{ row[column.property] }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columnOrder; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnOrder"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="columns.length">
+          <div class="text-center text-muted" *ngIf="!loading">No data.</div>
+          <mat-spinner *ngIf="loading" class="mx-auto mt-10 mb-10"></mat-spinner>
+        </td>
+      </tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[10, 50, 100, 1000]" [pageSize]="1000" showFirstLastButtons></mat-paginator>
+  </div>
+  <div dialog-footer class="row justify-content-between">
+    <button
+      mat-icon-button
+      (click)="exporter.exportTable('xlsx', { fileName: exportFileName })"
+      color="accent"
+      matTooltip="Export to Excel">
+      <mat-icon>download</mat-icon>
+    </button>
+    <button mat-button (click)="dialogRef.close()" color="primary">Close</button>
+  </div>
+</app-dialog>

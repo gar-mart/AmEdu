@@ -1,0 +1,22 @@
+<form #formDirective="ngForm" [formGroup]="form">
+  <app-dialog dialogType="primary">
+    <div dialog-title class="fw-500 ta-center fcolor-white row justify-content-between">
+      <span class="title">{{ title }}</span>
+    </div>
+    <div dialog-content class="fs-14">
+      <mat-form-field color="primary" class="w-100per mt-20">
+        <input matInput formControlName="comments" #comments autofocus="autofocus" placeholder="Comments (optional)" />
+        <mat-error *ngIf="form.controls.comments.hasError('maxlength')">
+          {{ form.controls.comments.errors.maxlength.actualLength }} /
+          {{ form.controls.comments.errors.maxlength.requiredLength }} characters
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div dialog-footer>
+      <button mat-raised-button (click)="save()" color="primary" class="fcolor-white" [disabled]="appComponent.isBusy">
+        Submit
+      </button>
+      <button mat-button (click)="cancel()" color="primary" class="ml-10">Cancel</button>
+    </div>
+  </app-dialog>
+</form>

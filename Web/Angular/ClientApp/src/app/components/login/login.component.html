@@ -1,0 +1,58 @@
+<div [hidden]="initializing">
+  <div class="logo"></div>
+
+  <div class="centered" [class.choose-login]="!selectedLoginOption">
+    <div class="w-100per" *ngIf="selectedLoginOption">
+      <!--<img src="https://localhost:44318/api/common/ReturnProfilePicture/913" />-->
+      <img
+        [hidden]="selectedLoginOption !== 1"
+        src="assets/AmEdu-logo-k-5-color.png"
+        class="w-300"
+        height="103.125px" />
+      <!-- Set explicit height to reduce flicker -->
+      <img [hidden]="selectedLoginOption === 1" src="assets/AmEdu-logo-color.png" class="w-300" height="140.906px" />
+      <!-- Set explicit height to reduce flicker -->
+
+      <div class="w-100per mt-20 mb-20">
+        <!-- Due to the nature of forms in Angular applications, we need to post this form using the .form() function -->
+        <form #externalSignIn action="/api/Account/Account/SignInWithProvider" method="post" class="mt-4">
+          <input #provider type="hidden" name="Provider" />
+          <ng-container *ngIf="showMicrosoftLogin">
+            <button (click)="signIn('Microsoft')" class="fcolor-white" color="primary" mat-raised-button type="submit">
+              LOGIN {{ showGoogleLogin ? "WITH MICROSOFT" : "" }}
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="showGoogleLogin">
+            <button (click)="signIn('Google')" class="fcolor-white" color="primary" mat-raised-button type="submit">
+              LOGIN {{ showMicrosoftLogin ? "WITH GOOGLE" : "" }}
+            </button>
+          </ng-container>
+        </form>
+      </div>
+      <div class="w-100per">
+        <div class="p-25 fcolor-gray">
+          You will be redirected to a
+          {{ showMicrosoftLogin && showGoogleLogin ? "Microsoft/Google" : showMicrosoftLogin ? "Microsoft" : "Google" }}
+          login page. Please use your AmEdu email credentials to login.
+        </div>
+      </div>
+      <div class="w-100per">
+        <button mat-stroked-button class="fs-10" (click)="chooseNewLogin()">Change Login</button>
+      </div>
+    </div>
+    <div class="w-100per" *ngIf="!selectedLoginOption">
+      <button
+        *ngFor="let option of loginOptions"
+        mat-raised-button
+        color="{{ option.color }}"
+        (click)="selectLogin(option.value)"
+        class="fcolor-white w-300 mb-10">
+        {{ option.text }}
+      </button>
+    </div>
+  </div>
+  <div class="freedomDevFooter">
+    <a href="https://www.freedomdev.com/" mat-button color="primary" target="_blank">powered by FreedomDev</a>
+  </div>
+</div>

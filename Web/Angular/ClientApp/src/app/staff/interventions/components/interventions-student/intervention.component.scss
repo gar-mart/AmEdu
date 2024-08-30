@@ -1,0 +1,36 @@
+:host ::ng-deep {
+  .tasks {
+    .mat-card-header {
+      padding-bottom: 25px;
+      flex-direction: column;
+      gap: 10px;
+
+      .mat-card-header-text {
+        display: none;
+      }
+
+      h4 {
+        margin: 0;
+      }
+    }
+
+    button.mat-primary {
+      margin-top: 20px;
+    }
+  }
+}
+
+ul.reason {
+  list-style: none;
+
+  li {
+    padding-left: 10px;
+    border-left: 1px solid rgba(0, 0, 0, 0.32);
+  }
+}
+
+fieldset {
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}

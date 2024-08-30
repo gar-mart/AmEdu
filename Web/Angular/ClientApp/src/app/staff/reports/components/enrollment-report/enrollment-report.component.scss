@@ -1,0 +1,25 @@
+form {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+mat-expansion-panel-header {
+  background-color: #4fc3f7 !important;
+  color: white;
+}
+
+::ng-deep {
+  .mat-expansion-panel-body {
+    padding-top: 16px !important;
+    background-color: #fafafa;
+  }
+}
+
+mat-card {
+  width: 470px;
+
+  &:first-child {
+    margin-bottom: 20px;
+  }
+}

@@ -1,0 +1,43 @@
+mat-progress-bar {
+  height: 4px;
+}
+
+table {
+  border-collapse: collapse;
+  width: fit-content;
+
+  tr:first-child {
+    td {
+      padding-bottom: 20px;
+    }
+  }
+
+  td {
+    vertical-align: top;
+
+    &:first-child {
+      padding-right: 20px;
+    }
+  }
+}
+
+label {
+  font-weight: bold;
+}
+
+.list-item {
+  padding: 10px;
+  margin: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 5px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+legend {
+  font-weight: bold;
+}

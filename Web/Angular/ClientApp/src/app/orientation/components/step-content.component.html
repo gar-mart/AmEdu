@@ -1,0 +1,69 @@
+<ng-container *ngIf="content.is(YouTubeVideoContentModel)">
+  <app-you-tube-video-content
+    [content]="$any(content)"
+    [editMode]="editMode"
+    [previewMode]="previewMode"
+    (edit)="edit.emit()"></app-you-tube-video-content>
+</ng-container>
+
+<ng-container *ngIf="content.is(SystemContentModel)">
+  <app-system-content
+    [content]="$any(content)"
+    [editMode]="editMode"
+    [previewMode]="previewMode"
+    [step]="step"
+    [updateMode]="updateMode"
+    [masterStep]="masterStep"></app-system-content>
+</ng-container>
+
+<ng-container *ngIf="content.is(ShortcutContentModel)">
+  <app-shortcut-content
+    [content]="$any(content)"
+    [editMode]="editMode"
+    [previewMode]="previewMode"
+    (edit)="edit.emit()"></app-shortcut-content>
+</ng-container>
+
+<ng-container *ngIf="content.is(StudentResourceContentModel)">
+  <app-student-resource-content
+    [content]="$any(content)"
+    [editMode]="editMode"
+    [previewMode]="previewMode"
+    (edit)="edit.emit()"></app-student-resource-content>
+</ng-container>
+
+<ng-container *ngIf="content.is(ContactContentModel)">
+  <app-contact-content
+    [content]="$any(content)"
+    [editMode]="editMode"
+    [previewMode]="previewMode"
+    (edit)="edit.emit()"></app-contact-content>
+</ng-container>
+
+<ng-container *ngIf="content.is(TextImageContentModel)">
+  <app-text-image-content
+    [content]="$any(content)"
+    [editMode]="editMode"
+    [previewMode]="previewMode"
+    (edit)="edit.emit()"></app-text-image-content>
+</ng-container>
+
+<ng-container *ngIf="content.is(SignatureContentModel)">
+  <app-signature-content
+    [content]="$any(content)"
+    [editMode]="editMode"
+    [previewMode]="previewMode"
+    [step]="step"
+    [updateMode]="updateMode"
+    (edit)="edit.emit()"></app-signature-content>
+</ng-container>
+
+<ng-container *ngIf="content.is(QuizContentModel)">
+  <app-quiz-content
+    [content]="$any(content)"
+    [editMode]="editMode"
+    [previewMode]="previewMode"
+    [step]="step"
+    [updateMode]="updateMode"
+    (edit)="edit.emit()"></app-quiz-content>
+</ng-container>

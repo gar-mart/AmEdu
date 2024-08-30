@@ -1,0 +1,570 @@
+@import "./colors";
+
+@mixin padding($values...) {
+  @each $var in $values {
+    padding: #{var} !important;
+  }
+}
+
+@mixin margin($values...) {
+  @each $var in $values {
+    margin: #{var} !important;
+  }
+}
+
+@mixin font-color($color) {
+  color: $color !important;
+}
+
+@mixin font-size($size) {
+  font-size: $size !important;
+}
+
+@mixin font-weight($weight) {
+  font-weight: $weight !important;
+}
+
+@mixin display($display) {
+  display: $display !important;
+}
+
+@mixin autoComplete($width, $marginTop) {
+  width: $width !important;
+  margin-top: $marginTop !important;
+}
+
+// Background color
+.bg-color-lightgray {
+  background-color: #eeeeee;
+}
+
+.bg-color-orange {
+  background-color: #fb8c00 !important;
+}
+
+.bg-color-yellow {
+  background-color: yellow !important;
+}
+
+.bg-color-aqua {
+  background-color: aqua !important;
+}
+
+.bg-color-lightgreen {
+  background-color: limegreen !important;
+}
+
+.bg-color-magenta {
+  background-color: magenta !important;
+}
+
+.bg-color-blue {
+  background-color: blue !important;
+}
+
+.bg-color-transparent {
+  background-color: transparent !important;
+}
+
+.bg-color-mediumgray {
+  background-color: $mediumGray !important;
+}
+
+// Font color
+.fcolor-white {
+  color: white !important;
+}
+
+.fcolor-gray {
+  color: gray !important;
+}
+
+.fcolor-red {
+  color: #ff0000 !important;
+}
+
+.fcolor-orange {
+  color: #fb8c00 !important;
+}
+
+.fcolor-yellow {
+  color: #ffff00 !important;
+}
+
+.fcolor-green {
+  color: #00ff00 !important;
+}
+
+.fcolor-blue {
+  color: #0000ff !important;
+}
+
+.fcolor-black {
+  color: #000000 !important;
+}
+
+// Margin
+.m-auto {
+  margin: auto !important;
+}
+
+.mt-0 {
+  margin-top: 0 !important;
+}
+
+.mt-5 {
+  margin-top: 5px !important;
+}
+
+.mt-10 {
+  margin-top: 10px !important;
+}
+
+.mt-15 {
+  margin-top: 15px !important;
+}
+
+.mt-20 {
+  margin-top: 20px !important;
+}
+
+.mt-30 {
+  margin-top: 30px !important;
+}
+
+.mt-35 {
+  margin-top: 35px !important;
+}
+
+.mt-50 {
+  margin-top: 50px !important;
+}
+
+.mt-75 {
+  margin-top: 75px !important;
+}
+
+.ml-5 {
+  margin-left: 5px !important;
+}
+
+.ml-10 {
+  margin-left: 10px !important;
+}
+
+.ml-15 {
+  margin-left: 15px !important;
+}
+
+.ml-20 {
+  margin-left: 20px !important;
+}
+
+.ml-25 {
+  margin-left: 25px !important;
+}
+
+.ml-45 {
+  margin-left: 45px !important;
+}
+
+.ml-50 {
+  margin-left: 50px !important;
+}
+
+.ml-150 {
+  margin-left: 150px !important;
+}
+
+.mr-0 {
+  margin-right: 0px !important;
+}
+
+.mr-5 {
+  margin-right: 5px !important;
+}
+
+.mr-10 {
+  margin-right: 10px !important;
+}
+
+.mr-15 {
+  margin-right: 15px !important;
+}
+
+.mr-20 {
+  margin-right: 20px !important;
+}
+
+.mr-25 {
+  margin-right: 25px !important;
+}
+
+.mr-35 {
+  margin-right: 35px !important;
+}
+
+.mr-50 {
+  margin-right: 50px !important;
+}
+
+.mr-150 {
+  margin-right: 150px !important;
+}
+
+.mb-0 {
+  margin-bottom: 0px !important;
+}
+
+.mb-5 {
+  margin-bottom: 5px !important;
+}
+
+.mb-10 {
+  margin-bottom: 10px !important;
+}
+
+.mb-15 {
+  margin-bottom: 15px !important;
+}
+
+.mb-20 {
+  margin-bottom: 20px !important;
+}
+
+.mb-30 {
+  margin-bottom: 30px !important;
+}
+
+.mb-35 {
+  margin-bottom: 35px !important;
+}
+
+.mb-40 {
+  margin-bottom: 40px !important;
+}
+
+.mb-45 {
+  margin-bottom: 45px !important;
+}
+
+.mb-50 {
+  margin-bottom: 50px !important;
+}
+
+.mb-75 {
+  margin-bottom: 75px !important;
+}
+
+.m-20 {
+  margin: 20px !important;
+}
+
+// Font Size
+.fs-10 {
+  font-size: 10px !important;
+}
+
+.fs-11 {
+  font-size: 11px !important;
+}
+
+.fs-12 {
+  font-size: 12px !important;
+}
+
+.fs-13 {
+  font-size: 13px !important;
+}
+
+.fs-14 {
+  font-size: 14px !important;
+}
+
+.fs-16 {
+  font-size: 16px !important;
+}
+
+.fs-18 {
+  font-size: 18px !important;
+}
+
+.fs-20 {
+  font-size: 20px !important;
+}
+
+.fs-22 {
+  font-size: 22px !important;
+}
+
+.fs-24 {
+  font-size: 24px !important;
+}
+
+.fs-28 {
+  font-size: 28px !important;
+}
+
+// Font Weight
+.fw-500 {
+  font-weight: 500 !important;
+}
+
+.fw-600 {
+  font-weight: 600 !important;
+}
+
+// Width
+.w-60 {
+  width: 60px !important;
+}
+
+.w-80 {
+  width: 80px !important;
+}
+
+.w-90 {
+  width: 90px !important;
+}
+
+.w-100 {
+  width: 100px !important;
+}
+
+.w-125 {
+  width: 125px !important;
+}
+
+.w-150 {
+  width: 150px !important;
+}
+
+.w-200 {
+  width: 200px !important;
+}
+
+.w-300 {
+  width: 300px !important;
+}
+
+.w-400 {
+  width: 400px !important;
+}
+
+.w-500 {
+  width: 500px !important;
+}
+
+.w-600 {
+  width: 600px !important;
+}
+
+.w-700 {
+  width: 700px !important;
+}
+
+.w-30per {
+  width: 30% !important;
+}
+
+.w-80per {
+  width: 80% !important;
+}
+
+.w-100per {
+  width: 100% !important;
+}
+
+// Max Width
+.mw-640 {
+  max-width: 640px !important;
+}
+
+.mw-1280 {
+  max-width: 1280px !important;
+}
+
+// Display
+.dis-b {
+  display: block !important;
+}
+
+.dis-ib {
+  display: inline-block !important;
+}
+
+.dis-none {
+  display: none !important;
+}
+
+.dis-initial {
+  display: initial !important;
+}
+
+// Padding
+.p-0 {
+  padding: 0px !important;
+}
+
+.p-10 {
+  padding: 10px !important;
+}
+
+.p-20 {
+  padding: 20px !important;
+}
+
+.p-25 {
+  padding: 25px !important;
+}
+
+.pt-0 {
+  padding-top: 0px !important;
+}
+
+.pt-5 {
+  padding-top: 5px !important;
+}
+
+.pt-10 {
+  padding-top: 10px !important;
+}
+
+.pt-15 {
+  padding-top: 15px !important;
+}
+
+.pt-20 {
+  padding-top: 20px !important;
+}
+
+.pt-25 {
+  padding-top: 25px !important;
+}
+
+.pb-0 {
+  padding-bottom: 0px !important;
+}
+
+.pb-5 {
+  padding-bottom: 5px !important;
+}
+
+.pb-10 {
+  padding-bottom: 10px !important;
+}
+
+.pb-15 {
+  padding-bottom: 15px !important;
+}
+
+.pb-20 {
+  padding-bottom: 20px !important;
+}
+
+.pb-25 {
+  padding-bottom: 25px !important;
+}
+
+.pr-20 {
+  padding-right: 20px !important;
+}
+
+.pr-25 {
+  padding-right: 25px !important;
+}
+
+.pr-35 {
+  padding-right: 35px !important;
+}
+
+.pl-20 {
+  padding-left: 20px !important;
+}
+
+.pl-25 {
+  padding-left: 25px !important;
+}
+
+.pl-50 {
+  padding-left: 50px !important;
+}
+
+// Text align
+.ta-center {
+  text-align: center !important;
+}
+
+// Underline
+.tu {
+  text-decoration: underline !important;
+}
+
+// Vertical Alignment
+.va-bottom {
+  vertical-align: bottom !important;
+}
+
+.va-middle {
+  vertical-align: middle !important;
+}
+
+.va-super {
+  vertical-align: super !important;
+}
+
+.va-top {
+  vertical-align: top !important;
+}
+
+// Float
+.float-r {
+  float: right !important;
+}
+
+// Opacity
+.op-5 {
+  opacity: 0.5 !important;
+}
+
+.op-7 {
+  opacity: 0.7 !important;
+}
+
+.op-1 {
+  opacity: 1 !important;
+}
+
+// Image Align
+.image-center {
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+// Text Decoration
+.td-none {
+  text-decoration: none;
+}
+
+// Border Radius
+.bradius-50 {
+  border-radius: 50% !important;
+}
+
+.border-gray {
+  border: solid 0.1em #616161 !important;
+  border-radius: 0.3em !important;
+}
+
+// Box Shadow
+.bShadow-none {
+  box-shadow: none !important;
+}
+
+// Make a text input hide overflow with ellipsis
+.input-overflow-ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}

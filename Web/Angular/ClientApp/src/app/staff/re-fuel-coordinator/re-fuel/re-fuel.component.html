@@ -1,0 +1,142 @@
+<div class="admin-mentor-container">
+  <div *ngIf="!form">Loading...</div>
+  <div *ngIf="form">
+    <!-- Update RE:Fuel options -->
+    <form
+      #formDirective="ngForm"
+      [formGroup]="form"
+      fxLayout="row wrap"
+      fxLayoutAlign="start center"
+      fxLayout.xs="column"
+      fxLayoutGap="25px"
+      class="mb-30">
+      <mat-form-field color="primary" class="w-300 mr-25">
+        <span matPrefix>
+          <mat-icon>person</mat-icon>
+          &nbsp;
+        </span>
+        <input matInput placeholder="Maximum Open Positions" formControlName="maxOpenPositions" type="number" />
+      </mat-form-field>
+
+      <mat-form-field color="primary" class="w-300 mr-25">
+        <span matPrefix>
+          <mat-icon>person_outline</mat-icon>
+          &nbsp;
+        </span>
+        <input matInput placeholder="Maximum Standby Positions" formControlName="maxStandbyPositions" type="number" />
+      </mat-form-field>
+
+      <mat-slide-toggle formControlName="breakfastOffered">Breakfast Offered</mat-slide-toggle>
+
+      <mat-slide-toggle formControlName="lunchOffered">Lunch Offered</mat-slide-toggle>
+
+      <button
+        *ngIf="form.dirty"
+        mat-raised-button
+        class="mr-25 w-125"
+        color="accent"
+        (click)="saveReFuelEdits()"
+        [disabled]="saving">
+        <span class="fs-13 fcolor-white">Save Edits</span>
+      </button>
+
+      <button
+        *ngIf="form.dirty"
+        mat-raised-button
+        class="mr-25 w-125"
+        color="warn"
+        (click)="form.reset()"
+        [disabled]="saving">
+        <span class="fs-13 fcolor-white">Cancel Edits</span>
+      </button>
+    </form>
+
+    <mat-form-field class="ta-center">
+      <mat-select placeholder="Week" [formControl]="weekFilter">
+        <mat-option [value]="week" *ngFor="let week of weekFilterOptions">
+          {{ week | date : "longDate" }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div
+      *ngIf="inquiryFormGroup"
+      [formGroup]="inquiryFormGroup"
+      fxLayout="row"
+      fxLayoutAlign="between"
+      fxLayoutGap="25px"
+      class="mb-30">
+      <mat-card>
+        <mat-card-header class="m-0">
+          <mat-card-title>Inquiries</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>
+            If any of these inquiries are filled out, then the student will be required to provide a response when
+            making a reservation for the selected week. For breakfast and for lunch , this would only apply if the
+            student reserved those meals.
+          </p>
+          <p>To view the student's responses, in the tables below click on View Reservation.</p>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="inquiry">
+        <mat-card-header class="m-0">
+          <mat-card-title>General Inquiry</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-form-field class="w-100per" appearance="fill">
+            <textarea matInput formControlName="generalInquiry"></textarea>
+            <mat-error>Too long of an inquiry.</mat-error>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="inquiry">
+        <mat-card-header class="m-0">
+          <mat-card-title>Breakfast Inquiry</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-form-field class="w-100per" appearance="fill">
+            <textarea matInput formControlName="breakfastInquiry"></textarea>
+            <mat-error>Too long of an inquiry.</mat-error>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="inquiry">
+        <mat-card-header class="m-0">
+          <mat-card-title>Lunch Inquiry</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-form-field class="w-100per" appearance="fill">
+            <textarea matInput formControlName="lunchInquiry"></textarea>
+            <mat-error>Too long of an inquiry.</mat-error>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div *ngIf="inquiryFormGroup?.dirty" class="mb-30">
+      <button mat-raised-button class="mr-25 w-125" color="accent" (click)="saveInquiryEdits()" [disabled]="saving">
+        <span class="fs-13 fcolor-white">Save Edits</span>
+      </button>
+
+      <button mat-raised-button class="mr-25 w-125" color="warn" (click)="inquiryFormGroup.reset()" [disabled]="saving">
+        <span class="fs-13 fcolor-white">Cancel Edits</span>
+      </button>
+    </div>
+
+    <div class="mb-30">
+      <app-re-fuel-reservations
+        *ngIf="reservations"
+        [input]="tuesdayReservationsInput"
+        (reload)="loadDataTable()"></app-re-fuel-reservations>
+    </div>
+
+    <app-re-fuel-reservations
+      *ngIf="reservations"
+      [input]="thursdayReservationsInput"
+      (reload)="loadDataTable()"></app-re-fuel-reservations>
+  </div>
+</div>

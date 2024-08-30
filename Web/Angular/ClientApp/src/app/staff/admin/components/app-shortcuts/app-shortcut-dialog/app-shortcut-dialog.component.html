@@ -1,0 +1,96 @@
+<form #formDirective="ngForm" [formGroup]="form">
+  <app-dialog dialogType="primary">
+    <div dialog-title class="title fw-500">
+      {{ isNew ? "New Shortcut" : "Edit Shortcut" }}
+    </div>
+    <div dialog-content class="fs-14">
+      <!--Title-->
+      <mat-form-field color="primary" class="w-100per">
+        <mat-label>Title</mat-label>
+        <input matInput placeholder="Title" formControlName="title" />
+        <mat-error *ngIf="form.controls['title'].hasError('required')">Please enter a Title</mat-error>
+      </mat-form-field>
+
+      <!--URL-->
+      <mat-form-field color="primary" class="w-100per">
+        <mat-label>URL</mat-label>
+        <input type="text" matInput placeholder="URL" formControlName="url" />
+        <mat-error *ngIf="form.controls['url'].hasError('required')">Please enter a URL</mat-error>
+        <mat-error *ngIf="form.controls['url'].hasError('pattern')">
+          Please enter a valid URL (e.g. https://www.AmEduglobal.org)
+        </mat-error>
+      </mat-form-field>
+
+      <!--Cannot be hidden-->
+      <div class="row mt-15 mb-15">
+        <div class="w-50per">
+          <mat-checkbox
+            matInput
+            formControlName="cannotBeHidden"
+            matTooltip="When enabled, students cannot hide this app shortcut from their dashboard."
+            matTooltipPosition="above">
+            Cannot be hidden
+          </mat-checkbox>
+        </div>
+
+        <div class="w-50per">
+          <mat-checkbox
+            matInput
+            formControlName="shownByDefault"
+            matTooltip="When enabled, new students will see this shortcut on their dashboard."
+            matTooltipPosition="above">
+            Shown by default
+          </mat-checkbox>
+        </div>
+      </div>
+
+      <!--Grade Levels-->
+      <app-grade-level-selector
+        [selectedGrades]="selectedGradeLevels"
+        (gradesSelected)="selectedGradesChanged($event)"></app-grade-level-selector>
+
+      <div class="pt-25">
+        <input
+          #uploadInput
+          hidden="true"
+          type="file"
+          onclick="this.value=null"
+          (change)="uploadInputChange($event)"
+          accept="image/*" />
+
+        <div *ngIf="!readingFile">
+          <img *ngIf="form.controls.image.value" [src]="form.controls.image.value" />
+        </div>
+
+        <mat-progress-bar *ngIf="readingFile" mode="indeterminate" color="primary"></mat-progress-bar>
+
+        <button
+          mat-button
+          [color]="imageError ? 'warn' : 'primary'"
+          (click)="uploadInput.click()"
+          [class.mat-raised-button]="imageError">
+          Upload Image
+        </button>
+
+        <mat-error *ngIf="imageError" class="mt-10">Please upload an Image</mat-error>
+      </div>
+    </div>
+    <div dialog-footer>
+      <button type="button" *ngIf="!isNew" mat-button (click)="delete()" color="warn" class="ml-10" [disabled]="saving">
+        Delete
+      </button>
+      <button type="button" mat-button (click)="cancel()" color="primary" class="ml-10" [disabled]="saving">
+        Close
+      </button>
+      <button
+        type="submit"
+        mat-raised-button
+        (click)="confirm()"
+        color="primary"
+        class="fcolor-white"
+        [disabled]="saving">
+        Save
+      </button>
+    </div>
+  </app-dialog>
+</form>

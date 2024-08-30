@@ -1,0 +1,78 @@
+@import "../../../../../styles/colors.scss";
+
+.example-container {
+  position: absolute;
+  top: 46px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.mat-list-base {
+  padding-top: 0;
+}
+
+.example-section-container {
+  margin-top: 15px;
+  padding: 5px 25px;
+}
+
+.example-section {
+  display: flex;
+  align-content: center;
+  align-items: center;
+}
+
+.complete {
+  color: #9ccc65 !important;
+  font-weight: bold;
+}
+
+.inProgress {
+  color: #fb8c00 !important;
+  font-weight: bold;
+}
+
+.current {
+  background-color: aliceblue !important;
+}
+
+.notStarted {
+  color: black !important;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+.isStaff {
+  .notStarted {
+    pointer-events: all; // let staff members "skip around"
+  }
+}
+
+.progressStatus {
+  font-size: 14px !important;
+  font-weight: 600;
+  color: #fb8c00 !important;
+  margin-left: 20px;
+}
+
+// SIDE NAVIGATION
+
+.mat-sidenav {
+  width: 20%;
+  min-width: 275px;
+}
+
+mat-sidenav-content {
+  overflow-x: auto;
+  width: 80%;
+}
+
+.mat-drawer-inner-container {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.mat-icon {
+  overflow: unset;
+}

@@ -1,0 +1,14 @@
+<app-toolbar></app-toolbar>
+<app-tab-group [tabs]="tabs"></app-tab-group>
+<router-outlet></router-outlet>
+
+<button
+  *ngIf="engagementFlagNotifications.length"
+  matTooltip="You have {{ engagementFlagNotifications.length }} engagment flag(s) to respond to"
+  mat-fab
+  color="warn"
+  id="floatingButton"
+  (click)="openEngagementFlagNotifications()">
+  <mat-icon *ngIf="notificationRinging">notifications_active</mat-icon>
+  <mat-icon *ngIf="!notificationRinging">notifications</mat-icon>
+</button>

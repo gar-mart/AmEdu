@@ -1,0 +1,21 @@
+<div class="preview-container">
+  <div class="inner-container">
+    <mat-card class="stepCardContainer">
+      <mat-card-header>
+        <mat-card-title>{{ step.name }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="ml-15 mt-15">
+          <ng-container *ngIf="slideService.loadingContent; else loaded">Loading content...</ng-container>
+          <ng-template #loaded>
+            <div fxLayout="column" fxLayoutGap="20px">
+              <div *ngFor="let item of slideService.content; trackBy: slideService.contentTrackBy">
+                <app-step-content [content]="item" [previewMode]="true" [masterStep]="step"></app-step-content>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

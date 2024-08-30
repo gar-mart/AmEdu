@@ -1,0 +1,21 @@
+.link-text {
+  font-weight: bold !important;
+}
+
+.AmEduNavBar {
+  min-width: 900px;
+  overflow-x: auto;
+}
+
+.mat-tab-link.child-tab {
+  justify-content: flex-start;
+}
+
+::ng-deep .mat-menu-panel.pt-0.pb-0 > .mat-menu-content {
+  padding-bottom: 0px !important;
+  padding-top: 0px !important;
+}
+
+.mat-tab-link {
+  min-width: auto; // Angular material imposes a min-width of 160px - remove that constraint
+}

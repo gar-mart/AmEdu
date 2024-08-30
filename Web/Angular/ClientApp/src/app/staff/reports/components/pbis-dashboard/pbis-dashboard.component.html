@@ -1,0 +1,153 @@
+<div class="admin-mentor-container">
+  <div>
+    <mat-form-field class="mt-5 w-150 ta-center mr-25">
+      <mat-select placeholder="Choose School" [formControl]="schoolFilter">
+        <mat-option value="All">All</mat-option>
+        <mat-option value="AmEdustudents.org">AmEdu</mat-option>
+        <mat-option value="innocademystudents.com">Innocademy</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="mr-25">
+      <mat-label>Enter a date range</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input matStartDate placeholder="Start date" [formControl]="startDateFilter" />
+        <input matEndDate placeholder="End date" [formControl]="endDateFilter" />
+      </mat-date-range-input>
+      <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+
+    <app-choose-a-grade
+      *ngIf="!hideGradeLevelFilter"
+      class="no-padding mr-25"
+      appearance="outline"
+      [control]="gradeLevelFilter"></app-choose-a-grade>
+
+    <mat-form-field class="mt-5 w-100 ta-center mr-25">
+      <mat-select placeholder="Chart Grouping" [formControl]="chartGroupingFilter">
+        <mat-option [value]="grouping" *ngFor="let grouping of chartGrouping">
+          {{ grouping }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="mr-25">
+      <mat-label>Choose a Mentor</mat-label>
+      <mat-select [formControl]="mentorFilter">
+        <mat-option [value]="null">All</mat-option>
+        <mat-option *ngFor="let mentor of mentors" [value]="mentor">
+          {{ mentor.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button
+      mat-mini-fab
+      matTooltip="Cash out student's points"
+      matTooltipPosition="above"
+      class="text-white h-content w-auto line-h-inherit px-5 hover-child"
+      color="accent"
+      (click)="cashOutPoints()">
+      <mat-icon>attach_money</mat-icon>
+    </button>
+  </div>
+
+  <h1 class="mb-0">Engagement Flags</h1>
+  <div class="pb-20">
+    <div fxLayout="row" fxLayout.md="column" fxLayoutGap="10">
+      <div fxFlex="50">
+        <app-outstanding-engagement-flags-table
+          [startDate]="startDateFilter.value"
+          [endDate]="endDateFilter.value"
+          [schoolFilter]="schoolFilter.value"
+          [gradeLevelFilter]="gradeLevelFilter.value"
+          [mentorFilter]="
+            mentorFilter.value ? mentorFilter.value.name : undefined
+          "></app-outstanding-engagement-flags-table>
+      </div>
+
+      <div fxFlex="50">
+        <app-flagged-students-table
+          [startDate]="startDateFilter.value"
+          [endDate]="endDateFilter.value"
+          [schoolFilter]="schoolFilter.value"
+          [gradeLevelFilter]="gradeLevelFilter.value"
+          [mentorFilter]="mentorFilter.value ? mentorFilter.value.name : undefined"></app-flagged-students-table>
+      </div>
+    </div>
+    <div fxLayout="row" fxLayout.md="column" fxLayoutGap="10">
+      <app-rejected-engagement-flags-table
+        fxFlex="50"
+        [startDate]="startDateFilter.value"
+        [endDate]="endDateFilter.value"
+        [schoolFilter]="schoolFilter.value"
+        [gradeLevelFilter]="gradeLevelFilter.value"
+        [mentorFilter]="mentorFilter.value ? mentorFilter.value.name : undefined"></app-rejected-engagement-flags-table>
+
+      <div fxFlex="50">
+        <app-flag-responses-chart
+          [startDate]="startDateFilter.value"
+          [endDate]="endDateFilter.value"
+          [chartGroupingFilter]="chartGroupingFilter.value"
+          [mentorFilter]="mentorFilter.value ? mentorFilter.value.id : '-1'"
+          [schoolFilter]="schoolFilter.value"
+          [gradeLevelFilter]="gradeLevelFilter.value"></app-flag-responses-chart>
+      </div>
+    </div>
+    <div fxLayout="row" fxLayout.md="column" fxLayoutGap="10" fxLayoutAlign="center center">
+      <div fxFlex="100" class="chart-container">
+        <app-flags-generated-chart
+          [startDate]="startDateFilter.value"
+          [endDate]="endDateFilter.value"
+          [chartGroupingFilter]="chartGroupingFilter.value"
+          [mentorFilter]="mentorFilter.value ? mentorFilter.value.id : '-1'"
+          [schoolFilter]="schoolFilter.value"
+          [gradeLevelFilter]="gradeLevelFilter.value"></app-flags-generated-chart>
+      </div>
+    </div>
+
+    <h1 class="mb-0 mt-10">R.I.S.E. Points</h1>
+    <div fxLayout="row" fxLayout.md="column" fxLayoutGap="10">
+      <div fxFlex="50">
+        <app-point-source-page-chart
+          [startDate]="startDateFilter.value"
+          [endDate]="endDateFilter.value"
+          [chartGroupingFilter]="chartGroupingFilter.value"
+          [mentorFilter]="mentorFilter.value ? mentorFilter.value.id : '-1'"
+          [schoolFilter]="schoolFilter.value"
+          [gradeLevelFilter]="gradeLevelFilter.value"></app-point-source-page-chart>
+      </div>
+      <div fxFlex="50">
+        <app-point-source-staff-chart
+          [startDate]="startDateFilter.value"
+          [endDate]="endDateFilter.value"
+          [chartGroupingFilter]="chartGroupingFilter.value"
+          [mentorFilter]="mentorFilter.value ? mentorFilter.value.id : '-1'"
+          [schoolFilter]="schoolFilter.value"
+          [gradeLevelFilter]="gradeLevelFilter.value"></app-point-source-staff-chart>
+      </div>
+    </div>
+    <div fxLayout="row" fxLayout.md="column" fxLayoutGap="10">
+      <div fxFlex="100">
+        <app-point-detail-table
+          [startDate]="startDateFilter.value"
+          [endDate]="endDateFilter.value"
+          [schoolFilter]="schoolFilter.value"
+          [gradeLevelFilter]="gradeLevelFilter.value"></app-point-detail-table>
+      </div>
+    </div>
+    <div fxLayout="row" fxLayout.md="column" fxLayoutGap="10">
+      <div fxFlex="100">
+        <app-point-types-awarded-chart
+          [startDate]="startDateFilter.value"
+          [endDate]="endDateFilter.value"
+          [chartGroupingFilter]="chartGroupingFilter.value"
+          [mentorFilter]="mentorFilter.value ? mentorFilter.value.id : '-1'"
+          [schoolFilter]="schoolFilter.value"
+          [gradeLevelFilter]="gradeLevelFilter.value"></app-point-types-awarded-chart>
+      </div>
+    </div>
+  </div>
+</div>

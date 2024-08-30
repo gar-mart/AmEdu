@@ -1,0 +1,11 @@
+<angular-editor #editor ngModel [config]="editorConfig" (input)="inputChanged()" required>
+  <ng-template #customButtons>
+    <ae-toolbar-set>
+      <ae-button
+        *ngFor="let color of fontColors"
+        iconClass="fa fa-font {{ color.className }}"
+        title="Text Background {{ color.name }}"
+        (buttonClick)="applyColor(color.hexCode)"></ae-button>
+    </ae-toolbar-set>
+  </ng-template>
+</angular-editor>

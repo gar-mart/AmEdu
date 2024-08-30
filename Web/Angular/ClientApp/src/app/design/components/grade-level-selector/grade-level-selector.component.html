@@ -1,0 +1,36 @@
+<b>{{ label }}</b>
+
+<div fxLayout="row">
+  <div class="grades">
+    <div class="mb-20">
+      <mat-checkbox [checked]="gradesK5Selected" (change)="toggleKThrough5()">K-5</mat-checkbox>
+    </div>
+    <div *ngFor="let grade of gradeListK5">
+      <mat-checkbox [checked]="grade.selected" (change)="gradeSelectedChange(grade.value)">
+        {{ grade.value }}
+      </mat-checkbox>
+    </div>
+  </div>
+
+  <div class="grades">
+    <div class="mb-20">
+      <mat-checkbox [checked]="grades68Selected" (change)="toggle6Through8()">6-8</mat-checkbox>
+    </div>
+    <div *ngFor="let grade of gradeList68">
+      <mat-checkbox [checked]="grade.selected" (change)="gradeSelectedChange(grade.value)">
+        {{ grade.value }}
+      </mat-checkbox>
+    </div>
+  </div>
+
+  <div class="grades">
+    <div class="mb-20">
+      <mat-checkbox [checked]="grades912Selected" (change)="toggle9Through12()">9-12</mat-checkbox>
+    </div>
+    <div *ngFor="let grade of gradeList912">
+      <mat-checkbox [checked]="grade.selected" (change)="gradeSelectedChange(grade.value)">
+        {{ grade.value }}
+      </mat-checkbox>
+    </div>
+  </div>
+</div>

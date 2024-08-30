@@ -1,0 +1,33 @@
+<div class="detail-container">
+  <mat-card>
+    <mat-card-content>
+      <form [formGroup]="formGroup" fxLayout="row wrap" fxLayoutGap="20px">
+        <mat-form-field>
+          <input
+            matInput
+            [matDatepicker]="activateDate"
+            placeholder="Active Date"
+            formControlName="activateDate"
+            (click)="activateDate.open()" />
+          <mat-datepicker-toggle matSuffix [for]="activateDate"></mat-datepicker-toggle>
+          <mat-datepicker #activateDate startView="month"></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input
+            matInput
+            [matDatepicker]="expirationDate"
+            placeholder="Expires On (optional)"
+            formControlName="expirationDate"
+            (click)="expirationDate.open()" />
+          <mat-datepicker-toggle matSuffix [for]="expirationDate"></mat-datepicker-toggle>
+          <mat-datepicker #expirationDate startView="month"></mat-datepicker>
+        </mat-form-field>
+
+        <app-grade-level-selector
+          [selectedGrades]="formGroup.controls.gradeLevels.value"
+          (gradesSelected)="gradesSelected($event)"></app-grade-level-selector>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

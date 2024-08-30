@@ -1,0 +1,25 @@
+<div class="tab-container">
+  <ng-template #loading>Loading...</ng-template>
+
+  <ng-container *ngIf="communityPassportForms; else loading">
+    <div *ngFor="let form of communityPassportForms; let index = index">
+      <mat-divider *ngIf="index"></mat-divider>
+
+      <form>
+        <h3>{{ form.cell | cellName }}</h3>
+
+        <mat-form-field appearance="standard">
+          <mat-label>URL</mat-label>
+          <input name="url" matInput [(ngModel)]="form.url" maxlength="500" [disabled]="isUpdating" />
+          <a *ngIf="form.url" mat-icon-button matSuffix target="_blank" [href]="form.url" matTooltip="Open in new tab">
+            <mat-icon>open_in_new</mat-icon>
+          </a>
+        </mat-form-field>
+      </form>
+    </div>
+
+    <button mat-raised-button color="primary" class="fcolor-white" (click)="save()" [disabled]="isUpdating">
+      Submit
+    </button>
+  </ng-container>
+</div>

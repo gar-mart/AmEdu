@@ -1,0 +1,36 @@
+.content-container {
+  padding: 30px;
+}
+
+.add-button-container {
+  button {
+    margin: 10px;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.widget {
+  margin-bottom: 20px;
+  padding: 0;
+
+  .widget-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+
+    [cdkdraghandle] {
+      margin-right: 5px;
+    }
+  }
+
+  .widget-content {
+    padding: 20px;
+  }
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}

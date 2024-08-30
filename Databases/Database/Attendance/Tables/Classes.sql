@@ -1,0 +1,12 @@
+﻿CREATE TABLE Attendance.Classes (
+	Id INT IdENTITY(1,1) NOT NULL
+	, Name NVARCHAR(200) NOT NULL
+	, StartDate DATE NOT NULL
+	, EndDate DATE NOT NULL
+	, ConnexusId BIGINT NULL
+	, LincolnLearningId BIGINT NULL
+	, FlexPointId BIGINT NULL
+	, MarkedForDelete BIT NOT NULL CONSTRAINT DF_Classes_MarkedForDelete DEFAULT(0)
+	, IsDeleted BIT NOT NULL CONSTRAINT DF_Classes_IsDeleted DEFAULT (0)
+	, CONSTRAINT PK_Classes PRIMARY KEY CLUSTERED (Id)
+)

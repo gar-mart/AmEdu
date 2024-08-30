@@ -1,0 +1,63 @@
+<form [formGroup]="form" *ngIf="editMode" class="edit-form">
+  <div>
+    <mat-form-field class="w-600">
+      <mat-label>Disclaimer</mat-label>
+      <textarea cdkTextareaAutosize matInput formControlName="disclaimer"></textarea>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field class="fs-13 w-600">
+    <mat-label>Who must sign?</mat-label>
+    <input matInput formControlName="signer" />
+  </mat-form-field>
+</form>
+
+<form [formGroup]="form" *ngIf="!editMode && (!step?.isCompleted || updateMode) && isValid">
+  <p>{{ contentType.disclaimer }}</p>
+  <label>
+    <strong>{{ contentType.signer }} Signature:</strong>
+  </label>
+  <div class="sig-container mr-25 mt-10 w-600">
+    <app-signature-field #signature formControlName="signature"></app-signature-field>
+  </div>
+  <div class="mt-20">
+    <div>
+      <button
+        mat-raised-button
+        color="accent"
+        class="clearSignatureButton"
+        (click)="clearSignature()"
+        type="button"
+        [disabled]="this.form.get('signature').invalid">
+        Clear signature
+      </button>
+    </div>
+    <label class="mr-10"><strong>Date:</strong></label>
+    <mat-form-field class="fs-13 w-300 mt-10">
+      <input
+        matInput
+        [matDatepicker]="signDate"
+        placeholder="Date you're signing this form on"
+        formControlName="signDate"
+        (click)="signDate.open()"
+        required />
+      <mat-datepicker-toggle matSuffix [for]="signDate"></mat-datepicker-toggle>
+      <mat-datepicker #signDate startView="month" [startAt]="signDate"></mat-datepicker>
+      <mat-error *ngIf="form.controls['signDate'].hasError('required')">
+        Please select the date for which you are signing this form
+      </mat-error>
+    </mat-form-field>
+  </div>
+</form>
+
+<div #notEditMode *ngIf="step?.isCompleted && !updateMode && isValid">
+  <p>{{ contentType.disclaimer }}</p>
+  <label>
+    <strong>
+      {{ contentType.signer }} Signature - Signed On: {{ form.controls["signDate"].value | date : "shortDate" }}
+    </strong>
+  </label>
+  <div class="sig-container mr-25 mt-10 w-600">
+    <img src="{{ studentSignatureContent?.signature }}" width="600px" height="150px" align="middle" />
+  </div>
+</div>

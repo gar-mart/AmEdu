@@ -1,0 +1,164 @@
+<mat-card class="mb-10">
+  <mat-card-content>
+    <fieldset>
+      <legend><b>From Address</b></legend>
+      <mat-form-field class="w-500">
+        <mat-label>Optionally enter an alternate email address you have permissions to send from.</mat-label>
+        <input matInput type="email" [(ngModel)]="sendAsEmailAddress" />
+      </mat-form-field>
+      <span *ngIf="sendAsEmailAddress && !emailAddressIsValid(sendAsEmailAddress)" class="mat-error">
+        Not a valid email address.
+      </span>
+    </fieldset>
+
+    <fieldset class="mt-20">
+      <legend><b>Recipients</b></legend>
+      <input
+        type="text"
+        class="w-100per input-overflow-ellipsis"
+        matInput
+        [value]="structuredRecipients"
+        readonly
+        (focus)="focusRecipients($event)" />
+    </fieldset>
+
+    <fieldset class="mt-20">
+      <legend><b>Bcc</b></legend>
+      <mat-checkbox [(ngModel)]="bccAllRecipients">Bcc All Recipients</mat-checkbox>
+    </fieldset>
+
+    <fieldset class="mt-20">
+      <legend><b>Start from an email template</b></legend>
+
+      <mat-form-field class="w-300">
+        <mat-label>Select Template</mat-label>
+        <mat-select [(ngModel)]="emailTemplate" (selectionChange)="templateSelected()">
+          <mat-option *ngFor="let item of emailTemplates" [value]="item">
+            {{ item.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-button color="primary" (click)="manageEmailTemplate()">Save/Manage Email Template</button>
+    </fieldset>
+
+    <fieldset class="mt-20">
+      <legend><b>Compose email</b></legend>
+
+      <mat-form-field class="subject-form-field pb-10">
+        <mat-label>Subject</mat-label>
+        <input matInput [(ngModel)]="emailSubject" required />
+        <mat-error>This field is required.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="allowPersonalization" class="pb-10 w-300">
+        <mat-label>Add Personalization</mat-label>
+        <button mat-icon-button matPrefix (click)="dialog.open(personalizationTokenHelp); $event.stopPropagation()">
+          <mat-icon class="fs-18">help</mat-icon>
+        </button>
+        <mat-select [formControl]="tokenFormControl">
+          <mat-option *ngFor="let token of personalizationTokens" [value]="token.key">{{ token.label }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <fd-angular-rich-text-wrapper
+        #editor
+        [editorConfig]="angularEditorConfig"
+        (editorUpdated)="editorUpdated($any($event))"></fd-angular-rich-text-wrapper>
+    </fieldset>
+
+    <fieldset class="mt-20">
+      <legend><b>Attachments</b></legend>
+
+      <div fxLayout="row wrap">
+        <div *ngFor="let attachment of emailAttachments; let i = index">
+          <span class="attachment" fxLayout="row" fxLayoutAlign="start center">
+            {{ attachment.name }}
+            <button mat-icon-button (click)="removeAttachment(i)" matTooltip="Remove attachment">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </span>
+        </div>
+      </div>
+
+      <input #uploadInput hidden="true" type="file" onclick="this.value=null" (change)="addAttachment($event)" />
+      <button mat-raised-button color="primary" (click)="uploadInput.click()" class="fcolor-white mr-20 mt-20">
+        Add an Attachment
+      </button>
+    </fieldset>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button mat-raised-button color="accent" class="fcolor-white" (click)="previewEmail()">Preview/Send</button>
+  </mat-card-actions>
+</mat-card>
+
+<ng-template #personalizationTokenHelp>
+  <h2 mat-dialog-title>Personalization Tokens</h2>
+  <mat-dialog-content class="fs-14">
+    Personalization tokens allow you to personalize your emails by embedding personal attributes in a generic email
+    template.
+
+    <h4>How do they work?</h4>
+
+    <p>
+      When one of the supported tokens are present in your email, we will replace the token with the corresponding
+      person's name. For example, consider the following email being sent to two students John and Jane with the
+      corresponding mentors Robert and Mary.
+    </p>
+
+    <div fxLayout="column" fxLayoutGap="20px">
+      <fieldset>
+        <legend>Email Template</legend>
+        Hello {{ "{" }}student_first_name}! Just as a reminder, your mentor's name is {{ "{" }}mentor_first_name}.
+      </fieldset>
+
+      <fieldset>
+        <legend>John's Email</legend>
+        Hello John! Just as a reminder, your mentor's name is Robert.
+      </fieldset>
+
+      <fieldset>
+        <legend>Jane's Email</legend>
+        Hello Jane! Just as a reminder, your mentor's name is Mary.
+      </fieldset>
+    </div>
+
+    <h4>List of Supported Personalization Tokens</h4>
+    <table>
+      <tr *ngFor="let token of personalizationTokens">
+        <td class="pr-20">{{ token.label }}</td>
+        <td>
+          <b>{{ token.key }}</b>
+        </td>
+      </tr>
+    </table>
+
+    <h4>What Else Should I Know?</h4>
+    <ul>
+      <li>
+        If there is no match for one or more tokens (because a mentor was not assigned, a student hasn't setup their
+        guardians, etc.), then the token will be left as is in the email.
+      </li>
+      <li>
+        You can style the
+        <b>entire</b>
+        token with text formatting, but you cannot split the formatting.
+        <ul>
+          <li>Ex: Half of a token cannot be bold while the other half is left as normal text.</li>
+        </ul>
+      </li>
+      <li>
+        You
+        <b>can</b>
+        type or paste the token yourself in the email template, but if you use the personalization dropdown, the token
+        will be placed at the
+        <b>end</b>
+        of the template and use the same styles as the last text formatting.
+      </li>
+    </ul>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close cdkFocusInitial>Close</button>
+  </mat-dialog-actions>
+</ng-template>

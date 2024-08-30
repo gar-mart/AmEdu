@@ -1,0 +1,49 @@
+<h3 class="font-weight-semi-bold mb-10">{{ date | date : "fullDate" }}</h3>
+
+<div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayout.xs="column" fxLayoutGap="25px">
+  <ng-container *ngIf="reservation">
+    <ng-container *ngIf="easternTime > date">You can no longer cancel this reservation.</ng-container>
+    <ng-container *ngIf="easternTime <= date">
+      <span *ngIf="reservation.standbyPosition" class="row align-items-center">
+        <mat-chip-list>
+          <mat-chip color="accent" selected class="mr-10 text-nowrap">On Wait List</mat-chip>
+        </mat-chip-list>
+        You will receive an email when someone cancels their reservation, and you are bumped up to an open spot!
+      </span>
+      <span *ngIf="!reservation.standbyPosition" class="row align-items-center">
+        <mat-chip-list>
+          <mat-chip color="accent" selected class="mr-10 text-nowrap">Scheduled</mat-chip>
+        </mat-chip-list>
+        You are scheduled to go on this day!
+      </span>
+      <button [disabled]="isSaving" mat-button color="warn" (click)="cancelReservation()">Cancel Reservation</button>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="!reservation">
+    <ng-container *ngIf="canSignUp">
+      <ng-container *ngIf="!eligibility.allRequirementsMet">
+        <span>Unfortunately, you not eligibile to sign up for this day.</span>
+        <i>{{ getEligibilityMessage() }}</i>
+      </ng-container>
+      <ng-container *ngIf="eligibility.allRequirementsMet">
+        <ng-container *ngIf="eligibility.canClaimOpenSpot">
+          There are open spots left!
+          <button [disabled]="isSaving" mat-raised-button color="accent" class="fcolor-white" (click)="reserveSpot()">
+            Sign Up
+          </button>
+        </ng-container>
+        <ng-container *ngIf="eligibility.canClaimStandbyPosition && !eligibility.canClaimOpenSpot">
+          There are no open spots left, but you can still get on a wait list! You will be sent an email if anyone
+          cancels their reservation.
+          <button [disabled]="isSaving" mat-raised-button color="accent" class="fcolor-white" (click)="reserveSpot()">
+            Sign Up
+          </button>
+        </ng-container>
+        <ng-container *ngIf="!eligibility.canClaimOpenSpot && !eligibility.canClaimStandbyPosition">
+          Unfortunately there are no spots left. Check back later in case any free up!
+        </ng-container>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="!canSignUp">Open sign up has ended.</ng-container>
+  </ng-container>
+</div>

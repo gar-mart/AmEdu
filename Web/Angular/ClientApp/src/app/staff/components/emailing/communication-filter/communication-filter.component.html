@@ -1,0 +1,53 @@
+<div fxLayout="column" fxLayoutGap="10px">
+  <form [formGroup]="filter" fxLayout="row wrap" fxLayoutGap="10px">
+    <fieldset fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center">
+      <mat-form-field>
+        <mat-label>My Recipient Lists</mat-label>
+        <mat-select formControlName="list">
+          <mat-option [value]="null"></mat-option>
+          <mat-option *ngFor="let list of lists" [value]="list">
+            {{ list.name }}
+          </mat-option>
+        </mat-select>
+        <button
+          *ngIf="filter.controls.list.value"
+          matSuffix
+          mat-icon-button
+          aria-label="Clear value"
+          matTooltip="Clear value"
+          (click)="clearList($event)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <button
+        *ngIf="filter.controls.list.value"
+        mat-stroked-button
+        color="warn"
+        (click)="deleteList(filter.controls.list.value)">
+        Delete Selected List
+      </button>
+    </fieldset>
+
+    <fieldset fxLayout="row wrap" fxLayoutGap="10px">
+      <mat-form-field>
+        <mat-label>Choose a School</mat-label>
+        <mat-select formControlName="domain">
+          <mat-option [value]="null"></mat-option>
+          <mat-option *ngFor="let domain of domains" [value]="domain.value">
+            {{ domain.text }}
+          </mat-option>
+        </mat-select>
+        <button
+          *ngIf="filter.controls.domain.value"
+          matSuffix
+          mat-icon-button
+          aria-label="Clear value"
+          matTooltip="Clear value"
+          (click)="filter.controls.domain.patchValue(null); $event.stopPropagation()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </fieldset>
+  </form>
+</div>

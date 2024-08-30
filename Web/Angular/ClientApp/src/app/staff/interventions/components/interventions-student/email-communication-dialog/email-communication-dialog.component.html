@@ -1,0 +1,205 @@
+<app-dialog dialogType="primary">
+  <div dialog-title class="title fw-500 ta-center fcolor-white">
+    {{ emailSent ? "" : "Send" }} Intervention {{ intervention.level > 0 ? "Level " + intervention.level : "Warning" }}
+    Email
+  </div>
+
+  <div dialog-content class="fs-14">
+    <ng-container *ngIf="emailSent; else sendEmail">
+      <div fxLayout="column" fxLayoutGap="20px ">
+        <!-- Readonly history -->
+        <fieldset>
+          <legend>Sent From</legend>
+          <a href="mailto:{{ emailSent.fromEmailAddress }}">
+            {{ emailSent.fromEmailAddress }}
+          </a>
+        </fieldset>
+
+        <fieldset>
+          <legend>Sent To</legend>
+          <ul>
+            <li *ngFor="let toEmailAddress of emailSent.recipientEmails">
+              <a href="mailto:{{ toEmailAddress }}">
+                {{ toEmailAddress }}
+              </a>
+            </li>
+          </ul>
+        </fieldset>
+
+        <fieldset>
+          <legend>Subject</legend>
+          {{ emailSent.subject }}
+        </fieldset>
+
+        <fieldset>
+          <legend>Body</legend>
+          <div [innerHTML]="emailSent.body | safe : 1"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Attachments</legend>
+          <ng-container *ngIf="emailSent.attachments?.length; else noAttachments">
+            <ul>
+              <li *ngFor="let attachment of emailSent.attachments">
+                <a [href]="attachment.url" target="_blank">{{ attachment.fileName }}</a>
+              </li>
+            </ul>
+          </ng-container>
+          <ng-template #noAttachments>
+            <i>None</i>
+          </ng-template>
+        </fieldset>
+      </div>
+    </ng-container>
+
+    <ng-template #sendEmail>
+      <mat-progress-bar *ngIf="!emailTemplate" mode="indeterminate"></mat-progress-bar>
+
+      <div *ngIf="emailTemplate" fxLayout="column" fxLayoutGap="20px">
+        <table>
+          <tr>
+            <td class="va-middle">
+              <div fxLayout="row" fxLayoutAlign="start center">
+                <label>From</label>
+                <mat-icon class="invisible">contact_mail</mat-icon>
+              </div>
+            </td>
+            <td>
+              <div
+                [matTooltip]="emailTemplate.emailFromAddress"
+                fxLayout="row"
+                fxLayoutAlign="start center"
+                fxLayoutGap="10px">
+                <span>{{ emailTemplate.emailFrom | from }}:</span>
+                <span class="fcolor-gray">{{ emailTemplate.emailFromAddress }}</span>
+                <mat-form-field *ngIf="showCounselors" class="ml-20">
+                  <mat-label>Select a counselor</mat-label>
+                  <mat-select [(value)]="emailTemplate.emailFromAddress" [disabled]="disableInput">
+                    <mat-option *ngFor="let counselor of counselors" [value]="counselor.email">
+                      {{ counselor.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div fxLayout="row" fxLayoutAlign="start center">
+                <label>To</label>
+              </div>
+            </td>
+            <td>
+              <div
+                *ngFor="let recipient of emailTemplate.recipients"
+                [matTooltip]="recipient.email"
+                fxLayout="row"
+                fxLayoutAlign="start center"
+                fxLayoutGap="10px">
+                <span>{{ recipient.emailTo | to }}:</span>
+                <span class="fcolor-gray">{{ recipient.email }}</span>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <div>
+          <div>
+            <label>Additional Recipients</label>
+          </div>
+
+          <div fxLayout="row wrap">
+            <div *ngFor="let entry of additionalRecipients; let index = index">
+              <span class="list-item" fxLayout="row" fxLayoutAlign="start center">
+                {{ entry }}
+                <button
+                  mat-icon-button
+                  (click)="removeAdditionalRecipient(entry)"
+                  matTooltip="Remove Recipient"
+                  [disabled]="disableInput">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </span>
+            </div>
+          </div>
+
+          <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+            <mat-form-field appearance="standard">
+              <input
+                [formControl]="additionalRecipientControl"
+                [disabled]="disableInput"
+                matInput
+                placeholder="username@email.com"
+                type="email"
+                (keyup.enter)="addAdditionalRecipient()" />
+              <mat-error>Please enter a valid email address</mat-error>
+            </mat-form-field>
+            <button matSuffix mat-raised-button (click)="addAdditionalRecipient()" [disabled]="disableInput">
+              Add
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <div>
+            <label>Subject</label>
+          </div>
+          <mat-form-field class="w-100per">
+            <input matInput [(ngModel)]="emailTemplate.emailSubject" required [disabled]="disableInput" />
+            <mat-error>A subject is required</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div>
+          <div>
+            <label>Body</label>
+            <fd-angular-rich-text-wrapper
+              [editorConfig]="angularEditorConfig"
+              (editorUpdated)="emailBodyChange($any($event))"></fd-angular-rich-text-wrapper>
+          </div>
+        </div>
+
+        <div>
+          <div>
+            <label>Attachments</label>
+          </div>
+
+          <div fxLayout="row wrap" class="mb-10">
+            <div *ngFor="let attachment of emailAttachments; let i = index">
+              <span class="list-item" fxLayout="row" fxLayoutAlign="start center">
+                <ng-container *ngIf="!attachment.url">{{ attachment.file.name }}</ng-container>
+                <a *ngIf="attachment.url" [href]="attachment.url" target="_blank">
+                  {{ attachment.file.name }}
+                </a>
+                <button
+                  mat-icon-button
+                  (click)="removeAttachment(i)"
+                  matTooltip="Remove attachment"
+                  [disabled]="disableInput">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </span>
+            </div>
+          </div>
+
+          <input #uploadInput hidden="true" type="file" onclick="this.value=null" (change)="addAttachment($event)" />
+          <button mat-raised-button (click)="uploadInput.click()" [disabled]="disableInput">Add an Attachment</button>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+
+  <div dialog-footer>
+    <button mat-button [mat-dialog-close]="">Close</button>
+    <button
+      mat-raised-button
+      (click)="send()"
+      color="primary"
+      class="fcolor-white ml-10"
+      [disabled]="!emailTemplate"
+      [disabled]="disableInput"
+      *ngIf="!emailSent">
+      Send Email
+    </button>
+  </div>
+</app-dialog>

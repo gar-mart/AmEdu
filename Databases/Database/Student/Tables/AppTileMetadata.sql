@@ -1,0 +1,11 @@
+﻿CREATE TABLE Student.AppTileMetadata
+(
+	Id INT IdENTITY NOT NULL
+	, Title NVARCHAR(50) NOT NULL
+	, Image NVARCHAR(100) NOT NULL CONSTRAINT DF_AppTileMetadata_Image DEFAULT ('assets/AmEdu-logo-color.png') 
+	, Url NVARCHAR(250) NOT NULL
+	, DefaultOrderBy INT NOT NULL
+	, AlwaysShow BIT NOT NULL CONSTRAINT DF_AlwaysShow DEFAULT(0)
+	, IsDefault BIT NOT NULL CONSTRAINT DF_IsDefault DEFAULT(1)
+    , CONSTRAINT PK_AppTileMetadata PRIMARY KEY CLUSTERED(Id)
+)

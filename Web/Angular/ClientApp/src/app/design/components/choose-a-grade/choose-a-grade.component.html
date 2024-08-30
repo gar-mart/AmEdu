@@ -1,0 +1,47 @@
+<mat-form-field [appearance]="appearance">
+  <mat-label>{{ label }}</mat-label>
+  <mat-select [formControl]="control" multiple #select name="chooseAGrade">
+    <mat-select-trigger>
+      {{ select.value | grade }}
+    </mat-select-trigger>
+
+    <mat-option class="fd-option-group p-0" [disabled]="true">
+      <mat-button-toggle class="w-100per" (change)="checkGroup($event, elementarySchoolGrades)">
+        Toggle K-5
+      </mat-button-toggle>
+    </mat-option>
+    <mat-divider></mat-divider>
+    <mat-option *ngFor="let grade of elementarySchoolGrades" [value]="grade">
+      {{ grade }}
+    </mat-option>
+    <mat-divider></mat-divider>
+    <mat-option class="fd-option-group p-0" [disabled]="true">
+      <mat-button-toggle class="w-100per" (change)="checkGroup($event, middleSchoolGrades)">
+        Toggle 6-8
+      </mat-button-toggle>
+    </mat-option>
+    <mat-divider></mat-divider>
+    <mat-option *ngFor="let grade of middleSchoolGrades" [value]="grade">
+      {{ grade }}
+    </mat-option>
+    <mat-divider></mat-divider>
+    <mat-option class="fd-option-group p-0" [disabled]="true">
+      <mat-button-toggle class="w-100per" (change)="checkGroup($event, highSchoolGrades)">
+        Toggle 9-12
+      </mat-button-toggle>
+    </mat-option>
+    <mat-divider></mat-divider>
+    <mat-option *ngFor="let grade of highSchoolGrades" [value]="grade">
+      {{ grade }}
+    </mat-option>
+  </mat-select>
+  <button
+    *ngIf="control.value && control.value.length"
+    matSuffix
+    mat-icon-button
+    aria-label="Clear value"
+    matTooltip="Clear value"
+    (click)="control.patchValue(null); $event.stopPropagation()">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-form-field>

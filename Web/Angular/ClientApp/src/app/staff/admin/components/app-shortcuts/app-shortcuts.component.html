@@ -1,0 +1,64 @@
+<div class="admin-mentor-container">
+  <button mat-raised-button class="mat-raised-button mat-primary fcolor-white" color="primary" (click)="newShortcut()">
+    New Shortcut
+  </button>
+
+  <mat-card class="p-0">
+    <mat-card-content>
+      <table mat-table [dataSource]="dataSource" matSort class="staff-table mt-20">
+        <!-- Options Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="moreOptions"></th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-icon-button (click)="editShortcut(row)">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="icon">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Icon</th>
+          <td mat-cell *matCellDef="let row">
+            <img [src]="row.image" />
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
+          <td mat-cell *matCellDef="let row">{{ row.title }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="url">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>URL</th>
+          <td mat-cell *matCellDef="let row">
+            <a [href]="row.url" target="_blank">{{ row.url }}</a>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="cannotBeHidden">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Cannot be hidden</th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox [checked]="row.alwaysShow" disabled></mat-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="shownByDefault">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Shown by default</th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox [checked]="row.isDefault" disabled></mat-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="gradeLevels">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Grade Levels</th>
+          <td mat-cell *matCellDef="let row">{{ row.gradeLevelString }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+
+      <mat-paginator fixed [pageSizeOptions]="[10, 25, 100]" showFirstLastButtons></mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

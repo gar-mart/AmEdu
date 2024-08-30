@@ -1,0 +1,5 @@
+﻿CREATE PROCEDURE Framework.RandomReturn
+AS
+SET NOCOUNT ON
+
+SELECT CAST(RAND() * 1000 AS INT) Value

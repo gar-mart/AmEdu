@@ -1,0 +1,47 @@
+<ng-container [ngSwitch]="contentType.componentId">
+  <app-send-us-a-selfie
+    *ngSwitchCase="SystemContentComponentIds.SendUsASelfie"
+    [step]="step"
+    [editMode]="editMode"
+    [updateMode]="updateMode"
+    [previewMode]="previewMode"></app-send-us-a-selfie>
+
+  <app-intro-video
+    *ngSwitchCase="SystemContentComponentIds.IntroVideos"
+    [step]="step"
+    [editMode]="editMode"
+    [previewMode]="previewMode"></app-intro-video>
+
+  <app-verify-your-email
+    *ngSwitchCase="SystemContentComponentIds.OutlookEmailVerification"
+    [step]="step"
+    [editMode]="editMode"
+    [previewMode]="previewMode"></app-verify-your-email>
+
+  <app-connection-survey
+    *ngSwitchCase="SystemContentComponentIds.ConnectionSurvey"
+    [step]="step"
+    [editMode]="editMode"
+    [updateMode]="updateMode"
+    [previewMode]="previewMode"></app-connection-survey>
+
+  <app-semester-electives
+    *ngSwitchCase="SystemContentComponentIds.Semester1Electives"
+    [step]="step"
+    [masterStep]="masterStep"
+    [editMode]="editMode"
+    [previewMode]="previewMode"
+    [updateMode]="updateMode"
+    [semester]="1"></app-semester-electives>
+
+  <app-semester-electives
+    *ngSwitchCase="SystemContentComponentIds.Semester2Electives"
+    [step]="step"
+    [masterStep]="masterStep"
+    [editMode]="editMode"
+    [previewMode]="previewMode"
+    [updateMode]="updateMode"
+    [semester]="2"></app-semester-electives>
+
+  <ng-container *ngSwitchDefault>Not Implemented.</ng-container>
+</ng-container>

@@ -1,0 +1,40 @@
+label,
+a {
+  font-size: 16px;
+  font-weight: bold;
+  display: block;
+  white-space: nowrap;
+
+  &.primary {
+    color: #4fc3f7;
+  }
+
+  &.accent {
+    color: #9ccc65;
+  }
+
+  &.warn {
+    color: #fb8c00;
+  }
+}
+
+a {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.point-description {
+  width: 80%;
+  padding-left: 10px;
+}
+
+.point-value {
+  width: 20%;
+}
+
+p {
+  width: 250px;
+}

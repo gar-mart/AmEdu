@@ -1,0 +1,38 @@
+.mat-column-level1 mat-icon {
+  color: lightgreen;
+}
+
+.mat-column-level2 mat-icon {
+  color: yellow;
+}
+
+.mat-column-level3 mat-icon {
+  color: orange;
+}
+
+.mat-column-level4 mat-icon {
+  color: red;
+}
+
+.email-icon {
+  position: absolute;
+  font-size: 14px;
+  margin-top: 9px;
+  margin-left: 5px;
+}
+
+.mat-column-level1 mat-icon.email-icon {
+  color: #487047 !important;
+}
+
+.mat-column-level2 mat-icon.email-icon {
+  color: #78771b !important;
+}
+
+.mat-column-level3 mat-icon.email-icon {
+  color: #795014 !important;
+}
+
+.mat-column-level4 mat-icon.email-icon {
+  color: #52170b !important;
+}

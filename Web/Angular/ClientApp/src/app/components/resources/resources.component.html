@@ -1,0 +1,43 @@
+<mat-card class="stepCardContainer">
+  <mat-card-header>
+    <mat-card-title class="fs-28">Resources</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-spinner *ngIf="!resourcesByCategoryK5"></mat-spinner>
+    <mat-tab-group>
+      <mat-tab label="K-5">
+        <mat-list fxLayout.lt-md="column" role="list" fxLayout="row wrap" fxLayoutGap="0.5%">
+          <div fxFlex="30%" *ngFor="let entry of resourcesByCategoryK5 | keyvalue">
+            <h3 mat-subheader>{{ entry.key }}</h3>
+            <mat-list-item *ngFor="let resource of entry.value">
+              <mat-icon class="mr-10" color="primary">insert_drive_file</mat-icon>
+              <a target="_blank" href="{{ resource.url }}" class="td-none">{{ resource.title }}</a>
+            </mat-list-item>
+          </div>
+        </mat-list>
+      </mat-tab>
+      <mat-tab label="6-8">
+        <mat-list fxLayout.lt-md="column" role="list" fxLayout="row wrap" fxLayoutGap="0.5%">
+          <div fxFlex="30%" *ngFor="let entry of resourcesByCategory68 | keyvalue">
+            <h3 mat-subheader>{{ entry.key }}</h3>
+            <mat-list-item *ngFor="let resource of entry.value">
+              <mat-icon class="mr-10" color="primary">insert_drive_file</mat-icon>
+              <a target="_blank" href="{{ resource.url }}" class="td-none">{{ resource.title }}</a>
+            </mat-list-item>
+          </div>
+        </mat-list>
+      </mat-tab>
+      <mat-tab label="9-12">
+        <mat-list fxLayout.lt-md="column" role="list" fxLayout="row wrap" fxLayoutGap="0.5%">
+          <div fxFlex="30%" *ngFor="let entry of resourcesByCategory912 | keyvalue">
+            <h3 mat-subheader>{{ entry.key }}</h3>
+            <mat-list-item *ngFor="let resource of entry.value">
+              <mat-icon class="mr-10" color="primary">insert_drive_file</mat-icon>
+              <a target="_blank" href="{{ resource.url }}" class="td-none">{{ resource.title }}</a>
+            </mat-list-item>
+          </div>
+        </mat-list>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card-content>
+</mat-card>

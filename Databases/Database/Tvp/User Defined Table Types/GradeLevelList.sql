@@ -1,0 +1,3 @@
+﻿CREATE TYPE Tvp.GradeLevelList AS TABLE(
+	GradeLevel NVARCHAR(10) NOT NULL
+)

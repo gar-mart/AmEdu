@@ -1,0 +1,32 @@
+<app-dialog dialogType="success">
+  <div dialog-content>
+    <div class="fs-16 ta-center mb-20">
+      Once you begin the orientation process,
+      <strong>you will have 48 hours to complete</strong>
+      before your status becomes invalid
+    </div>
+    <form [formGroup]="form">
+      <mat-form-field>
+        <mat-label>Student Grade Level</mat-label>
+        <mat-select formControlName="studentGradeLevel" required>
+          <mat-option *ngFor="let gradeLevel of gradeLevels" [value]="gradeLevel">
+            {{ gradeLevel }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </div>
+  <div dialog-footer>
+    <div class="mt-10 mr-0">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="startOrientation()"
+        class="fcolor-white"
+        [disabled]="form.invalid">
+        <span>Continue</span>
+      </button>
+      <button mat-stroked-button (click)="cancel()" class="ml-10">Close</button>
+    </div>
+  </div>
+</app-dialog>

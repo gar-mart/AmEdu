@@ -1,0 +1,14 @@
+// unsupported angular-editor buttons
+:host ::ng-deep {
+  #toggleEditorMode- {
+    display: none;
+  }
+
+  #insertVideo- {
+    display: none;
+  }
+
+  .angular-editor-textarea {
+    height: auto !important;
+  }
+}

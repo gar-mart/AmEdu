@@ -1,0 +1,157 @@
+<div class="admin-mentor-container">
+  <div>
+    <mat-form-field color="primary" class="mr-25">
+      <span matPrefix>
+        <mat-icon>search</mat-icon>
+        &nbsp;
+      </span>
+      <input matInput (keyup)="applyFilter($any($event.target).value)" placeholder="Search staff" />
+    </mat-form-field>
+
+    <mat-form-field class="mt-5 w-200 ta-center">
+      <mat-select placeholder="Choose an email domain" [formControl]="emailFilter">
+        <mat-option value="All">All</mat-option>
+        <mat-option value="AmEduglobal.org">AmEdu</mat-option>
+        <mat-option value="innocademy.com">Innocademy</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <mat-card class="p-0 mb-20">
+    <mat-card-content>
+      <div class="table-container">
+        <table mat-table [dataSource]="dataSource" matSort class="staff-table">
+          <!-- Options Column -->
+          <ng-container matColumnDef="moreOptions">
+            <th mat-header-cell *matHeaderCellDef class="moreOptions">Actions</th>
+            <td mat-cell *matCellDef="let row">
+              <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="edit(row)">
+                  <mat-icon>edit</mat-icon>
+                  Edit
+                </button>
+                <button mat-menu-item (click)="openAssignStudentsDialog(row)">
+                  <mat-icon>face</mat-icon>
+                  <span>Assign Students</span>
+                </button>
+              </mat-menu>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Staff Member</th>
+            <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="isAdmin">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Admin</th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox
+                [checked]="row.isAdmin"
+                [(ngModel)]="row.isAdmin"
+                color="primary"
+                (change)="setAdmin(row.id, row.isAdmin)"></mat-checkbox>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="isTeacher">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Teacher</th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox
+                [checked]="row.isTeacher"
+                [(ngModel)]="row.isTeacher"
+                color="primary"
+                (change)="setTeacher(row.id, row.isTeacher)">
+                <input #infoBox matInput type="text" />
+              </mat-checkbox>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="isReFuelCoordinator">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>RE:Fuel Coordinator</th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox
+                [checked]="row.isReFuelCoordinator"
+                [(ngModel)]="row.isReFuelCoordinator"
+                color="primary"
+                (change)="setReFuelCoordinator(row.id, row.isReFuelCoordinator)">
+                <input #infoBox matInput type="text" />
+              </mat-checkbox>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="isInterventionist">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Interventionist</th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox
+                [checked]="row.isInterventionist"
+                [(ngModel)]="row.isInterventionist"
+                color="primary"
+                (change)="setInterventionist(row.id, row.isInterventionist)">
+                <input #infoBox matInput type="text" />
+              </mat-checkbox>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="menteeCount">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header># Mentees</th>
+            <td mat-cell *matCellDef="let row">
+              <button
+                [disabled]="row.menteeCount === 0"
+                mat-raised-button
+                class="h-content w-auto pl-10 pr-10 mr-25 text-white"
+                color="accent"
+                (click)="openViewMenteesDialog(row)"
+                matTooltip="View Mentees"
+                matTooltipPosition="above">
+                <b>{{ row.menteeCount }}</b>
+              </button>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="appointmentLink">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Appointment Link</th>
+            <td mat-cell *matCellDef="let row">
+              <a *ngIf="row.appointmentLink" [href]="row.appointmentLink" target="_blank">{{ row.appointmentLink }}</a>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="introVideoId">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Orientation Intro Video</th>
+            <td mat-cell *matCellDef="let row">
+              <a *ngIf="row.introVideoId" [href]="youtubeUrlPrefix + row.introVideoId" target="_blank">
+                {{ youtubeUrlPrefix + row.introVideoId }}
+              </a>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="mentorGrades">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="menteeCount">
+              Mentor Grade Level Assignments
+            </th>
+            <td mat-cell *matCellDef="let row">
+              {{ row.mentorGrades | grade }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="counselorGrades">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="menteeCount">
+              Counselor Grade Level Assignments
+            </th>
+            <td mat-cell *matCellDef="let row">
+              {{ row.counselorGrades | grade }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+
+      <mat-paginator fixed [pageSizeOptions]="[10, 25, 100]" showFirstLastButtons></mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,8 @@
+﻿CREATE TABLE Staff.QuoteMetadata (
+	Id INT IdENTITY NOT NULL 
+	, Quote NVARCHAR(MAX) NOT NULL
+	, Author NVARCHAR(100) NOT NULL
+	, OrderBy INT NOT NULL
+	, BaselineDate DATE NOT NULL
+	, CONSTRAINT PK_QuoteMetadata PRIMARY KEY CLUSTERED(Id)
+)

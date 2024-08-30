@@ -1,0 +1,483 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>Database</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{1cae04e3-5868-4f5b-8e83-abf33e77cfa6}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath />
+    <RootNamespace>iCademyDB</RootNamespace>
+    <AssemblyName>iCademyDB</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <WarningsAsErrors>SQL71502</WarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="_Schema Compares" />
+    <Folder Include="Attendance" />
+    <Folder Include="Attendance\Functions" />
+    <Folder Include="Attendance\Stored Procedures" />
+    <Folder Include="Attendance\Tables" />
+    <Folder Include="Attendance\Views" />
+    <Folder Include="Common" />
+    <Folder Include="Common\Functions" />
+    <Folder Include="Common\Stored Procedures" />
+    <Folder Include="Common\Tables" />
+    <Folder Include="Common\Types" />
+    <Folder Include="Common\Views" />
+    <Folder Include="Framework" />
+    <Folder Include="Framework\Stored Procedures" />
+    <Folder Include="Framework\Tables" />
+    <Folder Include="Notification" />
+    <Folder Include="Notification\Stored Procedures" />
+    <Folder Include="Orientation" />
+    <Folder Include="Orientation\Stored Procedures" />
+    <Folder Include="Orientation\Tables" />
+    <Folder Include="Orientation\Views" />
+    <Folder Include="Properties" />
+    <Folder Include="Scripts" />
+    <Folder Include="Scripts\Post Deployment" />
+    <Folder Include="Security" />
+    <Folder Include="Security\Stored Procedures" />
+    <Folder Include="Security\Tables" />
+    <Folder Include="Security\Views" />
+    <Folder Include="Staff" />
+    <Folder Include="Staff\Functions" />
+    <Folder Include="Staff\Stored Procedures" />
+    <Folder Include="Staff\Tables" />
+    <Folder Include="Staff\Types" />
+    <Folder Include="Student" />
+    <Folder Include="Student\Functions" />
+    <Folder Include="Student\Stored Procedures" />
+    <Folder Include="Student\Tables" />
+    <Folder Include="Student\Views" />
+    <Folder Include="Tvp" />
+    <Folder Include="Tvp\User Defined Table Types" />
+    <Folder Include="Utility" />
+    <Folder Include="Utility\Functions" />
+    <Folder Include="Utility\Stored Procedures" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Attendance\Attendance.sql" />
+    <Build Include="Attendance\Functions\fnClassUserWork.sql" />
+    <Build Include="Attendance\Functions\fnSummarizeClassUserWork.sql" />
+    <Build Include="Attendance\Functions\fnUserCanEditIntervention.sql" />
+    <Build Include="Attendance\Functions\fxSummarizeClassUserWork.sql" />
+    <Build Include="Attendance\Stored Procedures\AcknowledgeEngagementFlag.sql" />
+    <Build Include="Attendance\Stored Procedures\CreateAbsence.sql" />
+    <Build Include="Attendance\Stored Procedures\CreateClass.sql" />
+    <Build Include="Attendance\Stored Procedures\CreateClassUser.sql" />
+    <Build Include="Attendance\Stored Procedures\CreateClassWork.sql" />
+    <Build Include="Attendance\Stored Procedures\CreateCommunication.sql" />
+    <Build Include="Attendance\Stored Procedures\CreatePoints.sql" />
+    <Build Include="Attendance\Stored Procedures\CreatePointsList.sql" />
+    <Build Include="Attendance\Stored Procedures\DeleteAbsence.sql" />
+    <Build Include="Attendance\Stored Procedures\DeleteCommunication.sql" />
+    <Build Include="Attendance\Stored Procedures\DeleteIntervention.sql" />
+    <Build Include="Attendance\Stored Procedures\DeleteMarkedExternalData.sql" />
+    <Build Include="Attendance\Stored Procedures\DeletePoints.sql" />
+    <Build Include="Attendance\Stored Procedures\GenerateEngagementFlags.sql" />
+    <Build Include="Attendance\Stored Procedures\GenerateIntervention.sql" />
+    <Build Include="Attendance\Stored Procedures\MarkExternalDataForDelete.sql" />
+    <Build Include="Attendance\Stored Procedures\MatchAndReturnEnrollments.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnAbsences.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnAndUpdateScheduleMeetingReminderEmails.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnClasses.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnClassUsers.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnClassUsersByStudentId.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnCommunicationById.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnCommunications.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnCurrentClassUsers.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnEngagementFlagNotifications.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnEngagementFlagReport.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnEngagementFlagsByStudentId.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnEnrollmentsToSyncClassWork.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnFlaggedStudentsReport.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnFlagResponsesReport.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnFlagResponsesReportByCell.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnFlagResponsesReportByMentor.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnFlagsGeneratedReport.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnInterventionById.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnInterventionEmailTemplateByInterventionId.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnInterventionEmailTemplates.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnInterventionsBySearch.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnInterventionsWithLevelsBySearch.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnInterventionThresholdByGrade.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnInterventionThresholds.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnOutstandingEngagementFlagReport.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnPointBalances.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnPointDetailReport.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnPointDetails.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnPoints.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnPointSourcePageReport.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnPointSourceStaffReport.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnPointTypesAwardedReport.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnRejectedEngagementFlagReport.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnStudentsWithInterventions.sql" />
+    <Build Include="Attendance\Stored Procedures\ReturnTardies.sql" />
+    <Build Include="Attendance\Stored Procedures\SetInterventionStatus.sql" />
+    <Build Include="Attendance\Stored Procedures\UpdateAbsence.sql" />
+    <Build Include="Attendance\Stored Procedures\UpdateCommunication.sql" />
+    <Build Include="Attendance\Stored Procedures\UpdateEngagementFlag.sql" />
+    <Build Include="Attendance\Stored Procedures\UpdateEnrollment.sql" />
+    <Build Include="Attendance\Stored Procedures\UpdateInterventionEmailCommunication.sql" />
+    <Build Include="Attendance\Stored Procedures\UpdateInterventionEmailTemplate.sql" />
+    <Build Include="Attendance\Stored Procedures\UpdateInterventionScheduledMeeting.sql" />
+    <Build Include="Attendance\Stored Procedures\UpdateInterventionSuccessPlan.sql" />
+    <Build Include="Attendance\Stored Procedures\UpdateInterventionThreshold.sql" />
+    <Build Include="Attendance\Stored Procedures\UpdateInterventionTruancyForm.sql" />
+    <Build Include="Attendance\Stored Procedures\UpdateLiveLessonPoints.sql" />
+    <Build Include="Attendance\Stored Procedures\UpdateOnlineHours.sql" />
+    <Build Include="Attendance\Stored Procedures\UpdateTardiness.sql" />
+    <Build Include="Attendance\Tables\Absences.sql" />
+    <Build Include="Attendance\Tables\Classes.sql" />
+    <Build Include="Attendance\Tables\ClassUsers.sql" />
+    <Build Include="Attendance\Tables\ClassUserWork.sql" />
+    <Build Include="Attendance\Tables\ClassWork.sql" />
+    <Build Include="Attendance\Tables\Communications.sql" />
+    <Build Include="Attendance\Tables\EngagementFlags.sql" />
+    <Build Include="Attendance\Tables\InterventionEmailAttachments.sql" />
+    <Build Include="Attendance\Tables\InterventionEmailCommunications.sql" />
+    <Build Include="Attendance\Tables\InterventionEmailTemplates.sql" />
+    <Build Include="Attendance\Tables\Interventions.sql" />
+    <Build Include="Attendance\Tables\InterventionScheduledMeetings.sql" />
+    <Build Include="Attendance\Tables\InterventionSuccessPlans.sql" />
+    <Build Include="Attendance\Tables\InterventionThresholds.sql" />
+    <Build Include="Attendance\Tables\InterventionTruancyForms.sql" />
+    <Build Include="Attendance\Tables\LiveLessonPoints.sql" />
+    <Build Include="Attendance\Tables\OnlineHours.sql" />
+    <Build Include="Attendance\Tables\Points.sql" />
+    <Build Include="Attendance\Tables\Tardies.sql" />
+    <Build Include="Attendance\Views\vwClasses.sql" />
+    <Build Include="Attendance\Views\vwClassUsers.sql" />
+    <Build Include="Attendance\Views\vwCurrentClassUsers.sql" />
+    <Build Include="Attendance\Views\vwCurrentEngagementFlags.sql" />
+    <Build Include="Attendance\Views\vwCurrentPoints.sql" />
+    <Build Include="Common\Common.sql" />
+    <Build Include="Common\Functions\CurrentEasternTime.sql" />
+    <Build Include="Common\Functions\CurrentSchoolYear.sql" />
+    <Build Include="Common\Functions\DateRange.sql" />
+    <Build Include="Common\Functions\GetBeginningOfWeek.sql" />
+    <Build Include="Common\Functions\GetSchoolYear.sql" />
+    <Build Include="Common\Functions\IsCurrentSchoolYear.sql" />
+    <Build Include="Common\Stored Procedures\AssignMentorToStudent.sql" />
+    <Build Include="Common\Stored Procedures\AssignSecondaryMentorToStudent.sql" />
+    <Build Include="Common\Stored Procedures\AssignStudentsToMentor.sql" />
+    <Build Include="Common\Stored Procedures\CreateBreak.sql" />
+    <Build Include="Common\Stored Procedures\DeleteBreak.sql" />
+    <Build Include="Common\Stored Procedures\ElevateStudentsGrade.sql" />
+    <Build Include="Common\Stored Procedures\ImportBuzzUsers.sql" />
+    <Build Include="Common\Stored Procedures\ImportUsers.sql" />
+    <Build Include="Common\Stored Procedures\ReturnAllStaff.sql" />
+    <Build Include="Common\Stored Procedures\ReturnAllStudents.sql" />
+    <Build Include="Common\Stored Procedures\ReturnBreakById.sql" />
+    <Build Include="Common\Stored Procedures\ReturnBreaks.sql" />
+    <Build Include="Common\Stored Procedures\ReturnCounselors.sql" />
+    <Build Include="Common\Stored Procedures\ReturnMentors.sql" />
+    <Build Include="Common\Stored Procedures\ReturnMentorStudents.sql" />
+    <Build Include="Common\Stored Procedures\ReturnStaffBySearch.sql" />
+    <Build Include="Common\Stored Procedures\ReturnStudentById.sql" />
+    <Build Include="Common\Stored Procedures\ReturnUserByGoogleId.sql" />
+    <Build Include="Common\Stored Procedures\ReturnUserById.sql" />
+    <Build Include="Common\Stored Procedures\ReturnUserByUserName.sql" />
+    <Build Include="Common\Stored Procedures\SetAdmin.sql" />
+    <Build Include="Common\Stored Procedures\SetInterventionist.sql" />
+    <Build Include="Common\Stored Procedures\SetProfilePicture.sql" />
+    <Build Include="Common\Stored Procedures\SetReFuelCoordinator.sql" />
+    <Build Include="Common\Stored Procedures\SetStudentGrade.sql" />
+    <Build Include="Common\Stored Procedures\SetTeacher.sql" />
+    <Build Include="Common\Stored Procedures\UpdateBreak.sql" />
+    <Build Include="Common\Stored Procedures\UpdateEnrollmentDate.sql" />
+    <Build Include="Common\Stored Procedures\UpdateStaffMember.sql" />
+    <Build Include="Common\Stored Procedures\UpdateUnenrollmentDate.sql" />
+    <Build Include="Common\Tables\Breaks.sql" />
+    <Build Include="Common\Tables\Counselors.sql" />
+    <Build Include="Common\Tables\Mentors.sql" />
+    <Build Include="Common\Tables\Users.sql" />
+    <Build Include="Common\Types\BuzzUser.sql" />
+    <Build Include="Common\Types\SchoolYear.sql" />
+    <Build Include="Common\Views\vwUsers.sql" />
+    <Build Include="Common\vwGradeLevels.sql" />
+    <Build Include="Framework\Framework.sql" />
+    <Build Include="Framework\Stored Procedures\RandomReturn.sql" />
+    <Build Include="Framework\Stored Procedures\ReturnDateTime.sql" />
+    <Build Include="Framework\Stored Procedures\UpdateDateTime.sql" />
+    <Build Include="Framework\Tables\DateTime.sql" />
+    <Build Include="Notification\Notification.sql" />
+    <Build Include="Notification\Stored Procedures\HandleExpirationNotificationSent.sql" />
+    <Build Include="Notification\Stored Procedures\ReturnExpiredOrientation.sql" />
+    <Build Include="Orientation\Orientation.sql" />
+    <Build Include="Orientation\Stored Procedures\CompleteStep.sql" />
+    <Build Include="Orientation\Stored Procedures\CreateAppTileMetadataContent.sql" />
+    <Build Include="Orientation\Stored Procedures\CreateElective.sql" />
+    <Build Include="Orientation\Stored Procedures\CreateElectiveGroup.sql" />
+    <Build Include="Orientation\Stored Procedures\CreateElectiveGroupChoice.sql" />
+    <Build Include="Orientation\Stored Procedures\CreateStep.sql" />
+    <Build Include="Orientation\Stored Procedures\DeleteAppTileMetadataContent.sql" />
+    <Build Include="Orientation\Stored Procedures\DeleteElective.sql" />
+    <Build Include="Orientation\Stored Procedures\DeleteElectiveGroup.sql" />
+    <Build Include="Orientation\Stored Procedures\DeleteElectiveGroupChoice.sql" />
+    <Build Include="Orientation\Stored Procedures\DeleteStep.sql" />
+    <Build Include="Orientation\Stored Procedures\DuplicateStep.sql" />
+    <Build Include="Orientation\Stored Procedures\ResetStudentOrientation.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnCommunityPassportFormByGradeLevel.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnCommunityPassportForms.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnElectiveGroups.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnElectives.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnElectivesBySearch.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnElectiveSettings.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnOrientationReport.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnQuizContentById.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnStepConnectionSurvey.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnStepContent.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnStepIntroById.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnSteps.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnStepsByStudent.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnStepSendUsASelfie.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnStudentPictures.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnStudentSignatureContent.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnUserElectives.sql" />
+    <Build Include="Orientation\Stored Procedures\ReturnUserQuizAnswers.sql" />
+    <Build Include="Orientation\Stored Procedures\StartOrientation.sql" />
+    <Build Include="Orientation\Stored Procedures\Step_ConnectionSurvey_Submit.sql" />
+    <Build Include="Orientation\Stored Procedures\Step_EmailVerification_ReturnCode.sql" />
+    <Build Include="Orientation\Stored Procedures\Step_EmailVerification_VerifyCode.sql" />
+    <Build Include="Orientation\Stored Procedures\Step_SendUsASelfie_Submit.sql" />
+    <Build Include="Orientation\Stored Procedures\Step_UserElectives_Submit.sql" />
+    <Build Include="Orientation\Stored Procedures\SubmitUserAnswers.sql" />
+    <Build Include="Orientation\Stored Procedures\UpdateCommunityPassportForms.sql" />
+    <Build Include="Orientation\Stored Procedures\UpdateElective.sql" />
+    <Build Include="Orientation\Stored Procedures\UpdateElectiveGroup.sql" />
+    <Build Include="Orientation\Stored Procedures\UpdateElectiveSettings.sql" />
+    <Build Include="Orientation\Stored Procedures\UpdateStep.sql" />
+    <Build Include="Orientation\Stored Procedures\UpdateStepOrder.sql" />
+    <Build Include="Orientation\Stored Procedures\UpdateStudentSignatureContent.sql" />
+    <Build Include="Orientation\Tables\AppShortcutContent.sql" />
+    <Build Include="Orientation\Tables\CompletedSteps.sql" />
+    <Build Include="Orientation\Tables\ContactContent.sql" />
+    <Build Include="Orientation\Tables\ElectiveGroupChoices.sql" />
+    <Build Include="Orientation\Tables\ElectiveGroups.sql" />
+    <Build Include="Orientation\Tables\Electives.sql" />
+    <Build Include="Orientation\Tables\ElectiveSettings.sql" />
+    <Build Include="Orientation\Tables\IntroVideos.sql" />
+    <Build Include="Orientation\Tables\Links.sql" />
+    <Build Include="Orientation\Tables\QuestionAnswers.sql" />
+    <Build Include="Orientation\Tables\Questions.sql" />
+    <Build Include="Orientation\Tables\QuizContent.sql" />
+    <Build Include="Orientation\Tables\SemesterElectives.sql" />
+    <Build Include="Orientation\Tables\SignatureContent.sql" />
+    <Build Include="Orientation\Tables\Step_ConnectionSurvey.sql" />
+    <Build Include="Orientation\Tables\Step_EmailVerification.sql" />
+    <Build Include="Orientation\Tables\Step_SendUsASelfie.sql" />
+    <Build Include="Orientation\Tables\Step_UserElectives.sql" />
+    <Build Include="Orientation\Tables\StepGradeLevel.sql" />
+    <Build Include="Orientation\Tables\Steps.sql" />
+    <Build Include="Orientation\Tables\StudentResourceContent.sql" />
+    <Build Include="Orientation\Tables\StudentSignatureContent.sql" />
+    <Build Include="Orientation\Tables\SystemContent.sql" />
+    <Build Include="Orientation\Tables\TextImageContent.sql" />
+    <Build Include="Orientation\Tables\UserAnswers.sql" />
+    <Build Include="Orientation\Tables\YouTubeVideoContent.sql" />
+    <Build Include="Orientation\Views\vwCommunityPassportForms.sql" />
+    <Build Include="Orientation\Views\vwStudentSteps.sql" />
+    <Build Include="Security\Security.sql" />
+    <Build Include="Security\Stored Procedures\CreateAspNetGroup.sql" />
+    <Build Include="Security\Stored Procedures\CreateAspNetGroupsDefault.sql" />
+    <Build Include="Security\Stored Procedures\CreateAspNetRole.sql" />
+    <Build Include="Security\Stored Procedures\CreateGroupRoles.sql" />
+    <Build Include="Security\Stored Procedures\CreateGroupUsers.sql" />
+    <Build Include="Security\Stored Procedures\CreateUserGroups.sql" />
+    <Build Include="Security\Stored Procedures\DeleteAspNetGroup.sql" />
+    <Build Include="Security\Stored Procedures\ReturnAspNetGroupById.sql" />
+    <Build Include="Security\Stored Procedures\ReturnAspNetGroupExistsBySearch.sql" />
+    <Build Include="Security\Stored Procedures\ReturnAspNetGroups.sql" />
+    <Build Include="Security\Stored Procedures\ReturnEffectiveRolesForUser.sql" />
+    <Build Include="Security\Stored Procedures\ReturnGroupsForUser.sql" />
+    <Build Include="Security\Stored Procedures\ReturnRolesForUser.sql" />
+    <Build Include="Security\Stored Procedures\ReturnUsersForGroup.sql" />
+    <Build Include="Security\Stored Procedures\UpdateAspNetGroup.sql" />
+    <Build Include="Security\Tables\AspNetGroupRoles.sql" />
+    <Build Include="Security\Tables\AspNetGroups.sql" />
+    <Build Include="Security\Tables\AspNetRoleClaims.sql" />
+    <Build Include="Security\Tables\AspNetRoles.sql" />
+    <Build Include="Security\Tables\AspNetUserClaims.sql" />
+    <Build Include="Security\Tables\AspNetUserGroups.sql" />
+    <Build Include="Security\Tables\AspNetUserLogins.sql" />
+    <Build Include="Security\Tables\AspNetUserRoles.sql" />
+    <Build Include="Security\Tables\AspNetUserTokens.sql" />
+    <Build Include="Security\Views\vwUserRoles.sql" />
+    <Build Include="Staff\Functions\fnLiveLessonsOffered.sql" />
+    <Build Include="Staff\Staff.sql" />
+    <Build Include="Staff\Stored Procedures\CreateEmailTemplate.sql" />
+    <Build Include="Staff\Stored Procedures\CreateQuoteOfTheDay.sql" />
+    <Build Include="Staff\Stored Procedures\DeleteCommunicationList.sql" />
+    <Build Include="Staff\Stored Procedures\DeleteEmailTemplate.sql" />
+    <Build Include="Staff\Stored Procedures\DeleteQuoteOfTheDay.sql" />
+    <Build Include="Staff\Stored Procedures\ReplaceAnnouncements.sql" />
+    <Build Include="Staff\Stored Procedures\ReturnAssignmentsCompleted.sql" />
+    <Build Include="Staff\Stored Procedures\ReturnCommunicationListById.sql" />
+    <Build Include="Staff\Stored Procedures\ReturnCommunicationLists.sql" />
+    <Build Include="Staff\Stored Procedures\ReturnEmailTemplates.sql" />
+    <Build Include="Staff\Stored Procedures\ReturnEngagementMetricData.sql" />
+    <Build Include="Staff\Stored Procedures\ReturnEngagementReport.sql" />
+    <Build Include="Staff\Stored Procedures\ReturnEnrollmentReport.sql" />
+    <Build Include="Staff\Stored Procedures\ReturnPotentialCommunicationEntries.sql" />
+    <Build Include="Staff\Stored Procedures\ReturnQuotesOfTheDay.sql" />
+    <Build Include="Staff\Stored Procedures\ReturnReFuelById.sql" />
+    <Build Include="Staff\Stored Procedures\ReturnReFuelInquiryById.sql" />
+    <Build Include="Staff\Stored Procedures\ReturnStudentPictureReport.sql" />
+    <Build Include="Staff\Stored Procedures\ReturnStudentSearchInformation.sql" />
+    <Build Include="Staff\Stored Procedures\ReturnStudentSearchInformationByStudentId.sql" />
+    <Build Include="Staff\Stored Procedures\SaveCommunicationList.sql" />
+    <Build Include="Staff\Stored Procedures\SyncReFuelInquiry.sql" />
+    <Build Include="Staff\Stored Procedures\UpdateInformation.sql" />
+    <Build Include="Staff\Stored Procedures\UpdateQuoteOfTheDay.sql" />
+    <Build Include="Staff\Stored Procedures\UpdateReFuel.sql" />
+    <Build Include="Staff\Tables\Announcements.sql" />
+    <Build Include="Staff\Tables\CommunicationListEntries.sql" />
+    <Build Include="Staff\Tables\CommunicationLists.sql" />
+    <Build Include="Staff\Tables\EmailTemplates.sql" />
+    <Build Include="Staff\Tables\QuoteMetadata.sql" />
+    <Build Include="Staff\Tables\ReFuel.sql" />
+    <Build Include="Staff\Tables\ReFuelInquires.sql" />
+    <Build Include="Staff\Types\CommunicationListEntry.sql" />
+    <Build Include="Student\Functions\IsReFuelEligible.sql" />
+    <Build Include="Student\Stored Procedures\AddAppTileGradeLevel.sql" />
+    <Build Include="Student\Stored Procedures\AddAppTileMetadata.sql" />
+    <Build Include="Student\Stored Procedures\CancelReFuelReservation.sql" />
+    <Build Include="Student\Stored Procedures\CreateAppTileMetadata.sql" />
+    <Build Include="Student\Stored Procedures\CreateStudentResource.sql" />
+    <Build Include="Student\Stored Procedures\DeleteAppTileGradeLevelsByMetadataId.sql" />
+    <Build Include="Student\Stored Procedures\DeleteAppTileMetadata.sql" />
+    <Build Include="Student\Stored Procedures\DeleteStudentResource.sql" />
+    <Build Include="Student\Stored Procedures\DeleteStudentResourceContent.sql" />
+    <Build Include="Student\Stored Procedures\MarkAnnouncementRead.sql" />
+    <Build Include="Student\Stored Procedures\PromoteReFuelStandbyPositions.sql" />
+    <Build Include="Student\Stored Procedures\ReserveReFuelReservation.sql" />
+    <Build Include="Student\Stored Procedures\ReturnAnnouncementById.sql" />
+    <Build Include="Student\Stored Procedures\ReturnAnnouncements.sql" />
+    <Build Include="Student\Stored Procedures\ReturnAppTileGradeLevelsByMetadataId.sql" />
+    <Build Include="Student\Stored Procedures\ReturnAppTileMetadata.sql" />
+    <Build Include="Student\Stored Procedures\ReturnAppTileMetadataById.sql" />
+    <Build Include="Student\Stored Procedures\ReturnAppTileMetadataBySearch.sql" />
+    <Build Include="Student\Stored Procedures\ReturnAppTiles.sql" />
+    <Build Include="Student\Stored Procedures\ReturnInformation.sql" />
+    <Build Include="Student\Stored Procedures\ReturnInformationById.sql" />
+    <Build Include="Student\Stored Procedures\ReturnQuoteOfTheDay.sql" />
+    <Build Include="Student\Stored Procedures\ReturnReFuelLogs.sql" />
+    <Build Include="Student\Stored Procedures\ReturnReFuelReservations.sql" />
+    <Build Include="Student\Stored Procedures\ReturnReFuelReservationsById.sql" />
+    <Build Include="Student\Stored Procedures\ReturnStudentResourceById.sql" />
+    <Build Include="Student\Stored Procedures\ReturnStudentResources.sql" />
+    <Build Include="Student\Stored Procedures\ReturnStudentResourcesBySearch.sql" />
+    <Build Include="Student\Stored Procedures\ReturnStudentSupportGroups.sql" />
+    <Build Include="Student\Stored Procedures\UnsubscribeFromWeeklySnapshotEmail.sql" />
+    <Build Include="Student\Stored Procedures\UpdateAppTile.sql" />
+    <Build Include="Student\Stored Procedures\UpdateAppTileMetadata.sql" />
+    <Build Include="Student\Stored Procedures\UpdateReFuelLogs.sql" />
+    <Build Include="Student\Stored Procedures\UpdateReFuelReservation.sql" />
+    <Build Include="Student\Stored Procedures\UpdateScoreHistory.sql" />
+    <Build Include="Student\Stored Procedures\UpdateStudentResource.sql" />
+    <Build Include="Student\Stored Procedures\UpdateStudentResourceAndMetadata.sql" />
+    <Build Include="Student\Stored Procedures\UpdateStudentResourceGradeLevels.sql" />
+    <Build Include="Student\Student.sql" />
+    <Build Include="Student\Tables\AnnouncementsRead.sql" />
+    <Build Include="Student\Tables\AppTileGradeLevel.sql" />
+    <Build Include="Student\Tables\AppTileMetadata.sql" />
+    <Build Include="Student\Tables\AppTiles.sql" />
+    <Build Include="Student\Tables\Information.sql" />
+    <Build Include="Student\Tables\ReFuelLogs.sql" />
+    <Build Include="Student\Tables\ReFuelReservations.sql" />
+    <Build Include="Student\Tables\ScoreHistory.sql" />
+    <Build Include="Student\Tables\StudentResourceGradeLevel.sql" />
+    <Build Include="Student\Tables\StudentResources.sql" />
+    <Build Include="Student\Views\vwInformation.sql" />
+    <Build Include="TVP\Tvp.sql" />
+    <Build Include="TVP\User Defined Table Types\Announcements.sql" />
+    <Build Include="TVP\User Defined Table Types\AppTileMetadataContent.sql" />
+    <Build Include="TVP\User Defined Table Types\ClassUserWork.sql" />
+    <Build Include="TVP\User Defined Table Types\ClassWork.sql" />
+    <Build Include="TVP\User Defined Table Types\CommunityPassportFormLinkList.sql" />
+    <Build Include="TVP\User Defined Table Types\ContactContent.sql" />
+    <Build Include="TVP\User Defined Table Types\ElectiveSettingList.sql" />
+    <Build Include="TVP\User Defined Table Types\EmailList.sql" />
+    <Build Include="TVP\User Defined Table Types\Enrollments.sql" />
+    <Build Include="TVP\User Defined Table Types\GradeLevelList.sql" />
+    <Build Include="TVP\User Defined Table Types\IdList.sql" />
+    <Build Include="Tvp\User Defined Table Types\IntegerList.sql" />
+    <Build Include="TVP\User Defined Table Types\Logs.sql" />
+    <Build Include="TVP\User Defined Table Types\Points.sql" />
+    <Build Include="TVP\User Defined Table Types\QuestionAnswerList.sql" />
+    <Build Include="TVP\User Defined Table Types\QuizContent.sql" />
+    <Build Include="TVP\User Defined Table Types\SemesterElectiveList.sql" />
+    <Build Include="TVP\User Defined Table Types\SignatureContent.sql" />
+    <Build Include="TVP\User Defined Table Types\Steps.sql" />
+    <Build Include="TVP\User Defined Table Types\StringList.sql" />
+    <Build Include="TVP\User Defined Table Types\StudentResourceContent.sql" />
+    <Build Include="TVP\User Defined Table Types\SystemContent.sql" />
+    <Build Include="TVP\User Defined Table Types\TextImageContent.sql" />
+    <Build Include="Tvp\User Defined Table Types\UniqueIdentifierList.sql" />
+    <Build Include="TVP\User Defined Table Types\UserElectiveList.sql" />
+    <Build Include="TVP\User Defined Table Types\UserList.sql" />
+    <Build Include="TVP\User Defined Table Types\YouTubeVideoContent.sql" />
+    <Build Include="Utility\Functions\fnSplitOnUppercase.sql" />
+    <Build Include="Utility\Utility.sql" />
+    <None Include="_Schema Compares\dev.scmp" />
+    <None Include="_Schema Compares\local.scmp" />
+    <None Include="_Schema Compares\prod.scmp" />
+    <None Include="Scripts\DefaultData.sql" />
+    <None Include="Scripts\GeneratePointsReport.sql" />
+    <None Include="Scripts\Gradable Activity Report.sql" />
+    <None Include="Scripts\Post Deployment.sql" />
+    <None Include="Scripts\RollBackGradeElevation.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PreDeploy Include="Script.PreDeployment.sql" />
+  </ItemGroup>
+</Project>

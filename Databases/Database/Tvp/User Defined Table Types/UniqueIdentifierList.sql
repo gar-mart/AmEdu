@@ -1,0 +1,4 @@
+﻿CREATE TYPE Tvp.UniqueIdentifierList AS TABLE
+(
+	Value UNIQUEIDENTIFIER NULL
+)

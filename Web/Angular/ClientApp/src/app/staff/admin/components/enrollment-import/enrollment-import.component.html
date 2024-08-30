@@ -1,0 +1,303 @@
+<div class="admin-mentor-container">
+  <div class="mb-20">
+    <input
+      #uploadInput
+      hidden="true"
+      type="file"
+      onclick="this.value=null"
+      (change)="uploadInputChange($event)"
+      accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="uploadInput.click()"
+      [disabled]="appComponent.isBusy"
+      class="fcolor-white mr-20">
+      Upload Enrollment Data (Excel)
+    </button>
+
+    <a mat-raised-button download href="assets/Templates/Enrollment Import Template.xlsx">
+      Download Enrollment Import Template
+    </a>
+  </div>
+
+  <mat-card *ngIf="noMatchSource.data.length" class="hover-parent bg-off-white mb-30 p-0">
+    <mat-card-header class="m-0 pt-10">
+      <h3 class="mt-0 mb-10 text-danger mx-auto">Enrollments with No Matches</h3>
+    </mat-card-header>
+    <mat-card-content class="p-0">
+      <div class="p-20 font-weight-semi-bold">
+        <p>
+          There were enrollment record(s) in your file that do not match any student by first name and last name. In
+          order to continue, you will need to do one of the following:
+        </p>
+        <ul>
+          <li>Update your file so that these record(s) match a student's first name and last name exactly.</li>
+          <li>
+            Delete the record in the table using the Action button (
+            <mat-icon>more_vert</mat-icon>
+            ) then using the Delete action.
+          </li>
+          <li>
+            Use the Email dropdown to manually select a student. You cannot choose a student that already exists in
+            another table.
+          </li>
+        </ul>
+      </div>
+      <table #noMatchSort="matSort" mat-table [dataSource]="noMatchSource" matSort>
+        <ng-container matColumnDef="moreOptions">
+          <th mat-header-cell *matHeaderCellDef class="moreOptions">Actions</th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="deleteRow(row, noMatchSource)">
+                <mat-icon color="warn">delete</mat-icon>
+                <span>Delete</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="firstName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>First Name</th>
+          <td mat-cell *matCellDef="let row">{{ row.firstName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="lastName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Name</th>
+          <td mat-cell *matCellDef="let row">{{ row.lastName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header width="250px">Email</th>
+          <td mat-cell *matCellDef="let row" class="pr-20">
+            <mat-form-field class="w-100per">
+              <input
+                type="text"
+                matInput
+                [matAutocomplete]="auto"
+                placeholder="Select a student's email address"
+                #email />
+            </mat-form-field>
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option
+                *ngFor="let student of filterStudents(email.value)"
+                [value]="student.studentEmail"
+                (click)="studentSelected(student, row)">
+                {{ student.studentEmail }}
+              </mat-option>
+            </mat-autocomplete>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="enrollmentDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Enrollment Date</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.enrollmentDate | date : "shortDate" }}
+            <span
+              *ngIf="row.currentEnrollmentDate"
+              [ngClass]="row.currentEnrollmentDate == row.enrollmentDate ? 'fcolor-gray' : 'fcolor-red'">
+              (currently: {{ row.currentEnrollmentDate | date : "shortDate" }})
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="unenrollmentDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="date">Unenrollment Date</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.unenrollmentDate | date : "shortDate" }}
+            <span
+              *ngIf="row.currentUnenrollmentDate"
+              [ngClass]="row.currentUnenrollmentDate == row.unenrollmentDate ? 'fcolor-gray' : 'fcolor-red'">
+              (currently: {{ row.currentUnenrollmentDate | date : "shortDate" }})
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="uicNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>UIC Number</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.uicNumber }}
+            <span
+              *ngIf="row.currentUICNumber"
+              [ngClass]="row.currentUICNumber == row.uicNumber ? 'fcolor-gray' : 'fcolor-red'">
+              (currently: {{ row.currentUICNumber }})
+            </span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="multipleMatchSource.data.length" class="hover-parent bg-off-white mb-30 p-0">
+    <mat-card-header class="m-0 pt-10">
+      <h3 class="mt-0 mb-10 text-danger mx-auto">Enrollments with Multiple Matches</h3>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="p-20 font-weight-semi-bold">
+        <p>
+          There were enrollment record(s) in your file that match multiple students by first name and last name. In
+          order to continue, you will need to delete the duplicate enrollment records in the table below and mark the
+          correct records as valid. To do this, click the Action button (
+          <mat-icon>more_vert</mat-icon>
+          ) button.
+        </p>
+      </div>
+      <table #noMatchSort="matSort" mat-table [dataSource]="multipleMatchSource" matSort>
+        <ng-container matColumnDef="moreOptions">
+          <th mat-header-cell *matHeaderCellDef class="moreOptions">Actions</th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="deleteRow(row, multipleMatchSource)">
+                <mat-icon color="warn">delete</mat-icon>
+                <span>Delete</span>
+              </button>
+              <button mat-menu-item (click)="markRowValid(row, multipleMatchSource)">
+                <mat-icon color="accent">check</mat-icon>
+                <span>Mark Valid</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="firstName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>First Name</th>
+          <td mat-cell *matCellDef="let row">{{ row.firstName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="lastName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Name</th>
+          <td mat-cell *matCellDef="let row">{{ row.lastName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+          <td mat-cell *matCellDef="let row">{{ row.email }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="enrollmentDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Enrollment Date</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.enrollmentDate | date : "shortDate" }}
+            <span
+              *ngIf="row.currentEnrollmentDate"
+              [ngClass]="row.currentEnrollmentDate == row.enrollmentDate ? 'fcolor-gray' : 'fcolor-red'">
+              (currently: {{ row.currentEnrollmentDate | date : "shortDate" }})
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="unenrollmentDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="date">Unenrollment Date</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.unenrollmentDate | date : "shortDate" }}
+            <span
+              *ngIf="row.currentUnenrollmentDate"
+              [ngClass]="row.currentUnenrollmentDate == row.unenrollmentDate ? 'fcolor-gray' : 'fcolor-red'">
+              (currently: {{ row.currentUnenrollmentDate | date : "shortDate" }})
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="uicNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>UIC Number</th>
+          <td mat-cell *matCellDef="let row">{{ row.uicNumber }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="singleMatchSource.data.length" class="hover-parent bg-off-white p-0">
+    <mat-card-header class="m-0 pt-10">
+      <h3 class="mt-0 mb-10 mx-auto">Enrollments with a Single Match</h3>
+    </mat-card-header>
+    <mat-card-content>
+      <table #noMatchSort="matSort" mat-table [dataSource]="singleMatchSource" matSort>
+        <ng-container matColumnDef="moreOptions">
+          <th mat-header-cell *matHeaderCellDef class="moreOptions">Actions</th>
+          <td mat-cell *matCellDef="let row">
+            <button *ngIf="!importComplete" mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="deleteRow(row, singleMatchSource)">
+                <mat-icon color="warn">delete</mat-icon>
+                <span>Delete</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="firstName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>First Name</th>
+          <td mat-cell *matCellDef="let row">{{ row.firstName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="lastName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Name</th>
+          <td mat-cell *matCellDef="let row">{{ row.lastName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+          <td mat-cell *matCellDef="let row">{{ row.email }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="enrollmentDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Enrollment Date</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.enrollmentDate | date : "shortDate" }}
+            <span
+              *ngIf="row.currentEnrollmentDate"
+              [ngClass]="row.currentEnrollmentDate == row.enrollmentDate ? 'fcolor-gray' : 'fcolor-red'">
+              (currently: {{ row.currentEnrollmentDate | date : "shortDate" }})
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="unenrollmentDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="date">Unenrollment Date</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.unenrollmentDate | date : "shortDate" }}
+            <span
+              *ngIf="row.currentUnenrollmentDate"
+              [ngClass]="row.currentUnenrollmentDate == row.unenrollmentDate ? 'fcolor-gray' : 'fcolor-red'">
+              (currently: {{ row.currentUnenrollmentDate | date : "shortDate" }})
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="uicNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>UIC Number</th>
+          <td mat-cell *matCellDef="let row">{{ row.uicNumber }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="submitEnrollment()"
+        [disabled]="
+          noMatchSource.data.length > 0 || multipleMatchSource.data.length > 0 || appComponent.isBusy || importComplete
+        "
+        class="fcolor-white ml-20 mb-15">
+        Submit Enrollment
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

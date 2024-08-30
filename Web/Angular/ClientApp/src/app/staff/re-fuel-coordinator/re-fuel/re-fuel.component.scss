@@ -1,0 +1,33 @@
+.admin-mentor-container {
+  height: calc(100vh - 190px);
+}
+
+:host ::ng-deep {
+  .inquiry {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    min-width: max(20%, 250px);
+
+    mat-card-content {
+      flex: 1;
+
+      mat-form-field {
+        height: calc(100% - 5px); // need to leave a little bit of room for the error
+      }
+
+      .mat-form-field-wrapper,
+      .mat-form-field-flex,
+      .mat-form-field-infix {
+        height: 100%;
+        border-top: 0;
+      }
+
+      textarea {
+        height: calc(100% - 5px); // need to leave a little bit of room for the border
+        resize: none;
+      }
+    }
+  }
+}

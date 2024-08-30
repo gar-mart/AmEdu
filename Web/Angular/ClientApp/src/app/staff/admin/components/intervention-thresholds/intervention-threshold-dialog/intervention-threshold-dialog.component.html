@@ -1,0 +1,139 @@
+<form #formDirective="ngForm" [formGroup]="form">
+  <app-dialog dialogType="primary">
+    <div dialog-title class="title fw-500 ta-center fcolor-white">
+      {{ title }}
+    </div>
+
+    <div dialog-content class="fs-14">
+      <mat-form-field color="primary" class="w-100per">
+        <input
+          type="number"
+          step="1"
+          matInput
+          placeholder="Number of Required Criteria"
+          formControlName="numberOfRequirements" />
+        <mat-error *ngIf="form.controls['numberOfRequirements'].hasError('required')">Please enter a value</mat-error>
+        <mat-error *ngIf="form.controls['numberOfRequirements'].hasError('min')">The minimum value is 0</mat-error>
+        <mat-error *ngIf="form.controls['numberOfRequirements'].hasError('max')">
+          The maximum value is the number of included criteria below ({{
+            form.controls["numberOfRequirements"].getError("max").max
+          }})
+        </mat-error>
+      </mat-form-field>
+
+      <h3 class="m-0">Criteria</h3>
+
+      <fieldset>
+        <!--Course Hours-->
+        <mat-checkbox formControlName="requireOnlineCourseHours">Include Online Course Hours</mat-checkbox>
+
+        <mat-form-field *ngIf="form.value.requireOnlineCourseHours" color="primary" class="w-100per">
+          <input
+            type="number"
+            step="0.25"
+            matInput
+            placeholder="Minimum Online Course Hours"
+            formControlName="minimumCourseHoursSpent" />
+          <mat-error *ngIf="form.controls['minimumCourseHoursSpent'].hasError('required')">
+            Please enter minimum value
+          </mat-error>
+        <mat-error *ngIf="form.controls['minimumCourseHoursSpent'].hasError('min')">The minimum value is 0</mat-error>
+        </mat-form-field>
+      </fieldset>
+
+      <!--Communication Logs-->
+      <fieldset>
+        <mat-checkbox formControlName="requireCommunicationLogs">Include Communication Logs</mat-checkbox>
+
+        <div *ngIf="form.value.requireCommunicationLogs" class="row">
+          <div class="w-50per pr-10">
+            <mat-form-field color="primary" class="w-100per">
+              <input
+                type="number"
+                step="1"
+                matInput
+                placeholder="Minimum Communication Logs"
+                formControlName="minimumCommunicationLogs" />
+              <mat-error *ngIf="form.controls['minimumCommunicationLogs'].hasError('required')">
+                Please enter minimum value
+              </mat-error>
+              <mat-error *ngIf="form.controls['minimumCommunicationLogs'].hasError('min')">
+                The minimum value is 0
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="w-50per pl-10">
+            <mat-form-field color="primary" class="w-100per">
+              <input
+                type="number"
+                step="1"
+                matInput
+                placeholder="Expected Communication Logs"
+                formControlName="expectedCommunicationLogs" />
+              <mat-error *ngIf="form.controls['expectedCommunicationLogs'].hasError('required')">
+                Please enter expected value
+              </mat-error>
+              <mat-error *ngIf="form.controls['expectedCommunicationLogs'].hasError('min')">
+                The minimum value cannot exceed the expected value
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </fieldset>
+
+      <!--Live Lessons-->
+      <fieldset>
+        <mat-checkbox formControlName="requireLiveLessons">Include Live Lessons</mat-checkbox>
+
+        <div *ngIf="form.value.requireLiveLessons" class="row">
+          <div class="w-50per pr-10">
+            <mat-form-field color="primary" class="w-100per">
+              <input
+                type="number"
+                step="1"
+                matInput
+                placeholder="Minimum Live Lessons"
+                formControlName="minimumLiveLessons" />
+              <mat-error *ngIf="form.controls['minimumLiveLessons'].hasError('required')">
+                Please enter minimum value
+              </mat-error>
+            <mat-error *ngIf="form.controls['minimumLiveLessons'].hasError('min')">The minimum value is 0</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="w-50per pl-10">
+            <mat-form-field color="primary" class="w-100per">
+              <input
+                type="number"
+                step="1"
+                matInput
+                placeholder="Expected Live Lessons"
+                formControlName="expectedLiveLessons" />
+              <mat-error *ngIf="form.controls['expectedLiveLessons'].hasError('required')">
+                Please enter expected value
+              </mat-error>
+              <mat-error *ngIf="form.controls['expectedLiveLessons'].hasError('min')">
+                The minimum value cannot exceed the expected value
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <div dialog-footer>
+      <button
+        type="submit"
+        mat-raised-button
+        (click)="confirm()"
+        color="primary"
+        class="fcolor-white"
+        [disabled]="saving">
+        Submit
+      </button>
+
+      <button type="button" mat-button (click)="cancel()" color="primary" class="ml-10">Close</button>
+    </div>
+  </app-dialog>
+</form>

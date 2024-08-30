@@ -1,0 +1,10 @@
+.scroll-container {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.mat-paginator-sticky {
+  bottom: 0px;
+  position: sticky;
+  z-index: 10;
+}

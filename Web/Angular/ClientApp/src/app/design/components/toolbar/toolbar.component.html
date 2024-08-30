@@ -1,0 +1,41 @@
+<div fxLayout="row" class="main">
+  <div class="greenSection" fxFlex>
+    <a [ngSwitch]="loginType" routerLink="/">
+      <img *ngSwitchCase="1" src="assets/AmEdu-logo-k-5-white.png" class="AmEduImage" />
+      <img *ngSwitchDefault src="assets/AmEdu-logo-white.png" class="AmEduImage" />
+    </a>
+  </div>
+  <div class="blueSection1" fxFlex></div>
+  <div class="orangeSection" fxFlex></div>
+  <div class="blueSection2" fxFlex></div>
+  <div class="greenSection pt-10" fxFlex>
+    <button *ngIf="isSignedIn" mat-button class="loginButton" (click)="logout()">
+      <mat-icon title="LOGOUT">exit_to_app</mat-icon>
+      LOGOUT
+    </button>
+  </div>
+  <div mat-flat-button *ngIf="message === 'DEVELOPMENT DATA'" class="environmentMessage mt-5 p-10">
+    {{ message }}
+    <ng-container *ngIf="commonService.user && !commonService.user.isStaff && commonService.user.gradeLevel">
+      - Grade Level:
+      <select (change)="changeGradeLevel($any($event.target).value)">
+        <option [attr.selected]="commonService.user.gradeLevel.toLowerCase() === 'K' ? '' : null" value="K">K</option>
+        <option [attr.selected]="commonService.user.gradeLevel === '1' ? '' : null" value="1">1</option>
+        <option [attr.selected]="commonService.user.gradeLevel === '2' ? '' : null" value="2">2</option>
+        <option [attr.selected]="commonService.user.gradeLevel === '3' ? '' : null" value="3">3</option>
+        <option [attr.selected]="commonService.user.gradeLevel === '4' ? '' : null" value="4">4</option>
+        <option [attr.selected]="commonService.user.gradeLevel === '5' ? '' : null" value="5">5</option>
+        <option [attr.selected]="commonService.user.gradeLevel === '6' ? '' : null" value="6">6</option>
+        <option [attr.selected]="commonService.user.gradeLevel === '7' ? '' : null" value="7">7</option>
+        <option [attr.selected]="commonService.user.gradeLevel === '8' ? '' : null" value="8">8</option>
+        <option [attr.selected]="commonService.user.gradeLevel === '9' ? '' : null" value="9">9</option>
+        <option [attr.selected]="commonService.user.gradeLevel === '10' ? '' : null" value="10">10</option>
+        <option [attr.selected]="commonService.user.gradeLevel === '11' ? '' : null" value="11">11</option>
+        <option [attr.selected]="commonService.user.gradeLevel === '12' ? '' : null" value="12">12</option>
+      </select>
+    </ng-container>
+  </div>
+  <button mat-flat-button color="warn" *ngIf="message === 'PRODUCTION DATA'" class="environmentMessage">
+    {{ message }}
+  </button>
+</div>

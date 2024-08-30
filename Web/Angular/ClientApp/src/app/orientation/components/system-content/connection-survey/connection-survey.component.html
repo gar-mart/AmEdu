@@ -1,0 +1,410 @@
+<div *ngIf="editMode">
+  A form that collects student demographic and contact information, including:
+  <ul>
+    <li>Guardian contact information</li>
+    <li>Address information</li>
+    <li>Student interests</li>
+  </ul>
+</div>
+
+<form [formGroup]="connectionSurveyForm" *ngIf="connectionSurveyForm && !editMode">
+  <h3>{{ isElementary ? "Primary Learning Coach" : "Primary Person of Contact" }}</h3>
+
+  <mat-form-field class="w-700">
+    <input
+      matInput
+      [placeholder]="'Who will be the the ' + primaryPersonTitle + ' for your child?'"
+      type="text"
+      color="primary"
+      formControlName="guardianName" />
+    <mat-icon matSuffix>person</mat-icon>
+    <mat-error>Please enter a name less than 160 characters.</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="w-700">
+    <input
+      matInput
+      placeholder="What is their relationship to your child?"
+      type="text"
+      color="primary"
+      formControlName="guardianRelationship" />
+    <mat-icon matSuffix>wc</mat-icon>
+    <mat-error>Please enter a relationship less than 50 characters.</mat-error>
+  </mat-form-field>
+
+  <div>
+    <label>What is the best time to reach {{ primaryPersonTitle }}?</label>
+  </div>
+  <div class="connectionSurvey__row">
+    <mat-radio-group formControlName="bestTimeToReachAsGuardian">
+      <mat-radio-button
+        [value]="PreferredContactTime.Morning"
+        class="mr-25"
+        color="primary"
+        [checked]="this.connectionSurveyForm.get('bestTimeToReachAsGuardian').value === PreferredContactTime.Morning">
+        Morning
+      </mat-radio-button>
+      <mat-radio-button
+        [value]="PreferredContactTime.Afternoon"
+        class="mr-25"
+        color="primary"
+        [checked]="this.connectionSurveyForm.get('bestTimeToReachAsGuardian').value === PreferredContactTime.Afternoon">
+        Afternoon
+      </mat-radio-button>
+      <mat-radio-button
+        [value]="PreferredContactTime.Evening"
+        class="mr-25"
+        color="primary"
+        [checked]="this.connectionSurveyForm.get('bestTimeToReachAsGuardian').value === PreferredContactTime.Evening">
+        Evening
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <div>
+    <label>What is the best way to contact the {{ primaryPersonTitle }}?</label>
+    <div class="connectionSurvey__row">
+      <mat-radio-group formControlName="wayToContactAsGuardian">
+        <mat-radio-button
+          [value]="PreferredContactMethod.Email"
+          class="mr-25"
+          color="primary"
+          [checked]="this.connectionSurveyForm.get('wayToContactAsGuardian').value === PreferredContactMethod.Email">
+          Email
+        </mat-radio-button>
+        <mat-radio-button
+          [value]="PreferredContactMethod.Phone"
+          class="mr-25"
+          color="primary"
+          [checked]="this.connectionSurveyForm.get('wayToContactAsGuardian').value === PreferredContactMethod.Phone">
+          Phone
+        </mat-radio-button>
+        <mat-radio-button
+          [value]="PreferredContactMethod.Text"
+          class="mr-25"
+          color="primary"
+          [checked]="this.connectionSurveyForm.get('wayToContactAsGuardian').value === PreferredContactMethod.Text">
+          Text
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+  </div>
+
+  <mat-form-field class="w-700">
+    <input
+      matInput
+      [placeholder]="'What is the ' + primaryPersonTitle + '\'s email address?'"
+      type="email"
+      color="primary"
+      formControlName="guardianEmailAddress" />
+    <mat-icon matSuffix>email</mat-icon>
+    <mat-error>Please enter a valid email address less than 320 characters.</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="w-700">
+    <input
+      matInput
+      [placeholder]="'What is the ' + primaryPersonTitle + '\'s phone number?'"
+      mask="(000) 000-0000"
+      [dropSpecialCharacters]="false"
+      type="text"
+      color="primary"
+      formControlName="guardianPhoneNumber" />
+    <mat-icon matSuffix>phone</mat-icon>
+    <mat-error>Please enter a valid phone number in the format "(###) ###-####"</mat-error>
+  </mat-form-field>
+
+  <h3>Secondary Person of Contact (optional)</h3>
+
+  <mat-form-field class="w-700">
+    <input
+      matInput
+      placeholder="Who will be the the secondary person of contact for your child?"
+      type="text"
+      color="primary"
+      formControlName="secondaryGuardianName" />
+    <mat-icon matSuffix>person</mat-icon>
+    <mat-error>Please enter a name less than 160 characters.</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="w-700">
+    <input
+      matInput
+      placeholder="What is their relationship to your child?"
+      type="text"
+      color="primary"
+      formControlName="secondaryGuardianRelationship" />
+    <mat-icon matSuffix>wc</mat-icon>
+    <mat-error>Please enter a relationship less than 50 characters.</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="w-700">
+    <input
+      matInput
+      placeholder="What is the secondary person of contact's email address?"
+      type="email"
+      color="primary"
+      formControlName="secondaryGuardianEmailAddress" />
+    <mat-icon matSuffix>email</mat-icon>
+    <mat-error>Please enter a valid email address less than 320 characters.</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="w-700">
+    <input
+      matInput
+      placeholder="What is the secondary person of contact's phone number?"
+      mask="(000) 000-0000"
+      [dropSpecialCharacters]="false"
+      type="text"
+      color="primary"
+      formControlName="secondaryGuardianPhoneNumber" />
+    <mat-icon matSuffix>phone</mat-icon>
+    <mat-error>Please enter a valid phone number in the format "(###) ###-####"</mat-error>
+  </mat-form-field>
+
+  <h3>Survey: Getting to know you, the student</h3>
+
+  <mat-form-field class="w-700">
+    <input
+      matInput
+      [matDatepicker]="studentBirthday"
+      placeholder="What is your birthday?"
+      formControlName="studentBirthday"
+      (click)="studentBirthday.open()" />
+    <mat-datepicker-toggle matSuffix [for]="studentBirthday" class="fs-14" style="color: #000"></mat-datepicker-toggle>
+    <mat-datepicker #studentBirthday startView="multi-year" [startAt]="startBirthdayPickerAt"></mat-datepicker>
+    <mat-error>Please enter your birthday.</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="w-700">
+    <input
+      matInput
+      placeholder="What is your home address?"
+      type="text"
+      color="primary"
+      formControlName="homeAddress" />
+    <mat-icon matSuffix>home</mat-icon>
+    <mat-error>Please enter your home address in 100 characters or less.</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="w-700">
+    <input matInput placeholder="City?" type="text" color="primary" formControlName="city" />
+    <mat-icon matSuffix>home</mat-icon>
+    <mat-error>Please enter your city in 60 characters or less.</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="w-700">
+    <input matInput placeholder="State?" type="text" color="primary" formControlName="state" />
+    <mat-icon matSuffix>home</mat-icon>
+    <mat-error>Please enter your state in 40 characters or less.</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="w-700">
+    <input matInput placeholder="Zip Code?" type="number" color="primary" formControlName="zipCode" />
+    <mat-icon matSuffix>home</mat-icon>
+    <mat-error>Please enter a 5 digit zip code.</mat-error>
+  </mat-form-field>
+
+  <div *ngIf="connectionSurveyForm.get('wayToReachAsStudent')">
+    <label>Google Chat is always our first way of reaching you as a student, but what is the best alternate?</label>
+    <div class="connectionSurvey__row">
+      <mat-radio-group formControlName="wayToReachAsStudent">
+        <mat-radio-button
+          [value]="PreferredContactMethod.Email"
+          class="mr-25"
+          color="primary"
+          [checked]="this.connectionSurveyForm.get('wayToReachAsStudent').value === PreferredContactMethod.Email">
+          Email
+        </mat-radio-button>
+        <mat-radio-button
+          [value]="PreferredContactMethod.Phone"
+          class="mr-25"
+          color="primary"
+          [checked]="this.connectionSurveyForm.get('wayToReachAsStudent').value === PreferredContactMethod.Phone">
+          Phone
+        </mat-radio-button>
+        <mat-radio-button
+          [value]="PreferredContactMethod.Text"
+          class="mr-25"
+          color="primary"
+          [checked]="this.connectionSurveyForm.get('wayToReachAsStudent').value === PreferredContactMethod.Text">
+          Text
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+  </div>
+
+  <mat-form-field *ngIf="connectionSurveyForm.get('studentEmailAddress')" class="w-700">
+    <input
+      matInput
+      placeholder="What is your email address?"
+      type="text"
+      color="primary"
+      formControlName="studentEmailAddress" />
+    <mat-icon matSuffix>email</mat-icon>
+    <mat-error>Please enter a valid email address less than 320 characters.</mat-error>
+  </mat-form-field>
+
+  <mat-form-field *ngIf="connectionSurveyForm.get('studentPhoneNumber')" class="w-700">
+    <input
+      matInput
+      placeholder="What is your phone number?"
+      mask="(000) 000-0000"
+      [dropSpecialCharacters]="false"
+      type="text"
+      color="primary"
+      formControlName="studentPhoneNumber" />
+    <mat-icon matSuffix>phone</mat-icon>
+    <mat-error>Optionally enter a valid phone number in the format "(###) ###-####"</mat-error>
+  </mat-form-field>
+
+  <div>
+    <label>What brought you to AmEdu?</label>
+    <div class="connectionSurvey__row">
+      <ul class="unstyled">
+        <li>
+          <mat-checkbox
+            [disabled]="connectionSurveyForm.disabled"
+            class="mr-25"
+            color="primary"
+            [checked]="isChoiceSelected(BroughtToAmEduChoices.MedicalReasons)"
+            (change)="toggleChoice(BroughtToAmEduChoices.MedicalReasons, false)">
+            Medical Reasons
+          </mat-checkbox>
+        </li>
+        <li>
+          <mat-checkbox
+            [disabled]="connectionSurveyForm.disabled"
+            class="mr-25"
+            color="primary"
+            [checked]="isChoiceSelected(BroughtToAmEduChoices.MentalHealthReasons)"
+            (change)="toggleChoice(BroughtToAmEduChoices.MentalHealthReasons, false)">
+            Mental Health Reasons
+          </mat-checkbox>
+        </li>
+        <li>
+          <mat-checkbox
+            [disabled]="connectionSurveyForm.disabled"
+            class="mr-25"
+            color="primary"
+            [checked]="isChoiceSelected(BroughtToAmEduChoices.AbilityToWorkAheadAbove)"
+            (change)="toggleChoice(BroughtToAmEduChoices.AbilityToWorkAheadAbove, false)">
+            Ability to work ahead/above grade level
+          </mat-checkbox>
+        </li>
+        <li>
+          <mat-checkbox
+            [disabled]="connectionSurveyForm.disabled"
+            class="mr-25"
+            color="primary"
+            [checked]="isChoiceSelected(BroughtToAmEduChoices.DualEnrollment)"
+            (change)="toggleChoice(BroughtToAmEduChoices.DualEnrollment, false)">
+            Dual Enrollment
+          </mat-checkbox>
+        </li>
+        <li>
+          <mat-checkbox
+            [disabled]="connectionSurveyForm.disabled"
+            class="mr-25"
+            color="primary"
+            [checked]="isChoiceSelected(BroughtToAmEduChoices.PlanToTravelWhileDoingSchool)"
+            (change)="toggleChoice(BroughtToAmEduChoices.PlanToTravelWhileDoingSchool, false)">
+            Plan to travel while doing school
+          </mat-checkbox>
+        </li>
+        <li>
+          <mat-checkbox
+            [disabled]="connectionSurveyForm.disabled"
+            class="mr-25"
+            color="primary"
+            [checked]="isChoiceSelected(BroughtToAmEduChoices.FlexibleSchedule)"
+            (change)="toggleChoice(BroughtToAmEduChoices.FlexibleSchedule, false)">
+            Flexible Schedule
+          </mat-checkbox>
+        </li>
+        <li>
+          <mat-checkbox
+            [disabled]="connectionSurveyForm.disabled"
+            class="mr-25"
+            color="primary"
+            [checked]="isChoiceSelected(BroughtToAmEduChoices.PreferenceForOnlineLearning)"
+            (change)="toggleChoice(BroughtToAmEduChoices.PreferenceForOnlineLearning, false)">
+            Preference for Online Learning
+          </mat-checkbox>
+        </li>
+        <li>
+          <mat-checkbox
+            [disabled]="connectionSurveyForm.disabled"
+            class="mr-25"
+            color="primary"
+            [checked]="isChoiceSelected(BroughtToAmEduChoices.SmallSchoolExperience)"
+            (change)="toggleChoice(BroughtToAmEduChoices.SmallSchoolExperience, false)">
+            Small School Experience
+          </mat-checkbox>
+        </li>
+        <li>
+          <mat-checkbox
+            [disabled]="connectionSurveyForm.disabled"
+            class="mr-25"
+            color="primary"
+            [checked]="isChoiceSelected(BroughtToAmEduChoices.Other)"
+            (change)="toggleChoice(BroughtToAmEduChoices.Other, true)">
+            Other:
+          </mat-checkbox>
+        </li>
+      </ul>
+      <mat-error
+        *ngIf="
+          (connectionSurveyForm.get('broughtToAmEduChoices').dirty ||
+            connectionSurveyForm.get('broughtToAmEduChoices').touched) &&
+          (connectionSurveyForm.get('broughtToAmEduChoices').hasError('min') ||
+            connectionSurveyForm.get('broughtToAmEduChoices').hasError('required'))
+        ">
+        Please choose at least one option.
+      </mat-error>
+
+      <mat-form-field class="w-700" *ngIf="isOtherChoice">
+        <input
+          matInput
+          placeholder="Please specify what brought you to AmEdu"
+          type="text"
+          color="primary"
+          formControlName="broughtToAmEduOther" />
+        <mat-error>Since you chose "Other", please specify what brought you to AmEdu.</mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <mat-form-field *ngIf="connectionSurveyForm.get('interests')" class="w-700">
+    <textarea
+      cdkTextareaAutosize
+      matInput
+      placeholder="What are your interests?"
+      type="text"
+      color="primary"
+      formControlName="interests"></textarea>
+    <mat-error>Please enter your interests in 1000 characters or less.</mat-error>
+  </mat-form-field>
+
+  <mat-form-field *ngIf="connectionSurveyForm.get('extraCurricularActivities')" class="w-700">
+    <textarea
+      cdkTextareaAutosize
+      matInput
+      placeholder="What Extra-Curricular activities do you participate in?"
+      type="text"
+      color="primary"
+      formControlName="extraCurricularActivities"></textarea>
+    <mat-error>Please enter your extra-curricular activities in 1000 characters or less. (optional)</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="w-700">
+    <textarea
+      cdkTextareaAutosize
+      matInput
+      placeholder="Additional notes about you (nicknames, pronouns, interests, etc.)?"
+      type="text"
+      color="primary"
+      formControlName="notesAboutMe"></textarea>
+    <mat-error>Please enter notes about you in 1000 characters or less. (optional)</mat-error>
+  </mat-form-field>
+</form>

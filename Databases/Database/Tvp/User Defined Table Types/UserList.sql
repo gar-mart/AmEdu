@@ -1,0 +1,7 @@
+﻿CREATE TYPE Tvp.UserList AS TABLE(
+	GoogleId NVARCHAR(100) NOT NULL
+	, Email NVARCHAR(320) NOT NULL
+	, FirstName NVARCHAR(50) NULL
+	, LastName NVARCHAR(50) NULL
+	, IsStaff BIT NULL
+)

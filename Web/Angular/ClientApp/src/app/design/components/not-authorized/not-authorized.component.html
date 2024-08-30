@@ -1,0 +1,25 @@
+<div class="logo">
+  <div class="centered">
+    <mat-icon><i class="material-icons unauthorizedIcon">lock</i></mat-icon>
+    <div *ngIf="signedIn">
+      <div class="mr-10 mb-30">
+        <h1>You ({{ userName }}) are not an authorized user.</h1>
+        <h3>
+          Please reach out to support@AmEduglobal.org or contact your mentor if you need access or think this is a
+          mistake.
+        </h3>
+      </div>
+      <button *ngIf="signedIn" mat-button class="loginButton" (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        Logout and try again
+      </button>
+    </div>
+    <div *ngIf="!signedIn">
+      <div class="mr-10 mb-30">You are not signed in.</div>
+      <a mat-button routerLink="/">
+        <mat-icon>home</mat-icon>
+        Sign in
+      </a>
+    </div>
+  </div>
+</div>

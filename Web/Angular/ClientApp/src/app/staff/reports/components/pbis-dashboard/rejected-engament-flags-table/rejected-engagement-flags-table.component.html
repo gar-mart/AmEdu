@@ -1,0 +1,56 @@
+<mat-card class="p-0 mt-20">
+  <mat-card-header>
+    <h2>({{ dataSource.data.length }}) Rejected Engagement Flags</h2>
+  </mat-card-header>
+  <mat-card-content class="scroll-container">
+    <table mat-table [dataSource]="dataSource" matSort class="staff-table">
+      <ng-container matColumnDef="studentName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Student</th>
+        <td mat-cell *matCellDef="let row" class="align-items-center">
+          <div class="va-top dis-ib">{{ row.studentName }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="gradeLevelValue">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sort>Grade Level</th>
+        <td mat-cell *matCellDef="let row" class="align-items-center">
+          <span [hidden]="true">{{ row.gradeLevel === "K" ? 0 : row.gradeLevel }}</span>
+          <div class="va-top dis-ib">{{ row.gradeLevel }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="mentorName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Mentor</th>
+        <td mat-cell *matCellDef="let row" class="align-items-center">
+          <div class="va-top dis-ib">{{ row.mentorName }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="weekOfDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Week Date</th>
+        <td mat-cell *matCellDef="let row" class="align-items-center">
+          <div class="va-top dis-ib">
+            {{ row.weekOfDate | addWeeks : -1 | date : "shortDate" }} -
+            {{ row.weekOfDate | date : "shortDate" }}
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="rejectedReason">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Rejected Reason</th>
+        <td mat-cell *matCellDef="let row" class="align-items-center">
+          <div class="va-top dis-ib">{{ row.rejectedReason }}</div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <div *ngIf="!dataSource.data.length" class="w-100per text-center mt-20 mb-20 fcolor-gray">
+      {{ loading ? "Loading..." : "No results found." }}
+    </div>
+
+    <mat-paginator fixed [pageSize]="50" [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons></mat-paginator>
+  </mat-card-content>
+</mat-card>

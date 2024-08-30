@@ -1,0 +1,17 @@
+<div class="page-container">
+  <mat-card>
+    <mat-card-header class="mb-4">
+      <div class="d-flex align-items-center">
+        <mat-icon color="warn" class="me-2">error_outline</mat-icon>
+        <h2 mat-card-title class="mb-0">Not Found</h2>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content [@fadeInOut]>The page you are looking for cannot be found.</mat-card-content>
+
+    <mat-card-actions [@fadeInOut]>
+      <a *ngIf="previousUrl" mat-stroked-button color="primary" [routerLink]="previousUrl">Previous page</a>
+      <a mat-stroked-button [color]="previousUrl ? 'accent' : 'primary'" routerLink="/">Back to home</a>
+    </mat-card-actions>
+  </mat-card>
+</div>

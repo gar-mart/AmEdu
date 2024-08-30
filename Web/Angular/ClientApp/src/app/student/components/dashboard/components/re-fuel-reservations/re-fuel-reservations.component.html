@@ -1,0 +1,43 @@
+<div class="container">
+  <mat-card class="flex-grow-100 re-fuel-color" fxFlex style="border-radius: 4px 4px 0 0">
+    <mat-card-header></mat-card-header>
+    <mat-card-content class="ml-15">
+      <div
+        class="re-fuel-info"
+        fxLayout="row wrap"
+        fxLayoutAlign="space-between center"
+        fxLayout.lt-sm="column"
+        fxLayoutGap="30px">
+        <img src="assets/re-fuel-logo.png" alt="RE:Fuel" />
+        <div class="text-center" style="max-width: 500px">
+          <b>About RE:FUEL</b>
+          <p>
+            Middle and High School Students are welcome to join us in the RE:FUEL Coffee Shop at AmEdu Global every
+            Tuesday and Thursday. RE:FUEL is open from 9am-3pm for students to work independently, collaborate with
+            others and foster community.
+          </p>
+          <p>RE:Fuel reservations open each week on Friday at 12pm and close on Monday at 5pm!</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card style="border-radius: 0 0 4px 4px">
+    <mat-card-header>
+      <mat-card-title>Reservations</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="ml-15">
+      <ng-container *ngIf="isLoading">Loading reservations...</ng-container>
+      <ng-container *ngIf="!isLoading">
+        <app-re-fuel-reservation-day [input]="tuesdayInput" (reload)="refresh(true)"></app-re-fuel-reservation-day>
+        <app-re-fuel-reservation-day [input]="thursdayInput" (reload)="refresh(true)"></app-re-fuel-reservation-day>
+      </ng-container>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-raised-button color="primary" (click)="refresh(false)" [disabled]="isRefreshing" class="fcolor-white">
+        Refresh Availability
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

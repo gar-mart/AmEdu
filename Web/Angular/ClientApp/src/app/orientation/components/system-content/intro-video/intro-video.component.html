@@ -1,0 +1,19 @@
+<div *ngIf="editMode">
+  Displays mentor's YouTube introduction video.
+  <br />
+  If mentor does not have an intro video assigned, the default AmEdu intro video is displayed.
+  <br />
+  Mentor intro videos can be assigned in the manage Staff page.
+</div>
+
+<ng-container *ngIf="!editMode">
+  <i *ngIf="previewMode">
+    This is the default YouTube video that the student's will see if their mentor has not provided a mentor video.
+  </i>
+
+  <app-you-tube-video-content
+    *ngIf="youTubeVideoContent"
+    [content]="youTubeVideoContent"
+    [editMode]="false"
+    [previewMode]="previewMode"></app-you-tube-video-content>
+</ng-container>

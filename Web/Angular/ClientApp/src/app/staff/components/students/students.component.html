@@ -1,0 +1,1354 @@
+<div class="admin-mentor-container">
+  <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="25px">
+    <button mat-raised-button class="h-content w-auto pl-10 pr-10 text-white" color="accent" (click)="sidenav.toggle()">
+      <mat-icon *ngIf="initializing || sidenav.opened" matTooltip="Hide student list" matTooltipPosition="above">
+        menu
+      </mat-icon>
+      <mat-icon *ngIf="!initializing && !sidenav.opened" matTooltip="Show student list" matTooltipPosition="above">
+        menu
+      </mat-icon>
+    </button>
+
+    <mat-form-field color="primary" class="w-200">
+      <span matPrefix>
+        <mat-icon>search</mat-icon>
+        &nbsp;
+      </span>
+      <input matInput placeholder="Search for a student" [formControl]="studentNameFilter" />
+    </mat-form-field>
+
+    <mat-form-field class="w-100 ta-center">
+      <mat-select placeholder="Choose a Grade Level" [formControl]="gradeLevelFilter">
+        <mat-option value="All">All</mat-option>
+        <mat-option [value]="grade" *ngFor="let grade of gradeLevels">
+          {{ grade }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="w-200 ta-center">
+      <mat-select placeholder="Choose School" [formControl]="schoolFilter">
+        <mat-option value="All">All</mat-option>
+        <mat-option value="AmEdustudents.org">AmEdu</mat-option>
+        <mat-option value="innocademystudents.com">Innocademy</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-checkbox *ngIf="user?.isMentor || user?.isSecondaryMentor" class="mt-5" [formControl]="myStudentsFilter">
+      My Students
+    </mat-checkbox>
+    <mat-checkbox class="mt-5" [formControl]="flaggedStudentsFilter">Flagged Students</mat-checkbox>
+  </div>
+
+  <mat-sidenav-container>
+    <mat-sidenav mode="side" opened [disableClose]="true" #sidenav>
+      <mat-nav-list class="student-list">
+        <ng-container *uiScroll="let student of studentDatasource">
+          <mat-list-item
+            [disableRipple]="true"
+            matTooltip="Student missed last weeks requirements"
+            [matTooltipDisabled]="!student.missedLastWeeksRequirements"
+            matTooltipPosition="above"
+            [class.selected]="!student || !selectedStudent || student.id === selectedStudent.id"
+            class="pt-10 pb-10 top-border"
+            role="listitem"
+            (click)="selectStudent(student)">
+            <div class="row">
+              <img *ngIf="!student.id" src="assets/SelfieOutline.png" class="studentAvatar mr-15 studentAvatarShadow" />
+              <img
+                *ngIf="student.id"
+                defaultImage="assets/SelfieOutlineLoading.png"
+                [lazyLoad]="environment.apiUrl + '/Common/ReturnProfilePicture/' + student.id"
+                class="studentAvatar mr-15 studentAvatarShadow" />
+              <div class="w-100per">
+                <div class="row justify-content-between">
+                  <!-- Keep the flag from wrapping - force the student's name to wrap instead -->
+                  <div>
+                    <span class="text-danger mr-10" *ngIf="student.missedLastWeeksRequirements">
+                      <strong>!</strong>
+                    </span>
+                    {{ student.name }}
+                  </div>
+                  <mat-icon
+                    *ngIf="student.hasAccomodations"
+                    color="primary"
+                    matTooltip="This student has special accommodation requirements.">
+                    library_books
+                  </mat-icon>
+                  <mat-icon *ngIf="isBirthday(student)" matTooltip="Happy Birthday, {{ student.firstName }}!">
+                    cake
+                  </mat-icon>
+                </div>
+                <div class="fs-10">
+                  <div
+                    *ngIf="
+                      student.completedSteps !== student.totalSteps &&
+                      (student.hoursRemaining > 0 || student.minutesRemaining > 0) &&
+                      student.orientationStartTime !== null
+                    ">
+                    <div>ORIENTATION -</div>
+                    <div class="ml-10">
+                      PROGRESS: {{ (student.progressPercent * 100).toFixed(2) }}% ({{ student.completedSteps }}/{{
+                        student.totalSteps
+                      }})
+                    </div>
+                    <div class="ml-10">
+                      TIME REMAINING: {{ student.hoursRemaining > 0 ? student.hoursRemaining + "h " : ""
+                      }}{{ student.minutesRemaining > 0 ? student.minutesRemaining + "m" : "" }}
+                    </div>
+                  </div>
+                  <span *ngIf="student.progressPercent === 1" class="text-success">ORIENTATION COMPLETED</span>
+                  <span
+                    *ngIf="
+                      student.minutesRemaining <= 0 &&
+                      student.hoursRemaining <= 0 &&
+                      student.progressPercent !== 1 &&
+                      student.orientationStartTime !== null
+                    "
+                    class="text-danger">
+                    ORIENTATION EXPIRED
+                  </span>
+                  <span *ngIf="student.orientationStartTime === null">ORIENTATION NOT STARTED</span>
+                </div>
+              </div>
+            </div>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+        </ng-container>
+        <mat-list-item *ngIf="!filteredStudents.length" class="text-danger readonly" [disableRipple]="true">
+          No results.
+        </mat-list-item>
+        <mat-list-item *ngIf="!filteredStudents.length" class="readonly" [disableRipple]="true">
+          Please adjust your filters.
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content *ngIf="!!selectedStudent">
+      <mat-card>
+        <mat-card-content>
+          <div class="row justify-content-between">
+            <div class="text-center mr-10">
+              <div>
+                <label class="text-success">Grade</label>
+              </div>
+              <span>{{ selectedStudent.gradeLevel }}</span>
+            </div>
+
+            <div class="text-center mr-10">
+              <div>
+                <label class="text-success">Mentor</label>
+              </div>
+              <span>{{ selectedStudent.mentorName }}</span>
+            </div>
+
+            <div class="text-center mr-10">
+              <div>
+                <label class="text-success">Secondary Mentor</label>
+              </div>
+              <span *ngIf="!!selectedStudent.secondaryMentorName">{{ selectedStudent.secondaryMentorName }}</span>
+              <span *ngIf="!selectedStudent.secondaryMentorName">N/A</span>
+            </div>
+
+            <div class="text-center mr-10">
+              <div>
+                <label class="text-success">Portal Progress</label>
+              </div>
+              <span>
+                {{ (selectedStudent.progressPercent * 100).toFixed(2) }}% ({{ selectedStudent.completedSteps }}/{{
+                  selectedStudent.totalSteps
+                }})
+              </span>
+            </div>
+
+            <div class="text-center mr-10">
+              <div>
+                <label class="text-success">Time Remaining</label>
+              </div>
+              <span
+                *ngIf="
+                  selectedStudent.completedSteps !== selectedStudent.totalSteps &&
+                  (selectedStudent.hoursRemaining > 0 || selectedStudent.minutesRemaining > 0) &&
+                  selectedStudent.orientationStartTime !== null
+                ">
+                {{ selectedStudent.hoursRemaining > 0 ? selectedStudent.hoursRemaining + "h " : ""
+                }}{{ selectedStudent.minutesRemaining > 0 ? selectedStudent.minutesRemaining + "m" : "" }}
+              </span>
+              <span *ngIf="selectedStudent.progressPercent === 1">COMPLETED</span>
+              <span
+                *ngIf="
+                  selectedStudent.minutesRemaining <= 0 &&
+                  selectedStudent.hoursRemaining <= 0 &&
+                  selectedStudent.progressPercent !== 1 &&
+                  selectedStudent.orientationStartTime !== null
+                ">
+                EXPIRED
+              </span>
+              <span *ngIf="selectedStudent.orientationStartTime === null">NOT STARTED</span>
+            </div>
+
+            <div class="mr-10">
+              <a
+                href="/student/dashboard?studentId={{ selectedStudent.id }}"
+                target="_blank"
+                mat-raised-button
+                color="primary">
+                <span class="fs-13 fcolor-white">View {{ selectedStudent.firstName }}'s Dashboard</span>
+              </a>
+            </div>
+
+            <div
+              matTooltip="Student has not started orientation"
+              [matTooltipDisabled]="!!selectedStudent.orientationStartTime"
+              matTooltipPosition="above">
+              <a
+                href="/student/orientation?studentId={{ selectedStudent.id }}"
+                target="_blank"
+                mat-raised-button
+                color="primary"
+                *ngIf="!!selectedStudent.orientationStartTime">
+                <span class="fs-13 fcolor-white">View {{ selectedStudent.firstName }}'s Orientation</span>
+              </a>
+              <button disabled mat-raised-button color="primary" *ngIf="!selectedStudent.orientationStartTime">
+                <span class="fs-13 fcolor-white">View {{ selectedStudent.firstName }}'s Orientation</span>
+              </button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="mt-30">
+        <mat-card-content>
+          <!-- Contact Info -->
+          <div class="row justify-content-between">
+            <div class="w-100per">
+              <h2 class="mat-card-title mt-0">Contact Info</h2>
+              <table id="CONTACT_INFO_TABLE">
+                <tr>
+                  <td>
+                    <div>
+                      <label>School Email</label>
+                    </div>
+                    <span>{{ selectedStudent.studentEmail }}</span>
+                  </td>
+                  <td>
+                    <div>
+                      <label>Guardian</label>
+                    </div>
+                    <span>
+                      {{ selectedStudent.guardianName
+                      }}{{
+                        selectedStudent.guardianRelationship ? " (" + selectedStudent.guardianRelationship + ")" : ""
+                      }}
+                    </span>
+                  </td>
+                  <td>
+                    <div>
+                      <label>Secondary Guardian</label>
+                    </div>
+                    <span>
+                      {{ selectedStudent.secondaryGuardianName
+                      }}{{
+                        selectedStudent.secondaryGuardianRelationship
+                          ? "
+                      (" +
+                            selectedStudent.secondaryGuardianRelationship +
+                            ")"
+                          : ""
+                      }}
+                    </span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div>
+                      <label>Personal Email</label>
+                    </div>
+                    <span>{{ selectedStudent.studentPersonalEmailAddress }}</span>
+                  </td>
+                  <td>
+                    <div>
+                      <label>Guardian Email</label>
+                    </div>
+                    <span>{{ selectedStudent.guardianEmailAddress }}</span>
+                    <span
+                      *ngIf="selectedStudent.guardianIsSubscribedToWeeklySnapshotEmail"
+                      class="snapshot-icon"
+                      matTooltip="Subscribed to Weekly Snapshot Email">
+                      <mat-icon>check_circle</mat-icon>
+                    </span>
+                    <span
+                      *ngIf="!selectedStudent.guardianIsSubscribedToWeeklySnapshotEmail"
+                      class="snapshot-icon"
+                      matTooltip="Not subscribed to Weekly Snapshot Email">
+                      <mat-icon>cancel</mat-icon>
+                    </span>
+                  </td>
+                  <td>
+                    <div>
+                      <label>Secondary Guardian Email</label>
+                    </div>
+                    <span>{{ selectedStudent.secondaryGuardianEmailAddress }}</span>
+                    <span
+                      *ngIf="selectedStudent.secondaryGuardianIsSubscribedToWeeklySnapshotEmail"
+                      class="snapshot-icon"
+                      matTooltip="Subscribed to Weekly Snapshot Email">
+                      <mat-icon>check_circle</mat-icon>
+                    </span>
+                    <span
+                      *ngIf="!selectedStudent.secondaryGuardianIsSubscribedToWeeklySnapshotEmail"
+                      class="snapshot-icon"
+                      matTooltip="Not subscribed to Weekly Snapshot Email">
+                      <mat-icon>cancel</mat-icon>
+                    </span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div>
+                      <label>Phone Number</label>
+                    </div>
+                    <span>{{ selectedStudent.studentPhoneNumber }}</span>
+                  </td>
+                  <td>
+                    <div>
+                      <label>Guardian Phone Number</label>
+                    </div>
+                    <span>{{ selectedStudent.guardianPhoneNumber }}</span>
+                  </td>
+                  <td>
+                    <div>
+                      <label>Secondary Guardian Phone Number</label>
+                    </div>
+                    <span>{{ selectedStudent.secondaryGuardianPhoneNumber }}</span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div>
+                      <label>Preferred Contact Method</label>
+                    </div>
+                    <span>{{ selectedStudent.preferredWayToContactStudent }}</span>
+                  </td>
+                  <td>
+                    <div>
+                      <label>Guardian Preferred Contact Method</label>
+                    </div>
+                    <span>{{ selectedStudent.preferredWayToContactGuardian }}</span>
+                  </td>
+                  <td>
+                    <mat-form-field class="fs-13">
+                      <input
+                        matInput
+                        [matDatepicker]="enrollmentDate"
+                        [max]="maxDate"
+                        [min]="minDate"
+                        placeholder="Enrollment Date"
+                        [formControl]="enrollmentDateControl"
+                        (click)="enrollmentDate.open()" />
+                      <mat-datepicker-toggle matSuffix [for]="enrollmentDate"></mat-datepicker-toggle>
+                      <mat-datepicker #enrollmentDate startView="month"></mat-datepicker>
+                    </mat-form-field>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div>
+                      <label>Home Address</label>
+                    </div>
+                    <span>{{ selectedStudentHomeAddress }}</span>
+                  </td>
+                  <td>
+                    <div>
+                      <label>Guardian Best Time to Reach</label>
+                    </div>
+                    <span>{{ selectedStudent.bestTimeToReachGuardian }}</span>
+                  </td>
+                  <td>
+                    <mat-form-field class="fs-13">
+                      <input
+                        matInput
+                        [matDatepicker]="unenrollmentDate"
+                        [max]="maxDate"
+                        [min]="minDate"
+                        placeholder="Unenrollment Date"
+                        [formControl]="unenrollmentDateControl"
+                        (click)="unenrollmentDate.open()" />
+                      <mat-datepicker-toggle matSuffix [for]="unenrollmentDate"></mat-datepicker-toggle>
+                      <mat-datepicker #unenrollmentDate startView="month"></mat-datepicker>
+                    </mat-form-field>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td colspan="1">
+                    <div>
+                      <label>Birthday</label>
+                    </div>
+                    <div
+                      class="row align-items-end w-fit-content"
+                      matTooltip="Happy birthday, {{ selectedStudent.firstName }}!"
+                      [matTooltipDisabled]="!isBirthday(selectedStudent)">
+                      {{ selectedStudent.studentBirthday | date : "M/d/yyyy" }}
+                      <mat-icon *ngIf="isBirthday(selectedStudent)">cake</mat-icon>
+                    </div>
+                  </td>
+                  <td colspan="2">
+                    <div>
+                      <label>Notes About Me (nicknames, pronouns, interests, etc.)</label>
+                    </div>
+                    <span>{{ selectedStudent.notesAboutMe }}</span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="text-center">
+              <img
+                id="PROFILE_PICTURE"
+                (click)="openStudentAvatarDialog(selectedStudent)"
+                [lazyLoad]="environment.apiUrl + '/Common/ReturnProfilePicture/' + selectedStudent.id"
+                defaultImage="assets/SelfieOutlineLoading.png"
+                class="studentAvatarShadow studentAvatar" />
+              <div class="mt-20 mb-20">
+                <button mat-raised-button (click)="openStudentAvatarDialog(selectedStudent)">
+                  <mat-icon>edit</mat-icon>
+                  Edit
+                </button>
+              </div>
+              <div class="text-center mt-10 w-180">
+                <div>
+                  <label class="text-success">Notes</label>
+                </div>
+                <span>{{ selectedStudent.notes ? selectedStudent.notes : "No notes" }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="mt-30">
+        <mat-card-content>
+          <div class="row justify-content-between">
+            <h2 class="mat-card-title mt-0">Classes</h2>
+            <button
+              mat-button
+              color="primary"
+              [disabled]="loadingCourses"
+              (click)="courseExporter.exportTable('xlsx', { fileName: selectedStudent.name + ' Courses' })">
+              Export
+            </button>
+          </div>
+
+          <div class="row">
+            <div class="w-100per table-container">
+              <table
+                #courseSort="matSort"
+                mat-table
+                [dataSource]="courseDataSource"
+                matSort
+                class="staff-table"
+                matTableExporter
+                #courseExporter="matTableExporter">
+                <ng-container matColumnDef="className">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Class</th>
+                  <td mat-cell *matCellDef="let row">{{ row.className }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="onlineHoursSpentThisWeek">
+                  <th
+                    mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header
+                    class="onlineHoursSpentThisWeek border"
+                    matTooltip="Online time spent during selected week">
+                    Time Spent Online
+                  </th>
+                  <td mat-cell *matCellDef="let row" class="pb-10 pt-10 pr-35 border">
+                    {{ Utility.toTimeFormat(row.onlineHoursSpentThisWeek * 3600.0) }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="totalSecondsSpentOnline">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="notes border">Time Spent Online</th>
+                  <td mat-cell *matCellDef="let row" class="pb-10 pt-10 border">
+                    {{ Utility.toTimeFormat(row.totalSecondsSpentOnline) }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="score">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="score">Score</th>
+                  <td mat-cell *matCellDef="let row">
+                    <span
+                      matTooltip="{{ row.scoreAchieved }} out of {{ row.scorePossible }}"
+                      matTooltipPosition="above">
+                      {{ row.score }}
+                    </span>
+                    <mat-icon
+                      *ngIf="row.trend === Trend.Upwards"
+                      color="accent"
+                      matTooltip="Up {{ row.trendDifference }}%"
+                      matTooltipPosition="above">
+                      trending_up
+                    </mat-icon>
+                    <mat-icon
+                      *ngIf="row.trend === Trend.Downwards"
+                      color="warn"
+                      matTooltip="Down {{ row.trendDifference }}%"
+                      matTooltipPosition="above">
+                      trending_down
+                    </mat-icon>
+                    <!-- Currently, not showing a trend icon if flat -->
+                    <!--<mat-icon *ngIf="row.trend === Trend.Flat">trending_flat</mat-icon>-->
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="assignmentsCompletedDateRange">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Completed In Grace</th>
+                  <td mat-cell *matCellDef="let row">
+                    {{ row.assignmentsCompletedDateRange }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="assignmentsCompleted">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Completed In Grace</th>
+                  <td mat-cell *matCellDef="let row">
+                    {{ row.assignmentsCompleted }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="assignmentsCompletedOnTime">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header [matTooltip]="'if done by the assignment date'">
+                    Completed on time
+                  </th>
+                  <td mat-cell *matCellDef="let row">
+                    {{ row.assignmentsCompletedOnTime }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="assignmentsInGracePeriod">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Assignments In Grace Period</th>
+                  <td mat-cell *matCellDef="let row">{{ row.assignmentsInGracePeriod }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="headerEmptyStart">
+                  <th mat-header-cell *matHeaderCellDef></th>
+                </ng-container>
+
+                <ng-container matColumnDef="collapsed">
+                  <th mat-header-cell *matHeaderCellDef [attr.colspan]="0" class="d-none"></th>
+                </ng-container>
+
+                <ng-container matColumnDef="headerDateRange">
+                  <th mat-header-cell *matHeaderCellDef [attr.colspan]="3" class="header-cell border">This Week</th>
+                </ng-container>
+
+                <ng-container matColumnDef="headerAllTime">
+                  <th mat-header-cell *matHeaderCellDef [attr.colspan]="4" class="header-cell border">All Time</th>
+                </ng-container>
+
+                <tr
+                  mat-header-row
+                  *matHeaderRowDef="[
+                    'headerEmptyStart',
+                    'headerDateRange',
+                    'collapsed',
+                    'collapsed',
+                    'headerAllTime'
+                  ]"></tr>
+                <tr mat-header-row *matHeaderRowDef="courseDisplayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: courseDisplayedColumns"></tr>
+              </table>
+              <div
+                *ngIf="!loadingCourses && !courseDataSource.data.length"
+                class="w-100per text-center mt-20 fcolor-gray">
+                No current courses found.
+              </div>
+              <div *ngIf="loadingCourses" class="w-100per text-center mt-20 fcolor-gray">Loading...</div>
+            </div>
+          </div>
+
+          <ng-container *ngIf="!loadingStudent">
+            <p>
+              <i [class.text-danger]="!buzzId">Buzz ID: {{ buzzId ?? "no match found" }}</i>
+            </p>
+
+            <div *ngIf="!buzzId" class="alert alert-warning">
+              No account was found for this student in Buzz (Lincoln Learning / FlexPoint). This is a list of the most
+              common causes:
+              <ul>
+                <li>
+                  The Buzz account's
+                  <b>email address</b>
+                  does not match this student's school email address.
+                  <br />
+                  Check for typos in the student's name and make sure the correct domain is being used (i.e. not
+                  <code>AmEduglobal.org</code>
+                  )
+                </li>
+                <li>
+                  The Buzz account is
+                  <b>deactivated or deleted</b>
+                  .
+                </li>
+                <li>This student doesn't have a Buzz account at all.</li>
+              </ul>
+            </div>
+          </ng-container>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="mt-30">
+        <mat-card-content>
+          <!-- Points Log -->
+          <div class="row align-items-baseline justify-content-between">
+            <h2 class="mat-card-title mt-0">Points</h2>
+          </div>
+          <div fxLayout="row wrap" fxLayoutGap="15px" fxLayoutAlign="space-around">
+            <mat-card class="hover-parent bg-off-white mb-15">
+              <mat-card-header class="m-0">
+                <h3 class="mt-0 mb-10 text-success mx-auto">Current School Year Totals</h3>
+              </mat-card-header>
+              <mat-card-content class="row justify-content-center point-totals">
+                <div class="text-center mr-25">
+                  <div>
+                    <label matTooltip="All points student has available to spend" matTooltipPosition="above">
+                      Balance
+                    </label>
+                  </div>
+                  <div class="row justify-content-between mt-10 align-items-center">
+                    <button
+                      *ngIf="user?.isAdmin || user?.isMentor"
+                      [disabled]="!allowPointRecording"
+                      matTooltip="Cash out student's points"
+                      matTooltipPosition="above"
+                      mat-raised-button
+                      class="text-white h-content w-auto line-h-inherit px-5 hover-child"
+                      color="accent"
+                      (click)="cashOutPoints()">
+                      <mat-icon>attach_money</mat-icon>
+                    </button>
+                    <strong class="ml-20 mr-20">{{ selectedStudent.pointBalance }}</strong>
+                    <button
+                      *ngIf="user?.isAdmin || user?.isMentor"
+                      [disabled]="!allowPointRecording"
+                      mat-raised-button
+                      class="text-white h-content w-auto line-h-inherit px-5 invisible"
+                      color="warn"
+                      (click)="cashOutPoints()">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="text-center mr-25">
+                  <div>
+                    <label matTooltip="All respect points" matTooltipPosition="above">Respect</label>
+                  </div>
+                  <div class="row justify-content-between mt-10 align-items-center">
+                    <button
+                      [disabled]="!allowPointRecording"
+                      mat-raised-button
+                      class="text-white h-content w-auto line-h-inherit px-5 hover-child"
+                      color="warn"
+                      (click)="recordPoint(PointsType.Respect, -1)">
+                      <mat-icon>remove</mat-icon>
+                    </button>
+                    <strong class="ml-20 mr-20">{{ selectedStudent.respectPoints }}</strong>
+                    <button
+                      [disabled]="!allowPointRecording"
+                      mat-raised-button
+                      class="text-white h-content w-auto line-h-inherit px-5 hover-child"
+                      color="primary"
+                      (click)="recordPoint(PointsType.Respect, 1)">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="text-center mr-25">
+                  <div>
+                    <label matTooltip="All integrity points" matTooltipPosition="above">Integrity</label>
+                  </div>
+                  <div class="row justify-content-between mt-10 align-items-center">
+                    <button
+                      [disabled]="!allowPointRecording"
+                      mat-raised-button
+                      class="text-white h-content w-auto line-h-inherit px-5 hover-child"
+                      color="warn"
+                      (click)="recordPoint(PointsType.Integrity, -1)">
+                      <mat-icon>remove</mat-icon>
+                    </button>
+                    <strong class="ml-20 mr-20">{{ selectedStudent.integrityPoints }}</strong>
+                    <button
+                      [disabled]="!allowPointRecording"
+                      mat-raised-button
+                      class="text-white h-content w-auto line-h-inherit px-5 hover-child"
+                      color="primary"
+                      (click)="recordPoint(PointsType.Integrity, 1)">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="text-center mr-25">
+                  <div>
+                    <label matTooltip="All stewardship points" matTooltipPosition="above">Stewardship</label>
+                  </div>
+                  <div class="row justify-content-between mt-10 align-items-center">
+                    <button
+                      [disabled]="!allowPointRecording"
+                      mat-raised-button
+                      class="text-white h-content w-auto line-h-inherit px-5 hover-child"
+                      color="warn"
+                      (click)="recordPoint(PointsType.Stewardship, -1)">
+                      <mat-icon>remove</mat-icon>
+                    </button>
+                    <strong class="ml-20 mr-20">{{ selectedStudent.stewardshipPoints }}</strong>
+                    <button
+                      [disabled]="!allowPointRecording"
+                      mat-raised-button
+                      class="text-white h-content w-auto line-h-inherit px-5 hover-child"
+                      color="primary"
+                      (click)="recordPoint(PointsType.Stewardship, 1)">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="text-center mr-25">
+                  <div>
+                    <label matTooltip="All engagement points" matTooltipPosition="above">Engagement</label>
+                  </div>
+                  <div class="row justify-content-between mt-10 align-items-center">
+                    <button
+                      [disabled]="!allowPointRecording"
+                      mat-raised-button
+                      class="text-white h-content w-auto line-h-inherit px-5 hover-child"
+                      color="warn"
+                      (click)="recordPoint(PointsType.Engagement, -1)">
+                      <mat-icon>remove</mat-icon>
+                    </button>
+                    <strong class="ml-20 mr-20">{{ selectedStudent.engagementPoints }}</strong>
+                    <button
+                      [disabled]="!allowPointRecording"
+                      mat-raised-button
+                      class="text-white h-content w-auto line-h-inherit px-5 hover-child"
+                      color="primary"
+                      (click)="recordPoint(PointsType.Engagement, 1)">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="text-center mr-25">
+                  <div>
+                    <label matTooltip="All communication points" matTooltipPosition="above">Communications</label>
+                  </div>
+                  <div class="row justify-content-between mt-10 align-items-center">
+                    <button
+                      mat-raised-button
+                      class="text-white h-content w-auto line-h-inherit px-5 invisible"
+                      color="warn">
+                      <mat-icon>remove</mat-icon>
+                    </button>
+                    <strong class="ml-20 mr-20">{{ selectedStudent.totalCommunicationPoints ?? 0 }}</strong>
+                    <button
+                      [disabled]="!allowPointRecording"
+                      mat-raised-button
+                      class="text-white h-content w-auto line-h-inherit px-5 hover-child"
+                      matTooltip="Add Communication Entry"
+                      matTooltipPosition="above"
+                      color="primary"
+                      (click)="addCommunication()">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="text-center">
+                  <div>
+                    <label matTooltip="All Live Lesson points" matTooltipPosition="above">Live Lessons</label>
+                  </div>
+                  <div class="row justify-content-between mt-10 align-items-center">
+                    <strong class="mx-auto">{{ selectedStudent.totalLiveLessonPoints ?? 0 }}</strong>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card class="hover-parent bg-off-white mb-15">
+              <mat-card-header class="m-0">
+                <h3 class="mt-0 mb-10 text-success mx-auto">Weekly Requirements</h3>
+              </mat-card-header>
+              <mat-card-content class="row justify-content-center">
+                <div class="text-center mr-25">
+                  <div>
+                    <label matTooltip="Communication points earned since Monday" matTooltipPosition="above">
+                      Communications
+                    </label>
+                  </div>
+                  <div class="row justify-content-between mt-10 align-items-center">
+                    <button
+                      mat-raised-button
+                      class="text-white h-content w-auto line-h-inherit px-5 invisible"
+                      color="warn">
+                      <mat-icon>remove</mat-icon>
+                    </button>
+                    <strong class="ml-20 mr-20">{{ selectedStudent.communicationPoints }}</strong>
+                    <button
+                      [disabled]="!allowPointRecording"
+                      mat-raised-button
+                      class="text-white h-content w-auto line-h-inherit px-5 hover-child"
+                      matTooltip="Add Communication Entry"
+                      matTooltipPosition="above"
+                      color="primary"
+                      (click)="addCommunication()">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="text-center">
+                  <div>
+                    <label matTooltip="Live Lesson points earned since Monday" matTooltipPosition="above">
+                      Live Lessons
+                    </label>
+                  </div>
+                  <div class="row justify-content-between mt-10 align-items-center">
+                    <strong class="mx-auto">{{ selectedStudent.liveLessonPoints }}</strong>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <div class="row justify-content-between align-items-center mt-15">
+            <div
+              fxLayout="row"
+              fxLayout.xs="column"
+              fxLayoutGap="15px"
+              fxLayoutWrap
+              fxLayoutAlign="flex-start center"
+              class="w-100per">
+              <mat-form-field class="fs-13 w-200 mr-25">
+                <input
+                  matInput
+                  [matDatepicker]="pointsStartDate"
+                  [max]="maxDate"
+                  [min]="minDate"
+                  placeholder="Start Date"
+                  [formControl]="pointsStartDateFilter"
+                  (click)="pointsStartDate.open()" />
+                <mat-datepicker-toggle matSuffix [for]="pointsStartDate"></mat-datepicker-toggle>
+                <mat-datepicker #pointsStartDate startView="month"></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="fs-13 w-200 mr-25">
+                <input
+                  matInput
+                  [matDatepicker]="pointsEndDate"
+                  [max]="maxDate"
+                  [min]="minDate"
+                  placeholder="End Date"
+                  [formControl]="pointsEndDateFilter"
+                  (click)="pointsEndDate.open()" />
+                <mat-datepicker-toggle matSuffix [for]="pointsEndDate"></mat-datepicker-toggle>
+                <mat-datepicker #pointsEndDate startView="month"></mat-datepicker>
+              </mat-form-field>
+
+              <button
+                mat-button
+                color="primary"
+                [disabled]="!pointsDataSource.data.length"
+                class="ml-auto"
+                (click)="pointsExporter.exportTable('xlsx', { fileName: selectedStudent.name + ' Points' })">
+                Export
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="w-100per table-container">
+              <table
+                #pointsSort="matSort"
+                mat-table
+                [dataSource]="pointsDataSource"
+                matSort
+                class="staff-table"
+                matTableExporter
+                #pointsExporter="matTableExporter"
+                [hiddenColumns]="[0]">
+                <ng-container matColumnDef="moreOptions">
+                  <th mat-header-cell *matHeaderCellDef class="moreOptions">Actions</th>
+                  <td mat-cell *matCellDef="let row">
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                      <button mat-menu-item (click)="deletePoints(row)">
+                        <mat-icon color="warn">delete</mat-icon>
+                        <span>Delete</span>
+                      </button>
+                    </mat-menu>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="date">Date</th>
+                  <td mat-cell *matCellDef="let row">{{ row.date | date : "short" }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="staffName">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="staffName">Staff Member</th>
+                  <td mat-cell *matCellDef="let row">{{ row.staffName }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="type">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="type">Type</th>
+                  <td mat-cell *matCellDef="let row">{{ PointsType[row.type] }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="comments">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="comments">Comments</th>
+                  <td mat-cell *matCellDef="let row">{{ row.comments }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="value">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="notes">Value</th>
+                  <td mat-cell *matCellDef="let row" class="pb-10 pt-10">{{ row.value }}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="pointsDisplayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: pointsDisplayedColumns"></tr>
+              </table>
+              <div *ngIf="!pointsDataSource.data.length" class="w-100per text-center mt-20 fcolor-gray">
+                No point history found for the specified date range.
+              </div>
+              <mat-paginator
+                #pointsPaginator
+                fixed
+                [pageSizeOptions]="[10, 25, 100]"
+                showFirstLastButtons></mat-paginator>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="mt-30 mb-30">
+        <mat-card-content>
+          <!-- Communication Log -->
+          <div class="row justify-content-between">
+            <h2 class="mat-card-title mt-0">Communication</h2>
+            <button
+              mat-button
+              color="primary"
+              [disabled]="!communicationDataSource.data.length"
+              (click)="
+                communicationExporter.exportTable('xlsx', { fileName: selectedStudent.name + ' Communication' })
+              ">
+              Export
+            </button>
+          </div>
+          <div class="row justify-content-between align-items-center">
+            <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="15px" fxLayoutWrap fxLayoutAlign="flex-start">
+              <mat-form-field class="fs-13 w-200 mr-25">
+                <input
+                  matInput
+                  [matDatepicker]="communicationStartDate"
+                  [max]="maxDate"
+                  [min]="minDate"
+                  placeholder="Start Date"
+                  [formControl]="communicationStartDateFilter"
+                  (click)="communicationStartDate.open()" />
+                <mat-datepicker-toggle matSuffix [for]="communicationStartDate"></mat-datepicker-toggle>
+                <mat-datepicker #communicationStartDate startView="month"></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="fs-13 w-200 mr-25">
+                <input
+                  matInput
+                  [matDatepicker]="communicationEndDate"
+                  [max]="maxDate"
+                  [min]="minDate"
+                  placeholder="End Date"
+                  [formControl]="communicationEndDateFilter"
+                  (click)="communicationEndDate.open()" />
+                <mat-datepicker-toggle matSuffix [for]="communicationEndDate"></mat-datepicker-toggle>
+                <mat-datepicker #communicationEndDate startView="month"></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <button
+              mat-raised-button
+              class="ml-25 text-white h-content w-auto pl-10 pr-10"
+              matTooltip="Add Communication Entry"
+              matTooltipPosition="above"
+              color="primary"
+              (click)="addCommunication()">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+          <div class="row">
+            <div class="w-100per table-container">
+              <table
+                #communicationSort="matSort"
+                mat-table
+                [dataSource]="communicationDataSource"
+                matSort
+                class="staff-table"
+                matTableExporter
+                #communicationExporter="matTableExporter"
+                [hiddenColumns]="[0]">
+                <!-- Options Column -->
+                <ng-container matColumnDef="moreOptions">
+                  <th mat-header-cell *matHeaderCellDef class="moreOptions">Actions</th>
+                  <td mat-cell *matCellDef="let row">
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                      <button mat-menu-item (click)="editCommunication(row)">
+                        <mat-icon>edit</mat-icon>
+                        <span>Edit</span>
+                      </button>
+                      <button mat-menu-item (click)="deleteCommunication(row)">
+                        <mat-icon color="warn">delete</mat-icon>
+                        <span>Delete</span>
+                      </button>
+                    </mat-menu>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="staffName">Date</th>
+                  <td mat-cell *matCellDef="let row">{{ row.date | date : "short" }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="isAdmin">Staff Member</th>
+                  <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="type">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="type">Type</th>
+                  <td mat-cell *matCellDef="let row">{{ row.type | communicationTypeName }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="wasSuccessful">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="notes">Status</th>
+                  <td mat-cell *matCellDef="let row" class="pb-10 pt-10">
+                    {{
+                      row.wasSuccessful
+                        ? "Successful - " + (row.awardPoint ? "Point Awarded" : "No Point")
+                        : "Attempted"
+                    }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="notes">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="notes">Notes</th>
+                  <td mat-cell *matCellDef="let row" class="pb-10 pt-10">{{ row.notes }}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="communicationDisplayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: communicationDisplayedColumns"></tr>
+              </table>
+
+              <div *ngIf="!communicationDataSource.data.length" class="w-100per text-center mt-20 fcolor-gray">
+                No communication history found for the specified date range.
+              </div>
+              <mat-paginator
+                #communicationPaginator
+                fixed
+                [pageSizeOptions]="[10, 25, 100]"
+                showFirstLastButtons></mat-paginator>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="mt-30 mb-30">
+        <mat-card-content>
+          <!-- EngagementFlag Log -->
+          <div class="row justify-content-between">
+            <h2 class="mat-card-title mt-0">Engagement Flags</h2>
+
+            <div>
+              <button
+                *ngIf="user?.isInterventionist"
+                mat-button
+                color="primary"
+                (click)="generateIntervention(selectedStudent)">
+                Generate Intervention
+              </button>
+
+              <button
+                mat-button
+                color="primary"
+                [disabled]="!engagementFlagDataSource.data.length"
+                (click)="
+                  engagementFlagExporter.exportTable('xlsx', { fileName: selectedStudent.name + ' Engagement Flags' })
+                ">
+                Export
+              </button>
+            </div>
+          </div>
+          <div class="row justify-content-between">
+            <mat-form-field class="ta-center">
+              <mat-select placeholder="School Year" [formControl]="schoolYearFilter">
+                <mat-option [value]="schoolYear" *ngFor="let schoolYear of schoolYears">
+                  {{ schoolYear.getFullYear() }} - {{ schoolYear.getFullYear() + 1 }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <div *ngIf="selectedStudent.interventionLevel !== null" class="intervention-status">
+              <b class="mr-20">Intervention Status</b>
+              <a
+                routerLink="/staff/interventions/student"
+                [queryParams]="{ studentId: selectedStudent.id }"
+                mat-raised-button
+                class="level-{{ selectedStudent.interventionLevel }}">
+                {{ selectedStudent.interventionLevel > 0 ? "Level " + selectedStudent.interventionLevel : "Warning" }} -
+                {{ selectedStudent.interventionStatus | interventionStatus }}
+              </a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="w-100per table-container">
+              <table
+                #engagementFlagSort="matSort"
+                mat-table
+                [dataSource]="engagementFlagDataSource"
+                matSort
+                class="staff-table"
+                matTableExporter
+                #engagementFlagExporter="matTableExporter"
+                [hiddenColumns]="[0]">
+                <!-- Options Column -->
+                <ng-container matColumnDef="moreOptions">
+                  <th mat-header-cell *matHeaderCellDef class="moreOptions">Actions</th>
+                  <td mat-cell *matCellDef="let row">
+                    <button mat-icon-button [matMenuTriggerFor]="menu" [disabled]="row.interventionReason">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                      <button *ngIf="row.approvedStatus !== true" mat-menu-item (click)="approveEngagementFlag(row)">
+                        <mat-icon color="accent">check</mat-icon>
+                        <span>Approve</span>
+                      </button>
+                      <button *ngIf="row.approvedStatus !== false" mat-menu-item (click)="rejectEngagementFlag(row)">
+                        <mat-icon color="warn">not_interested</mat-icon>
+                        <span>Reject</span>
+                      </button>
+                    </mat-menu>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="approvedStatus">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="approvedStatus">Status</th>
+                  <td mat-cell *matCellDef="let row" class="text-nowrap pr-35">
+                    <ng-container *ngIf="row.approvedStatus === null">Needs action</ng-container>
+                    <ng-container *ngIf="row.approvedStatus !== null">
+                      {{
+                        row.approvedStatus
+                          ? row.interventionReason
+                            ? "Generated by "
+                            : "Approved by "
+                          : "Rejected by "
+                      }}
+                      {{ row.staffName || "System" }}
+                    </ng-container>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="weekOfDate">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="staffName">Week</th>
+                  <td mat-cell *matCellDef="let row" class="text-nowrap pr-35">
+                    {{ getBeginningOfWeek(row.weekOfDate) | date : "shortDate" }}
+                    -
+                    {{ row.weekOfDate | addDays : -1 | date : "shortDate" }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actualCommunications">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="actualCommunications">Communications</th>
+                  <td mat-cell *matCellDef="let row" class="text-nowrap pr-35">
+                    {{ row.actualCommunications }}
+
+                    <ng-container *ngIf="row.targetCommunications">out of {{ row.targetCommunications }}</ng-container>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actualLiveLessons">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="actualLiveLessons">Live Lessons</th>
+                  <td mat-cell *matCellDef="let row" class="text-nowrap pr-35">
+                    {{ row.actualLiveLessons }}
+
+                    <ng-container *ngIf="row.targetLiveLessons">out of {{ row.targetLiveLessons }}</ng-container>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actualCourseHours">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="actualCourseHours">Course Hours</th>
+                  <td mat-cell *matCellDef="let row" class="text-nowrap">
+                    {{ row.actualCourseHours }}
+
+                    <ng-container *ngIf="row.targetCourseHours">out of {{ row.targetCourseHours }}</ng-container>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="rejectedReason">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header class="rejectedReason">Reason</th>
+                  <td mat-cell *matCellDef="let row" class="pb-10 pt-10">
+                    <ng-container
+                      *ngTemplateOutlet="reasonTemplate; context: { $implicit: getReason(row) }"></ng-container>
+
+                    <ng-template let-reason #reasonTemplate>
+                      <span [class.fcolor-gray]="reason === 'N/A'">
+                        {{ reason }}
+                      </span>
+                    </ng-template>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="engagementFlagDisplayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: engagementFlagDisplayedColumns"></tr>
+              </table>
+
+              <div *ngIf="!engagementFlagDataSource.data.length" class="w-100per text-center mt-20 fcolor-gray">
+                No engagement flag history found for the selected school year.
+              </div>
+              <mat-paginator
+                #engagementFlagPaginator
+                fixed
+                [pageSizeOptions]="[10, 25, 100]"
+                showFirstLastButtons></mat-paginator>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="mt-30 mb-30">
+        <mat-card-content>
+          <div class="row">
+            <h2 class="mat-card-title mt-0">Accommodations</h2>
+          </div>
+          <div
+            *ngIf="selectedStudent.accomodations"
+            class="accomodations"
+            [innerHTML]="selectedStudent.accomodations | safe : 1"></div>
+          <div *ngIf="!selectedStudent.accomodations">This student doesn't have any accomodations.</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="mt-30 mb-30">
+        <mat-card-content>
+          <div class="row justify-content-between">
+            <h2 class="mat-card-title mt-0">Excused Absences</h2>
+            <button
+              mat-button
+              color="primary"
+              [disabled]="!absenceDataSource.data.length"
+              (click)="absencesExporter.exportTable('xlsx', { fileName: selectedStudent.name + ' Excused Absences' })">
+              Export
+            </button>
+          </div>
+          <div class="row justify-content-between align-items-center">
+            <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="15px" fxLayoutWrap fxLayoutAlign="flex-start">
+              <mat-form-field class="fs-13 w-200 mr-25">
+                <input
+                  matInput
+                  [matDatepicker]="absenceStartDate"
+                  [max]="maxDate"
+                  [min]="minDate"
+                  placeholder="Start Date"
+                  [formControl]="absenceStartDateFilter"
+                  (click)="absenceStartDate.open()" />
+                <mat-datepicker-toggle matSuffix [for]="absenceStartDate"></mat-datepicker-toggle>
+                <mat-datepicker #absenceStartDate startView="month"></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="fs-13 w-200 mr-25">
+                <input
+                  matInput
+                  [matDatepicker]="absenceEndDate"
+                  [max]="maxDate"
+                  [min]="minDate"
+                  placeholder="End Date"
+                  [formControl]="absenceEndDateFilter"
+                  (click)="absenceEndDate.open()" />
+                <mat-datepicker-toggle matSuffix [for]="absenceEndDate"></mat-datepicker-toggle>
+                <mat-datepicker #absenceEndDate startView="month"></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <button
+              mat-raised-button
+              class="ml-25 text-white h-content w-auto pl-10 pr-10"
+              matTooltip="Add Excused Absence Entry"
+              matTooltipPosition="above"
+              color="primary"
+              (click)="addAbsence()">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+          <div class="row">
+            <div class="w-100per">
+              <table
+                #absenceSort="matSort"
+                mat-table
+                [dataSource]="absenceDataSource"
+                matSort
+                class="staff-table"
+                matTableExporter
+                #absencesExporter="matTableExporter"
+                [hiddenColumns]="[0]">
+                <!-- Options Column -->
+                <ng-container matColumnDef="moreOptions">
+                  <th mat-header-cell *matHeaderCellDef class="moreOptions">Actions</th>
+                  <td mat-cell *matCellDef="let row">
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                      <button mat-menu-item (click)="editAbsence(row)">
+                        <mat-icon>edit</mat-icon>
+                        <span>Edit</span>
+                      </button>
+                      <button mat-menu-item (click)="deleteAbsence(row)">
+                        <mat-icon color="warn">delete</mat-icon>
+                        <span>Delete</span>
+                      </button>
+                    </mat-menu>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="dateRange">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Date Range</th>
+                  <td mat-cell *matCellDef="let row">
+                    {{ row.startDate | date : "shortDate" }} - {{ row.endDate | date : "shortDate" }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="reason">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Reason</th>
+                  <td mat-cell *matCellDef="let row">{{ row.reason }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="userName">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Staff Member</th>
+                  <td mat-cell *matCellDef="let row">{{ row.userName }}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="absenceDisplayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: absenceDisplayedColumns"></tr>
+              </table>
+
+              <div *ngIf="!absenceDataSource.data.length" class="w-100per text-center mt-20 fcolor-gray">
+                No excused absence history found for the specified date range.
+              </div>
+              <mat-paginator
+                #absencePaginator
+                fixed
+                [pageSizeOptions]="[10, 25, 100]"
+                showFirstLastButtons></mat-paginator>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

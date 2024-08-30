@@ -1,0 +1,121 @@
+<div class="admin-mentor-container">
+  <i *ngIf="loading">Loading...</i>
+  <form *ngIf="!loading" [formGroup]="form" class="pb-25">
+    <mat-card>
+      <mat-card-title>
+        {{ interventionLevel > 0 ? "Level " + interventionLevel : "Warning" }} Email Template
+      </mat-card-title>
+      <mat-card-content>
+        <div class="fs-14">
+          <div class="mb-20" fxLayout="row wrap" fxLayoutGap="50px" fxLayoutAlign="start start">
+            <div>
+              <label>From</label>
+              <mat-radio-group formControlName="emailFrom" class="mt-10" fxLayout="column" fxLayoutGap="5px">
+                <mat-radio-button [value]="fromMentor" class="mr-25">Mentor</mat-radio-button>
+                <mat-radio-button [value]="fromCounselor" class="mr-25">Counselor</mat-radio-button>
+                <mat-radio-button [value]="fromTruancy" class="mr-25">Truancy@AmEduglobal.org</mat-radio-button>
+              </mat-radio-group>
+            </div>
+
+            <div>
+              <label>To</label>
+              <div fxLayout="column" class="mt-10" fxLayoutGap="5px">
+                <mat-checkbox class="mr-25" formControlName="sendToMentor">Mentor</mat-checkbox>
+                <mat-checkbox class="mr-25" formControlName="sendToSecondaryMentor">Secondary Mentor</mat-checkbox>
+                <mat-checkbox class="mr-25" formControlName="sendToCounselor">Counselor</mat-checkbox>
+                <mat-checkbox
+                  *ngIf="interventionLevel === 3 || interventionLevel === 4"
+                  class="mr-25"
+                  formControlName="sendToInterventionist">
+                  Interventionist
+                </mat-checkbox>
+                <mat-checkbox class="mr-25" formControlName="sendToGuardian1">Guardian 1</mat-checkbox>
+                <mat-checkbox class="mr-25" formControlName="sendToGuardian2">Guardian 2</mat-checkbox>
+                <mat-checkbox class="mr-25" formControlName="sendToStudent">Student</mat-checkbox>
+              </div>
+            </div>
+          </div>
+
+          <!--Subject-->
+          <mat-form-field color="primary" class="w-100per" appearance="standard">
+            <mat-label class="fs-14" color="primary">Subject</mat-label>
+            <input matInput formControlName="emailSubject" class="fs-14" />
+            <mat-error *ngIf="form.controls['emailSubject'].hasError('required')">Please enter a Subject</mat-error>
+          </mat-form-field>
+
+          <div class="mb-10 mt-10">
+            <label>Email Body</label>
+          </div>
+          <mat-checkbox formControlName="includeEngagementFlagSnapshot" class="mb-10">
+            Include Student Engagement Flag Snapshot
+          </mat-checkbox>
+
+          <fd-angular-rich-text-wrapper
+            [editorConfig]="angularEditorConfig"
+            (editorUpdated)="editorUpdated($any($event))"></fd-angular-rich-text-wrapper>
+
+          <div class="mt-30">
+            <label>Attachments</label>
+
+            <div fxLayout="row wrap" fxLayoutGap="15px">
+              <div *ngFor="let attachment of emailAttachments; let i = index">
+                <span class="attachment" fxLayout="row wrap" fxLayoutAlign="start center">
+                  <ng-container *ngIf="attachment.size > 0; else link">
+                    {{ attachment.name }}
+                  </ng-container>
+                  <ng-template #link>
+                    <a [href]="storageUrl(attachment.name)" target="_blank">
+                      {{ attachment.name }}
+                    </a>
+                  </ng-template>
+
+                  <button mat-icon-button (click)="removeAttachment(i)" matTooltip="Remove attachment">
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </span>
+              </div>
+            </div>
+
+            <input #uploadInput hidden="true" type="file" onclick="this.value=null" (change)="addAttachment($event)" />
+            <button mat-raised-button color="primary" (click)="uploadInput.click()" class="fcolor-white mr-20 mt-20">
+              Add an Attachment
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button
+          type="button"
+          mat-button
+          (click)="preview(previewTemplate)"
+          color="primary"
+          class="ml-10"
+          [disabled]="!emailBody">
+          Preview
+        </button>
+        <button type="button" mat-button (click)="close()" color="primary" class="ml-10">Cancel</button>
+        <button
+          type="submit"
+          mat-raised-button
+          (click)="save()"
+          color="primary"
+          class="fcolor-white"
+          [disabled]="saving">
+          Save
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <ng-template #previewTemplate>
+      <app-dialog dialogType="primary">
+        <div dialog-title class="title fw-500 ta-center fcolor-white">Preview</div>
+        <div dialog-content class="fs-14">
+          <div [innerHTML]="emailBody"></div>
+        </div>
+        <div dialog-footer align="end">
+          <button type="button" mat-button color="primary" mat-dialog-close>Close</button>
+        </div>
+      </app-dialog>
+    </ng-template>
+  </form>
+</div>

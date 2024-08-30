@@ -1,0 +1,290 @@
+<div class="admin-mentor-container extra-wide">
+  <div>
+    <mat-form-field color="primary" class="w-200 mr-25">
+      <span matPrefix>
+        <mat-icon>search</mat-icon>
+        &nbsp;
+      </span>
+      <input matInput placeholder="Search for a student" [formControl]="nameFilter" />
+    </mat-form-field>
+
+    <mat-form-field class="mt-5 w-100 ta-center mr-25">
+      <mat-select placeholder="Choose a Grade Level" [formControl]="gradeLevelFilter">
+        <mat-option value="All">All</mat-option>
+        <mat-option [value]="grade" *ngFor="let grade of gradeLevels">
+          {{ grade }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="mt-5 w-200 ta-center mr-25">
+      <mat-select placeholder="Choose an email domain" [formControl]="emailFilter">
+        <mat-option value="All">All</mat-option>
+        <mat-option value="AmEdustudents.org">AmEdu</mat-option>
+        <mat-option value="innocademystudents.com">Innocademy</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field color="primary" class="w-200 mr-25">
+      <span matPrefix>
+        <mat-icon>search</mat-icon>
+        &nbsp;
+      </span>
+      <input matInput placeholder="Search for an elective" [formControl]="electiveFilter" />
+    </mat-form-field>
+
+    <button
+      [disabled]="isExporting"
+      (click)="exportToExcel()"
+      mat-icon-button
+      matTooltip="Export Student Orientation Report">
+      <mat-icon *ngIf="!isExporting">file_download</mat-icon>
+      <mat-spinner [diameter]="15" style="font-size: 0.7rem" *ngIf="isExporting"></mat-spinner>
+    </button>
+  </div>
+  <mat-card class="p-0 mb-20">
+    <mat-card-content>
+      <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="options" sticky>
+          <th mat-header-cell *matHeaderCellDef class="actions pr-5">Actions</th>
+          <td mat-cell *matCellDef="let row" class="pr-5">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <a
+                href="/student/orientation?studentId={{ row.studentId }}"
+                target="_blank"
+                mat-menu-item
+                *ngIf="row.orientationStartTime">
+                <mat-icon>visibility</mat-icon>
+                <span class="fs-13">View student orientation</span>
+              </a>
+              <button mat-menu-item *ngIf="!row.orientationStartTime">
+                <mat-icon>visibility_off</mat-icon>
+                <span class="fs-13" title="Student has not started the orientation process">
+                  Student has not started orientation
+                </span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name" sticky>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Student</th>
+          <td mat-cell *matCellDef="let row">
+            <img
+              defaultImage="assets/SelfieOutlineLoading.png"
+              [lazyLoad]="environment.apiUrl + '/Common/ReturnProfilePicture/' + row.id"
+              class="studentAvatar mr-15 studentAvatarShadow mt-5"
+              matTooltip="{{ row.name }}"
+              matTooltipPosition="before"
+              (click)="openStudentAvatarDialog(row)" />
+            <div class="va-top mt-20 dis-ib">{{ row.name }}</div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="mentorName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Mentor</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.mentorName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="gradeLevel">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Grade Level</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.gradeLevel }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="semester1Electives">
+          <th mat-header-cell *matHeaderCellDef>Semester 1 Electives</th>
+          <td mat-cell *matCellDef="let row" class="pr-25 pt-20 pb-20">
+            <mat-chip-list>
+              <mat-chip
+                *ngFor="let elective of filterStudentElectives(studentSemesterElectives, row.studentId, 1)"
+                color="primary"
+                class="studentElectiveChip"
+                selected>
+                {{ elective.electiveName }}
+              </mat-chip>
+            </mat-chip-list>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="semester2Electives">
+          <th mat-header-cell *matHeaderCellDef>Semester 2 Electives</th>
+          <td mat-cell *matCellDef="let row" class="pr-25 pt-20 pb-20">
+            <mat-chip-list>
+              <mat-chip
+                *ngFor="let elective of filterStudentElectives(studentSemesterElectives, row.studentId, 2)"
+                color="primary"
+                class="studentElectiveChip"
+                selected>
+                {{ elective.electiveName }}
+              </mat-chip>
+            </mat-chip-list>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="guardianName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Guardian Name</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.guardianName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="wayToContactAsGuardian">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Guardian Preferred Contact Method</th>
+          <td mat-cell *matCellDef="let row">
+            {{ getPreferredContactMethod(row.wayToContactAsGuardian) }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="studentPhoneNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Student Phone Number</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.studentPhoneNumber }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="studentEmailAddress">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Student Email</th>
+          <td mat-cell *matCellDef="let row">
+            <a href="mailto:{{ row.studentEmailAddress }}">{{ row.studentEmailAddress }}</a>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="wayToReachAsStudent">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Student Preferred Contact Method</th>
+          <td mat-cell *matCellDef="let row">
+            {{ getPreferredContactMethod(row.wayToReachAsStudent) }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="studentBirthday">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Student Birthday</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.studentBirthday | date }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="guardianRelationship">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Guardian Relationship</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.guardianRelationship }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="guardianEmailAddress">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Guardian Email</th>
+          <td mat-cell *matCellDef="let row">
+            <a href="mailto:{{ row.guardianEmailAddress }}">{{ row.guardianEmailAddress }}</a>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="guardianPhoneNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Guardian Phone Number</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.guardianPhoneNumber }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="bestTimeToReachAsGuardian">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Guardian Preferred Contact Time</th>
+          <td mat-cell *matCellDef="let row">
+            {{ getPreferredContactTime(row.bestTimeToReachAsGuardian) }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="guardianIsSubscribedToWeeklySnapshotEmail">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Guardian Subscription Status</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.guardianIsSubscribedToWeeklySnapshotEmail ? "Subscribed to weekly snapshot" : "-" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="secondaryGuardianRelationship">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Secondary Guardian Relationship</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.secondaryGuardianRelationship }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="secondaryGuardianName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Secondary Guardian Name</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.secondaryGuardianName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="secondaryGuardianEmailAddress">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Secondary Guardian Email</th>
+          <td mat-cell *matCellDef="let row">
+            <a href="mailto:{{ row.secondaryGuardianEmailAddress }}">{{ row.secondaryGuardianEmailAddress }}</a>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="secondaryGuardianPhoneNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Secondary Guardian Phone Number</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.secondaryGuardianPhoneNumber }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="homeAddress">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Home Address</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.homeAddress }}, {{ row.city }}, {{ row.state }}&nbsp;&nbsp;{{ row.zipCode }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="interests">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Interests</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.interests }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="extraCurricularActivities">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Extra Curricular Activities</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.extraCurricularActivities }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="notesAboutMe">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Notes About Me</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.notesAboutMe }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="broughtToAmEduChoices">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>What brought you to AmEdu?</th>
+          <td mat-cell *matCellDef="let row">
+            <ng-container *ngFor="let choice of getBroughtToAmEduChoices(row); let i = index">
+              <ng-container *ngIf="i > 0">,</ng-container>
+              {{ choice }}
+            </ng-container>
+
+            <ng-container *ngIf="getBroughtToAmEduOther(row) as other">
+              <ng-container *ngIf="getBroughtToAmEduChoices(row).length">
+                <br />
+                <br />
+              </ng-container>
+              <b>Other:</b>
+              {{ other }}
+            </ng-container>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+
+      <mat-paginator fixed [pageSize]="100" [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

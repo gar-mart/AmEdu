@@ -1,0 +1,17 @@
+.selfie-container {
+  position: relative;
+  width: fit-content;
+  display: block;
+  overflow: hidden;
+}
+
+.selfie-outline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  opacity: 0.5;
+  width: 350px;
+}

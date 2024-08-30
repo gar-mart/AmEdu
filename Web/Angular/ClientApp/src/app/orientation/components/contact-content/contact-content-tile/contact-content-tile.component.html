@@ -1,0 +1,28 @@
+<mat-card *ngIf="user">
+  <mat-card-content>
+    <div mat-card-avatar class="ml-20 mb-35 mr-25">
+      <img *ngIf="user.profilePicture" src="{{ user.profilePicture }}" class="mentorAvatar" />
+      <img *ngIf="!user.profilePicture" src="assets/SelfieOutline.png" class="mentorAvatar" />
+    </div>
+    <div>
+      <label class="mentor-label">Name:</label>
+      <span class="mentor-data">{{ user.firstName }} {{ user.lastName }}</span>
+    </div>
+    <div>
+      <label class="mentor-label">Email:</label>
+      <span class="mentor-data">{{ user.userName }}</span>
+    </div>
+    <div class="ml-5 mt-10">
+      <a mat-button color="primary" href="mailto:{{ user.userName }}">
+        <mat-icon>email</mat-icon>
+        <span class="mt-5 ml-5">Contact {{ user.firstName }} {{ user.lastName }}</span>
+      </a>
+      <div *ngIf="user.appointmentLink">
+        <a href="{{ user.appointmentLink }}" mat-button target="_blank" color="primary">
+          <mat-icon>schedule</mat-icon>
+          Schedule Appointment
+        </a>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

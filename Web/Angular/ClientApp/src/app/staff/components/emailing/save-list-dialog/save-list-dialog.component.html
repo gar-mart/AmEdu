@@ -1,0 +1,42 @@
+<app-dialog dialogType="primary">
+  <div dialog-title class="title fw-500 ta-center fcolor-white">Save Recipients to a List</div>
+
+  <div dialog-content class="fs-14">
+    <div class="info">
+      <p>
+        You can save your selected recipients to a list which you can retrieve for future communications! Just provide a
+        name for your list and click Save.
+      </p>
+
+      If you want to delete your list later:
+      <ol>
+        <li>Go to the Select Students tab.</li>
+        <li>Select the list you want to delete.</li>
+        <li>A delete button will appear to allow you to delete it.</li>
+      </ol>
+    </div>
+    <mat-form-field class="w-100per">
+      <mat-label>Name</mat-label>
+      <input
+        #nameInput
+        [(ngModel)]="communicationList.name"
+        matInput
+        placeholder="Please provide a name for your list."
+        required
+        maxlength="50" />
+      <mat-error>This field is required.</mat-error>
+    </mat-form-field>
+  </div>
+
+  <div dialog-footer>
+    <button
+      mat-raised-button
+      (click)="save()"
+      color="primary"
+      [disabled]="!communicationList.name"
+      class="fcolor-white">
+      Save
+    </button>
+    <button mat-button (click)="close()" color="primary">Close</button>
+  </div>
+</app-dialog>

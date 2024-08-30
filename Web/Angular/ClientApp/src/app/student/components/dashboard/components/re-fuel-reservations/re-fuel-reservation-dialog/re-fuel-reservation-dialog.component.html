@@ -1,0 +1,71 @@
+<app-dialog dialogType="primary">
+  <div dialog-title class="fw-500 ta-center fcolor-white row justify-content-between">Re:Fuel Reservation</div>
+  <div dialog-content>
+    <form [formGroup]="form">
+      <div class="font-weight-semi-bold fs-13">
+        <div *ngIf="!data.breakfastOffered && !data.lunchOffered; else mealOffered">
+          Neither breakfast nor lunch will be offered.
+        </div>
+
+        <ng-template #mealOffered>
+          <h4 class="m-0">Meal Request</h4>
+        </ng-template>
+
+        <div *ngIf="data.breakfastOffered">
+          <mat-checkbox formControlName="breakfast">Breakfast</mat-checkbox>
+        </div>
+        <div *ngIf="data.lunchOffered">
+          <mat-checkbox formControlName="lunch">Lunch</mat-checkbox>
+        </div>
+
+        <div *ngIf="data.generalInquiry" class="mt-20">
+          <div>
+            <label>{{ data.generalInquiry }}</label>
+          </div>
+          <mat-form-field appearance="fill" class="w-100per">
+            <input matInput formControlName="generalInquiryResponse" />
+            <mat-error>
+              <ng-container *ngIf="form.controls.generalInquiryResponse.errors?.['required']; else tooLong">
+                Please provide a response.
+              </ng-container>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="data.breakfastInquiry && form.value.breakfast" class="mt-20">
+          <div>
+            <label>{{ data.breakfastInquiry }}</label>
+          </div>
+          <mat-form-field appearance="fill" class="w-100per">
+            <input matInput formControlName="breakfastInquiryResponse" />
+            <mat-error>
+              <ng-container *ngIf="form.controls.breakfastInquiryResponse.errors?.['required']; else tooLong">
+                Please provide a response.
+              </ng-container>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="data.lunchInquiry && form.value.lunch" class="mt-20">
+          <div>
+            <label>{{ data.lunchInquiry }}</label>
+          </div>
+          <mat-form-field appearance="fill" class="w-100per">
+            <input matInput formControlName="lunchInquiryResponse" />
+            <mat-error>
+              <ng-container *ngIf="form.controls.lunchInquiryResponse.errors?.['required']; else tooLong">
+                Please provide a response.
+              </ng-container>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div dialog-footer>
+    <button mat-button (click)="close()" color="primary">Cancel</button>
+    <button mat-raised-button (click)="save()" color="primary" class="fcolor-white">Submit</button>
+  </div>
+</app-dialog>
+
+<ng-template #tooLong>Please shorten your response.</ng-template>

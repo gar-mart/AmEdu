@@ -1,0 +1,96 @@
+<div class="admin-mentor-container">
+  <ng-container *ngIf="allStudents; else initializing">
+    <ng-container *ngIf="allStudents.length; else noStudents" [ngTemplateOutlet]="content"></ng-container>
+  </ng-container>
+
+  <ng-template #initializing>
+    <mat-spinner [diameter]="25"></mat-spinner>
+  </ng-template>
+
+  <ng-template #noStudents>There are no students with interventions.</ng-template>
+</div>
+
+<ng-template #content>
+  <div fxLayout="row wrap" fxLayoutGap="15px">
+    <mat-form-field appearance="standard">
+      <input matInput [formControl]="student" [matAutocomplete]="auto" (blur)="enforceStudentSelection()" />
+    </mat-form-field>
+    <mat-autocomplete #auto [displayWith]="studentDisplay">
+      <mat-option *ngFor="let student of filterStudents" [value]="student">{{ student.name }}</mat-option>
+    </mat-autocomplete>
+
+    <mat-form-field appearance="standard" class="school-year">
+      <mat-select [formControl]="schoolYear">
+        <mat-option *ngFor="let schoolYear of schoolYears" [value]="schoolYear">
+          {{ schoolYear }} - {{ schoolYear + 1 }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <ng-container *ngIf="student.value?.id">
+      <div *ngIf="!canEdit" class="alert alert-info fs-14 ml-auto">
+        Only admins, interventionists, {{ student.value?.gradeLevel | gradeName }} counselors, or this student's mentor
+        may edit this page.
+      </div>
+    </ng-container>
+  </div>
+
+  <div *ngIf="interventions !== null; else loadingInterventions">
+    <mat-stepper
+      orientation="vertical"
+      #stepper
+      [hidden]="hideStepper"
+      [selectedIndex]="selectedIndex"
+      class="mat-elevation-z1">
+      <ng-container *ngFor="let intervention of interventions">
+        <mat-step
+          *ngIf="showIntervention(intervention)"
+          [aria-labelledby]="intervention.level + '-' + intervention.logOnly">
+          <!-- hack: No built-in way to style the header. This aria-labelledby allows us to target something in scss -->
+
+          <ng-template matStepLabel>
+            <div>
+              <span [style.font-style]="intervention.logOnly ? 'italic' : null">
+                {{ intervention.level ? "Level " + intervention.level : "Warning" }}
+
+                {{ intervention.logOnly ? "(engagement flag approved)" : "" }}
+              </span>
+            </div>
+          </ng-template>
+
+          <div class="pt-20">
+            <app-intervention
+              (reload)="loadInterventions()"
+              [(interventions)]="interventions"
+              [intervention]="intervention"
+              [authorized]="canEdit"></app-intervention>
+          </div>
+        </mat-step>
+      </ng-container>
+
+      <ng-template matStepperIcon="number">
+        <mat-icon></mat-icon>
+      </ng-template>
+
+      <ng-template matStepperIcon="edit">
+        <mat-icon></mat-icon>
+      </ng-template>
+
+      <ng-template matStepperIcon="done">
+        <mat-icon></mat-icon>
+      </ng-template>
+
+      <ng-template matStepperIcon="error">
+        <mat-icon></mat-icon>
+      </ng-template>
+    </mat-stepper>
+
+    <div *ngIf="!interventions.length && student.value.name" class="text-center fs-14">
+      No interventions were found for {{ student.value.name }} in {{ schoolYear.value }} - {{ schoolYear.value + 1 }}
+    </div>
+  </div>
+
+  <ng-template #loadingInterventions>
+    <mat-spinner [diameter]="25" color="accent"></mat-spinner>
+  </ng-template>
+</ng-template>

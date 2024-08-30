@@ -1,0 +1,25 @@
+<div *ngIf="loading; else loaded" fxLayout="row" fxLayoutAlign="center center" class="spinner-container">
+  <mat-spinner [diameter]="50"></mat-spinner>
+</div>
+
+<ng-template #loaded>
+  <app-slide [stepName]="step.name" [saveShown]="saveShown()" [saveDisabled]="saveDisabled()" (onSave)="save()">
+    <button
+      *ngIf="canUpdate"
+      mat-raised-button
+      color="accent"
+      class="mb-20 fcolor-white"
+      (click)="updateMode = true"
+      [disabled]="updateMode">
+      Edit
+    </button>
+
+    <div *ngIf="stepContent" fxLayout="column" fxLayoutGap="20px">
+      <app-step-content
+        *ngFor="let content of stepContent.content"
+        [content]="content"
+        [updateMode]="updateMode"
+        [step]="step"></app-step-content>
+    </div>
+  </app-slide>
+</ng-template>

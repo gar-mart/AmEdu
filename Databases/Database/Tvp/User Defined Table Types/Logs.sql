@@ -1,0 +1,6 @@
+﻿CREATE TYPE Tvp.Logs AS TABLE
+(
+	Id INT
+	, [In] DATETIME2(0)
+	, [Out] DATETIME2(0)
+)

@@ -1,0 +1,47 @@
+﻿using System;
+
+namespace Shared.Buzz.Schemas;
+
+[Flags]
+public enum RightsFlags: long
+{
+    None = 0x00,
+    Participate = 0x01,
+    CreateDomain = 0x10,
+    ReadDomain = 0x20,
+    UpdateDomain = 0x40,
+    DeleteDomain = 0x80,
+    CreateUser = 0x100,
+    ReadUser = 0x200,
+    UpdateUser = 0x400,
+    DeleteUser = 0x800,
+    CreateCourse = 0x10000,
+    ReadCourse = 0x20000,
+    UpdateCourse = 0x40000,
+    DeleteCourse = 0x80000,
+    CreateSection = 0x100000,
+    ReadSection = 0x200000,
+    UpdateSection = 0x400000,
+    DeleteSection = 0x800000,
+    GradeAssignment = 0x1000000,
+    GradeForum = 0x2000000,
+    GradeExam = 0x4000000,
+    SetupGradebook = 0x8000000,
+    ControlDomain = 0x10000000,
+    ControlCourse = 0x20000000,
+    ControlSection = 0x40000000,
+    ReadGradebook = 0x80000000,
+    ReportDomain = 0x100000000,
+    ReportCourse = 0x200000000,
+    ReportSection = 0x400000000,
+    PostDomainAnnouncements = 0x800000000,
+    Proxy = 0x1000000000,
+    ReportUser = 0x4000000000,
+    SubmitFinalGrade = 0x8000000000,
+    ControlEnrollment = 0x10000000000,
+    ReadEnrollment = 0x20000000000,
+    ReadCourseFull = 0x40000000000,
+    ControlUser = 0x80000000000,
+    ReadObjective = 0x100000000000,
+    UpdateObjective = 0x200000000000,
+};

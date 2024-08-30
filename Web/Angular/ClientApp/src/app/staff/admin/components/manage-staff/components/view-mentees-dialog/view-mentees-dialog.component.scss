@@ -1,0 +1,6 @@
+hr {
+  border-top: 1px solid lightgray;
+  &:last-child {
+    display: none;
+  }
+}

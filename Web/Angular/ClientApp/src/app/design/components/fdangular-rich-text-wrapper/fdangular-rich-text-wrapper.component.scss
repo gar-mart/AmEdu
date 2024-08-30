@@ -1,0 +1,49 @@
+:host ::ng-deep {
+  .background-white {
+    background: white !important;
+    padding: 3px !important;
+    font-size: smaller !important;
+  }
+
+  .background-gray {
+    background: gray !important;
+    padding: 3px;
+    font-size: smaller;
+  }
+
+  .background-red {
+    background: #ff0000 !important;
+    padding: 3px !important;
+    font-size: smaller !important;
+  }
+
+  .background-orange {
+    background: #fb8c00 !important;
+    padding: 3px !important;
+    font-size: smaller !important;
+  }
+
+  .background-yellow {
+    background: #ffff00 !important;
+    padding: 3px !important;
+    font-size: smaller !important;
+  }
+
+  .background-green {
+    background: #00ff00 !important;
+    padding: 3px !important;
+    font-size: smaller !important;
+  }
+
+  .background-blue {
+    background: #0000ff !important;
+    padding: 3px !important;
+    font-size: smaller !important;
+  }
+
+  .background-black {
+    background: #000000 !important;
+    padding: 3px !important;
+    font-size: smaller !important;
+  }
+}

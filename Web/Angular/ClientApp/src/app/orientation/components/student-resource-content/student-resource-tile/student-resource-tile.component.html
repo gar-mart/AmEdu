@@ -1,0 +1,6 @@
+<div fxLayout="row wrap" fxLayout.lt-md="column" fxLayoutGap="2.5%" fxLayoutWrap>
+  <mat-card fxFlex class="mt-20 resourceTile" (click)="openURL(studentResource.url)">
+    <mat-icon class="mr-10" color="primary">insert_drive_file</mat-icon>
+    <a target="_blank" href="{{ studentResource.url }}" class="td-none">{{ studentResource.title }}</a>
+  </mat-card>
+</div>

@@ -1,0 +1,5 @@
+﻿CREATE TYPE Tvp.YouTubeVideoContent AS TABLE(
+	Id INT NOT NULL
+	, VideoId NVARCHAR(25) NULL
+	, OrderBy INT NOT NULL
+)

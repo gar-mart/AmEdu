@@ -1,0 +1,32 @@
+<app-dialog dialogType="success">
+  <div dialog-title class="title fw-500">Contact Mentor</div>
+  <div dialog-content>
+    <p>
+      This message will be sent to your mentor
+      <span class="fw-600">{{ mentorName }}</span>
+      via email.
+    </p>
+    <form [formGroup]="form">
+      <mat-form-field class="w-100per">
+        <textarea
+          matInput
+          placeholder="What is your message to your mentor?"
+          rows="15"
+          required
+          formControlName="messageToMentor"></textarea>
+      </mat-form-field>
+    </form>
+  </div>
+  <div dialog-footer>
+    <button
+      mat-raised-button
+      class="fcolor-white mr-10"
+      color="primary"
+      (click)="sendEmail()"
+      [disabled]="form.invalid">
+      <mat-icon>email</mat-icon>
+      <span class="ml-5">Send</span>
+    </button>
+    <button mat-button (click)="onNoClick()" color="primary">Close</button>
+  </div>
+</app-dialog>

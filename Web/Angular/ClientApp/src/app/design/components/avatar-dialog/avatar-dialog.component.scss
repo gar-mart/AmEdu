@@ -1,0 +1,36 @@
+ul > li:nth-child(n + 2) {
+  margin-top: 10px;
+}
+
+ul > li > ul > li {
+  font-size: 13px;
+}
+
+img {
+  height: 360px;
+  width: 360px;
+}
+
+.pr-10 {
+  padding-right: 10px !important;
+}
+
+.pl-10 {
+  padding-left: 10px !important;
+}
+
+.w-33per {
+  width: 33% !important;
+}
+
+.w-66per {
+  width: 66% !important;
+}
+
+app-dialog {
+  width: 80vw !important;
+}
+
+[rowspan] textarea {
+  min-height: 76px !important;
+}
